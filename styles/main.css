@@ -1,0 +1,83 @@
+/* Minimal, no-build stylesheet for one-page app */
+:root {
+  /* Projection-friendly light theme only */
+  --bg: #f8fafc; 
+  --bg-elev: #ffffff; 
+  --text: #0f172a; 
+  --muted: #475569; 
+  --accent: #0ea5e9; 
+  --accent-weak: #bae6fd; 
+  --border: #e2e8f0; 
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none; /* avoid top/bottom bounce showing page chrome */
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  height: 100svh; /* lock body height to viewport to prevent rubber-banding */
+  overflow: hidden; /* scrolling happens on #content */
+}
+
+/* Timeline navigation (bottom, subtle) */
+#timeline { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 40; opacity: 0; pointer-events: none; transition: opacity 160ms ease; }
+body[data-ui-awake="true"] #timeline, #timeline:hover { opacity: 1; pointer-events: auto; }
+#timeline .track { position: relative; width: min(820px, 86vw); height: 6px; background: color-mix(in oklab, var(--bg-elev), black 8%); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+#timeline .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: linear-gradient(90deg, var(--accent-weak), var(--accent)); }
+#timeline .dots { position: relative; width: min(820px, 86vw); height: 0; }
+#timeline .dot { position: absolute; top: -6px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--bg-elev); border: 2px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; }
+#timeline .dot.active { background: var(--accent); border-color: var(--accent); }
+
+/* Slides */
+.content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
+.slide {
+  min-height: 100svh;
+  padding: clamp(1rem, 3vw + 1rem, 3rem);
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  border-left: 6px solid var(--accent);
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--bg), var(--accent) 6%),
+      var(--bg-elev));
+}
+.slide h1 { font-size: clamp(2rem, 4vw + 1rem, 3rem); margin: 0; }
+.slide h2 { font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem); margin: 0; }
+.slide p, .slide li { line-height: 1.55; }
+.lead { margin: 0; padding-left: 1.2rem; }
+.hint { color: var(--muted); font-size: 0.95rem; }
+
+.demo { background: color-mix(in oklab, var(--bg-elev), white 2%); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
+.notes { color: var(--muted); }
+.notes summary { cursor: pointer; }
+
+/* Basics */
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+pre { background: color-mix(in oklab, var(--bg-elev), black 8%); border: 1px solid var(--border); padding: 0.75rem; border-radius: 0.5rem; overflow: auto; }
+a { color: var(--accent); }
+
+/* Small screens */
+/* Small screens */
+@media (max-width: 700px) { /* timeline shrinks via vw already */ }
+
+/* Per-slide color themes */
+.slide { --accent: #0ea5e9; --accent-weak: #bae6fd; }
+.slide[data-color="blue"]  { --accent: #0ea5e9; --accent-weak: #bae6fd; }
+.slide[data-color="indigo"]{ --accent: #6366f1; --accent-weak: #c7d2fe; }
+.slide[data-color="violet"]{ --accent: #8b5cf6; --accent-weak: #ddd6fe; }
+.slide[data-color="teal"]  { --accent: #14b8a6; --accent-weak: #99f6e4; }
+.slide[data-color="green"] { --accent: #22c55e; --accent-weak: #bbf7d0; }
+.slide[data-color="orange"]{ --accent: #f59e0b; --accent-weak: #fde68a; }
+.slide[data-color="red"]   { --accent: #ef4444; --accent-weak: #fecaca; }

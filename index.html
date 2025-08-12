@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How To Vibe Secure — One‑Page App</title>
+    <meta name="description" content="A single-page, scrollable presentation with interactive security demos." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="preload" href="styles/main.css" as="style" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+
+    <main id="content">
+      <section class="slide" id="intro" data-color="blue" tabindex="-1">
+        <h1>How To Vibe Secure</h1>
+        <p>A practical, demo‑driven walkthrough of securing small apps.</p>
+        <ul class="lead">
+          <li>Scroll to advance. Everything is live.</li>
+          <li>Each section includes a quick explanation and a hands‑on demo.</li>
+          <li>Open this page directly to explore on your own.</li>
+        </ul>
+        <div class="hint">Tip: Press J/K or Arrow keys to navigate.</div>
+      </section>
+
+      <section class="slide" id="xss-demo" data-color="violet" tabindex="-1">
+        <h2>Cross‑Site Scripting (XSS)</h2>
+        <p>Demonstrates unsafe <code>innerHTML</code> vs safe escaping/sanitization. Try pasting HTML or a script payload.</p>
+        <div id="xssMount" class="demo"></div>
+        <details class="notes">
+          <summary>Speaker notes</summary>
+          <ul>
+            <li>Show an <code>&lt;img onerror&gt;</code> payload executing in the insecure path.</li>
+            <li>Toggle to the secure path to see proper escaping.</li>
+            <li>Highlight CSP and DOMPurify as production options.</li>
+          </ul>
+        </details>
+      </section>
+
+      <section class="slide" id="hardening" data-color="orange" tabindex="-1">
+        <h2>Hardening Basics</h2>
+        <ul>
+          <li><strong>CSP:</strong> Default‑src 'self'; avoid <code>unsafe‑inline</code>.</li>
+          <li><strong>Headers:</strong> <code>Strict‑Transport‑Security</code>, <code>X‑Content‑Type‑Options</code>, <code>Referrer‑Policy</code>.</li>
+          <li><strong>Auth:</strong> Use short‑lived tokens, rotate secrets.</li>
+          <li><strong>Inputs:</strong> Validate on server and client.</li>
+          <li><strong>Dependencies:</strong> Pin versions, verify integrity.</li>
+        </ul>
+      </section>
+
+      <section class="slide" id="checklist" data-color="green" tabindex="-1">
+        <h2>Ship Checklist</h2>
+        <ol>
+          <li>Threat model and data classification</li>
+          <li>Secure defaults and headers</li>
+          <li>Input handling and output encoding</li>
+          <li>Dependency and secret hygiene</li>
+          <li>Monitoring and incident playbook</li>
+        </ol>
+      </section>
+
+      <section class="slide" id="resources" data-color="red" tabindex="-1">
+        <h2>Resources</h2>
+        <ul>
+          <li><a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">OWASP Top 10</a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" target="_blank" rel="noopener noreferrer">MDN Web Security</a></li>
+        </ul>
+        <p class="footnote">Built as a single static page. No build step required.</p>
+      </section>
+    </main>
+
+    <div id="timeline" aria-label="Slide timeline">
+      <div class="track"><div class="fill" id="timelineFill"></div></div>
+      <div class="dots" id="timelineDots" role="navigation" aria-label="Slides"></div>
+    </div>
+    <script type="module" src="scripts/main.js"></script>
+  </body>
+  </html>
