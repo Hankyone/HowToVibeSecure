@@ -1,0 +1,27 @@
+<section class="slide" id="rls" data-color="teal" tabindex="-1">
+  <h2>Data Access (RLS Made Simple)</h2>
+  <div class="mental-model">
+    <h3>Mental Model</h3>
+    <p><strong>"Who can see/change what"</strong> lives in DB policies. Turn <span class="highlight">RLS on</span> for all tables.</p>
+  </div>
+  <div class="assistant-brief">
+    <h3>Assistant Brief</h3>
+    <div class="prompt-box">
+      <p>"Create user‑owns‑row and org‑membership policies; add tests with users A/B; fail CI if B can read/write A."</p>
+    </div>
+  </div>
+  <div id="rlsDemo" class="demo">
+    <h4>RLS Test Simulator</h4>
+    <div class="user-tabs">
+      <button class="user-tab active" data-user="A">User A</button>
+      <button class="user-tab" data-user="B">User B</button>
+    </div>
+    <div class="test-actions">
+      <button onclick="testRLS('read', 'own')">Read Own Data</button>
+      <button onclick="testRLS('read', 'other')">Read Other's Data</button>
+      <button onclick="testRLS('write', 'own')">Write Own Data</button>
+      <button onclick="testRLS('write', 'other')">Write Other's Data</button>
+    </div>
+    <div class="rls-results"></div>
+  </div>
+</section>

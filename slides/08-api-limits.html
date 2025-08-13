@@ -1,0 +1,21 @@
+<section class="slide" id="api-limits" data-color="blue" tabindex="-1">
+  <h2>API Surface & Rate Limiting</h2>
+  <div class="key-concepts">
+    <h3>Global limits + quotas for everything</h3>
+    <ul>
+      <li>Per-IP limits (prevent DDoS)</li>
+      <li>Per-user limits (prevent abuse)</li>
+      <li>Per-key limits (API quotas)</li>
+      <li>Costly operations get lower limits</li>
+    </ul>
+  </div>
+  <div id="rateLimitDemo" class="demo">
+    <h4>Rate Limit Demo</h4>
+    <div class="limit-controls">
+      <button onclick="makeRequest()">Make API Request</button>
+      <button onclick="floodRequests()">Flood Requests (10x)</button>
+      <button onclick="resetLimits()">Reset Limits</button>
+    </div>
+    <div class="request-log"></div>
+  </div>
+</section>

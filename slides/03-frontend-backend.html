@@ -1,0 +1,28 @@
+<section class="slide" id="frontend-backend" data-color="violet" tabindex="-1">
+  <h2>Frontend vs Backend: UX vs Security</h2>
+  <div class="comparison">
+    <div class="frontend-side">
+      <h3>Frontend = UX</h3>
+      <p>Assume attackers can change anything in the browser</p>
+    </div>
+    <div class="backend-side">
+      <h3>Backend = Authority</h3>
+      <p>Enforce all checks server/DB-side</p>
+    </div>
+  </div>
+  <div id="frontendBackendDemo" class="demo">
+    <h4>Demo: DevTools Button Bypass</h4>
+    <div class="demo-controls">
+      <button id="checkoutBtn" disabled>💳 Checkout ($99.99)</button>
+      <p class="demo-status">Button is disabled in UI. Try enabling it with DevTools!</p>
+    </div>
+  </div>
+  <details class="notes">
+    <summary>Examples</summary>
+    <ul>
+      <li>Disabled button → DevTools removes <code>disabled</code> → request still hits server</li>
+      <li>Hidden price field → user edits price client-side → server must compute price from DB</li>
+      <li>Read-only role selector → user flips to <code>admin</code> → server ignores and uses server-side role</li>
+    </ul>
+  </details>
+</section>

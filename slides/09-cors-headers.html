@@ -1,0 +1,23 @@
+<section class="slide" id="cors-headers" data-color="orange" tabindex="-1">
+  <h2>CORS & Headers</h2>
+  <div class="what-not-to-do">
+    <h3>❌ What NOT to do</h3>
+    <ul class="dont-list">
+      <li><code>Access-Control-Allow-Origin: *</code> with credentials</li>
+      <li>Missing CSP headers</li>
+      <li>No HSTS on production</li>
+      <li>Allowing inline scripts without nonces</li>
+    </ul>
+  </div>
+  <div class="assistant-brief">
+    <h3>✅ Ask AI to set</h3>
+    <div class="prompt-box">
+      <p>"Add HSTS, Frame‑Ancestors, and a strict CSP that works with our current assets (use nonces/hashes as needed). Set exact CORS origins."</p>
+    </div>
+  </div>
+  <div id="headersDemo" class="demo">
+    <h4>Headers Inspector</h4>
+    <button onclick="checkHeaders()">Check Current Headers</button>
+    <div class="headers-output"></div>
+  </div>
+</section>

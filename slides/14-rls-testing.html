@@ -1,0 +1,22 @@
+<section class="slide" id="rls-testing" data-color="violet" tabindex="-1">
+  <h2>RLS Testing in 3 Steps</h2>
+  <div class="testing-steps">
+    <div class="step">
+      <h3>1. Create Test Users</h3>
+      <p>Create two test users (A/B) and sign in to get user tokens</p>
+    </div>
+    <div class="step">
+      <h3>2. Test User A</h3>
+      <p>With <strong>user A</strong> token, try: read/write A rows, read/write B rows (should fail)</p>
+    </div>
+    <div class="step">
+      <h3>3. Test User B</h3>
+      <p>With <strong>user B</strong> token, repeat. Log denials; fix policies until only intended access works</p>
+    </div>
+  </div>
+  <div id="rlsTestDemo" class="demo">
+    <h4>Quick RLS Test</h4>
+    <button onclick="runRLSTest()">Run 3-Step Test</button>
+    <div class="test-output"></div>
+  </div>
+</section>

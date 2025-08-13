@@ -1,0 +1,19 @@
+<section class="slide" id="ai-prompts" data-color="indigo" tabindex="-1">
+  <h2>How to Talk to Your AI</h2>
+  <div class="prompt-template">
+    <h3>Add this to every feature request:</h3>
+    <ul class="security-criteria">
+      <li><strong>Validation:</strong> list inputs with type/format/min/max; reject unknown fields</li>
+      <li><strong>Ownership/Access:</strong> who can read/change which records? enforce on server/DB (RLS/policies)</li>
+      <li><strong>Abuse controls:</strong> per‑IP/user/key rate limits; quotas for costly routes</li>
+      <li><strong>Headers/CORS:</strong> exact origins; CSP/HSTS/Frame‑Ancestors set</li>
+      <li><strong>Storage:</strong> use signed URLs; MIME/size caps; scan</li>
+      <li><strong>Logging/Errors:</strong> generic messages to users; detailed server logs; basic alerts</li>
+      <li><strong>Verification:</strong> provide a simple script or steps so I can see failures (429, 403, 400) on demand</li>
+    </ul>
+  </div>
+  <div class="one-liner">
+    <strong>One‑liner to keep repeating:</strong><br>
+    <em>"Explain how this feature validates inputs, enforces ownership, and rate‑limits abuse. Give me quick steps to verify it works."</em>
+  </div>
+</section>

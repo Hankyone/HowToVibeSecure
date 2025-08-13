@@ -1,0 +1,28 @@
+<section class="slide" id="xss-demo" data-color="violet" tabindex="-1">
+  <h2>Input Validation & XSS</h2>
+  <p>Keep it simple: expect exact types/lengths/formats. Never trust user input.</p>
+  <div id="xssMount" class="demo">
+    <h4>XSS Protection Demo</h4>
+    <div class="demo-inputs">
+      <label for="xssInput"><strong>Try some HTML/JS</strong></label>
+      <textarea id="xssInput" rows="4" placeholder="Try: &lt;img src=x onerror=alert('XSS!')&gt;"></textarea>
+      <div class="demo-buttons">
+        <button id="btnInsecure" class="danger-btn">Render (insecure)</button>
+        <button id="btnSecure" class="safe-btn">Render (escaped)</button>
+        <button id="btnClear">Clear</button>
+      </div>
+    </div>
+    <div class="demo-output">
+      <strong>Output</strong>
+      <div id="xssOut"></div>
+    </div>
+  </div>
+  <details class="notes">
+    <summary>Speaker notes</summary>
+    <ul>
+      <li>Show an <code>&lt;img onerror&gt;</code> payload executing in the insecure path</li>
+      <li>Toggle to the secure path to see proper escaping</li>
+      <li>Highlight CSP and DOMPurify as production options</li>
+    </ul>
+  </details>
+</section>

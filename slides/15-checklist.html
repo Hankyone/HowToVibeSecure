@@ -1,0 +1,45 @@
+<section class="slide" id="checklist" data-color="blue" tabindex="-1">
+  <h2>10‑Minute Hardening Checklist</h2>
+  <div class="checklist-grid">
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Secret-scan repo/build; rotate if exposed</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Enable email‑verified sign‑ups; disable anonymous</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span><strong>RLS on</strong> for all tables; write explicit policies</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Rate‑limit auth and all write endpoints</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Add bot gate on signup/reset (Turnstile/hCaptcha)</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>CORS: exact origins; credentials only if needed</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>CSP policy; disable inline scripts or use nonces</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>File uploads: MIME/size limits; signed URLs</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Egress allowlist for server fetch of user URLs</span>
+    </label>
+    <label class="checklist-item">
+      <input type="checkbox" />
+      <span>Configure basic alerts (5xx, auth failures, rate limits)</span>
+    </label>
+  </div>
+</section>

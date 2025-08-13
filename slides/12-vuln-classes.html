@@ -1,0 +1,41 @@
+<section class="slide" id="vuln-classes" data-color="red" tabindex="-1">
+  <h2>Lightning Round: Vulnerability Classes</h2>
+  <div class="vuln-grid">
+    <div class="vuln-card">
+      <h4>Injection</h4>
+      <p><strong>Model:</strong> untrusted input becomes code</p>
+      <p><strong>Do:</strong> parameterized queries, no string concat</p>
+      <p><strong>Red flag:</strong> <code>WHERE id = ${req.query.id}</code></p>
+    </div>
+    <div class="vuln-card">
+      <h4>XSS</h4>
+      <p><strong>Model:</strong> untrusted data renders as HTML/JS</p>
+      <p><strong>Do:</strong> auto-escape templates, CSP</p>
+      <p><strong>Red flag:</strong> <code>dangerouslySetInnerHTML</code></p>
+    </div>
+    <div class="vuln-card">
+      <h4>SSRF</h4>
+      <p><strong>Model:</strong> server fetches attacker URLs</p>
+      <p><strong>Do:</strong> outbound allowlist, block private IPs</p>
+      <p><strong>Red flag:</strong> arbitrary URL fetchers</p>
+    </div>
+    <div class="vuln-card">
+      <h4>IDOR/BOLA</h4>
+      <p><strong>Model:</strong> users access objects they don't own</p>
+      <p><strong>Do:</strong> enforce ownership in DB (RLS)</p>
+      <p><strong>Red flag:</strong> only "is logged in" check</p>
+    </div>
+    <div class="vuln-card">
+      <h4>Mass Assignment</h4>
+      <p><strong>Model:</strong> user sets unintended fields</p>
+      <p><strong>Do:</strong> whitelist updateable fields</p>
+      <p><strong>Red flag:</strong> <code>update(model, req.body)</code></p>
+    </div>
+    <div class="vuln-card">
+      <h4>File Uploads</h4>
+      <p><strong>Model:</strong> files as malware/bombs</p>
+      <p><strong>Do:</strong> MIME limits, object storage, scan</p>
+      <p><strong>Red flag:</strong> serving uploads from app server</p>
+    </div>
+  </div>
+</section>
