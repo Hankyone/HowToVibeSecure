@@ -563,64 +563,161 @@ function initUploadDemo() {
 
 // SSRF Protection Demo
 function initSSRFDemo() {
+  // Helpers inside the demo scope (simulation only)
+  const ALLOWED_PROTOCOLS = ['http:', 'https:'];
+  const OUTBOUND_ALLOWLIST = ['example.com', 'api.myapp.com']; // demo allowlist
+
+  function isLocalhostName(host) {
+    const h = host.toLowerCase();
+    return h === 'localhost' || h.endsWith('.localhost') || h === 'localdomain' || h.endsWith('.localdomain') || h === 'home.arpa' || h.endsWith('.home.arpa');
+  }
+
+  function isIPv4(host) {
+    return /^\d+\.\d+\.\d+\.\d+$/.test(host);
+  }
+
+  function isPrivateIPv4(ip) {
+    try {
+      const parts = ip.split('.').map(n => parseInt(n, 10));
+      if (parts.length !== 4 || parts.some(n => Number.isNaN(n))) return false;
+      const [a, b] = parts;
+      if (a === 10) return true;
+      if (a === 127) return true; // loopback
+      if (a === 0) return true; // this network
+      if (a === 169 && b === 254) return true; // link-local
+      if (a === 192 && b === 168) return true;
+      if (a === 172 && b >= 16 && b <= 31) return true;
+      return false;
+    } catch { return false; }
+  }
+
+  function isIPv6(host) {
+    return host.includes(':');
+  }
+
+  function isPrivateIPv6(host) {
+    const h = host.toLowerCase();
+    return h === '::1' || h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80'); // loopback, ULA, link-local
+  }
+
+  function hasObfuscatedHost(host) {
+    // Numeric-only or hex-only hostnames often encode IPs (e.g., 2130706433, 0x7f000001)
+    if (/^(0x[0-9a-f]+|[0-9]+)$/i.test(host)) return true;
+    // Hex dotted (0x7f.0x00.0x00.0x01) or octal dotted (0177.0.0.1)
+    if (/^(0x[0-9a-f]+\.){3}0x[0-9a-f]+$/i.test(host)) return true;
+    if (/^(0[0-7]+\.){3}0[0-7]+$/.test(host)) return true;
+    return false;
+  }
+
+  function isAllowedByAllowlist(host) {
+    const h = host.toLowerCase();
+    return OUTBOUND_ALLOWLIST.some(allowed => h === allowed || h.endsWith('.' + allowed));
+  }
+
+  function defaultPort(protocol) {
+    return protocol === 'https:' ? '443' : '80';
+  }
+
+  function isAllowedPort(protocol, port) {
+    const p = port || defaultPort(protocol);
+    return (protocol === 'https:' && p === '443') || (protocol === 'http:' && p === '80');
+  }
+
+  function simulateRedirectToPrivate(urlString) {
+    // Purely educational: flag obvious redirect parameters/paths to private targets
+    const patterns = [
+      /redirect[^#?]*to[^#?]*localhost/i,
+      /redirect[^#?]*to[^#?]*127\.0\.0\.1/i,
+      /redirect[^#?]*to[^#?]*169\.254\.169\.254/i,
+      /(?:[?&](?:to|target|url)=)(?:https?:\/\/)?(?:localhost|127\.0\.0\.1|169\.254\.169\.254|\[::1\])/i
+    ];
+    return patterns.some(rx => rx.test(urlString));
+  }
+
   window.testSSRF = function(button) {
     const input = button.previousElementSibling;
     const results = document.querySelector('#ssrfDemo .ssrf-results');
-    const url = input.value;
-    
-    if (!url) {
+    const urlString = input.value.trim();
+
+    if (!urlString) {
       results.innerHTML = '<p class="warning">Please enter a URL to test!</p>';
       return;
     }
 
-    // Simulate SSRF protection
-    const blocked = [
-      'localhost',
-      '127.0.0.1',
-      '169.254.169.254', // AWS metadata
-      '0.0.0.0',
-      '10.',
-      '192.168.',
-      '172.16.',
-      '172.17.',
-      '172.18.',
-      '172.19.',
-      '172.20.',
-      '172.21.',
-      '172.22.',
-      '172.23.',
-      '172.24.',
-      '172.25.',
-      '172.26.',
-      '172.27.',
-      '172.28.',
-      '172.29.',
-      '172.30.',
-      '172.31.'
-    ];
-
-    const isBlocked = blocked.some(pattern => url.includes(pattern));
-    
-    if (isBlocked) {
-      results.innerHTML = `
-        <div class="ssrf-result error">
-          ❌ Request blocked: URL targets private/internal network
-          <br><strong>Blocked URL:</strong> <code>${url}</code>
-          <br><em>This protects against SSRF attacks</em>
-        </div>
-      `;
-    } else {
-      results.innerHTML = `
-        <div class="ssrf-result success">
-          ✅ Request would be allowed: URL targets public internet
-          <br><strong>URL:</strong> <code>${url}</code>
-          <br><em>Remember to also validate response content and implement timeouts</em>
-        </div>
-      `;
+    let url;
+    try {
+      url = new URL(urlString);
+    } catch (e) {
+      results.innerHTML = '<div class="ssrf-result error">Invalid URL. Example: <code>https://example.com/api</code></div>';
+      return;
     }
+
+    const steps = [];
+    let blocked = false;
+
+    // 1) Protocol check
+    const protocolOk = ALLOWED_PROTOCOLS.includes(url.protocol);
+    steps.push({ status: protocolOk ? 'success' : 'error', label: 'Protocol', message: protocolOk ? `Allowed (${url.protocol.replace(':','')})` : `Blocked (${url.protocol})` });
+    if (!protocolOk) blocked = true;
+
+    // 2) Parse basics
+    const hostname = url.hostname;
+    const port = url.port || defaultPort(url.protocol);
+    steps.push({ status: 'info', label: 'Parsed', message: `Host: <code>${hostname}</code> • Port: <code>${port}</code>` });
+
+    // 3) Userinfo presence (phishing/userinfo trick)
+    const hasUserInfo = Boolean(url.username || url.password);
+    if (hasUserInfo) {
+      steps.push({ status: 'warning', label: 'Userinfo', message: `Found <code>${url.username ? url.username : ''}${url.password ? ':***' : ''}@</code> — reject URLs with credentials` });
+    } else {
+      steps.push({ status: 'success', label: 'Userinfo', message: 'No credentials in URL' });
+    }
+
+    // 4) Allowlist
+    const onAllowlist = isAllowedByAllowlist(hostname);
+    steps.push({ status: onAllowlist ? 'success' : 'error', label: 'Allowlist', message: onAllowlist ? 'Host is on outbound allowlist' : 'Host is NOT on outbound allowlist' });
+    if (!onAllowlist) blocked = true;
+
+    // 5) Private network checks
+    let privateHit = false;
+    if (isLocalhostName(hostname)) {
+      privateHit = true;
+    } else if (isIPv4(hostname) && isPrivateIPv4(hostname)) {
+      privateHit = true;
+    } else if (isIPv6(hostname) && isPrivateIPv6(hostname)) {
+      privateHit = true;
+    }
+    steps.push({ status: privateHit ? 'error' : 'success', label: 'Private IPs', message: privateHit ? 'Targets localhost/private/metadata range' : 'No private IP patterns detected' });
+    if (privateHit) blocked = true;
+
+    // 6) Obfuscation checks
+    const obfuscated = hasObfuscatedHost(hostname);
+    steps.push({ status: obfuscated ? 'warning' : 'success', label: 'Obfuscation', message: obfuscated ? 'Suspicious numeric/hex hostname' : 'No obvious obfuscation' });
+
+    // 7) Port policy
+    const portOk = isAllowedPort(url.protocol, url.port);
+    steps.push({ status: portOk ? 'success' : 'error', label: 'Port', message: portOk ? `Allowed port (${port})` : `Blocked non-standard port (${port})` });
+    if (!portOk) blocked = true;
+
+    // 8) Redirect safety (simulated)
+    const redirectTrap = simulateRedirectToPrivate(urlString);
+    steps.push({ status: redirectTrap ? 'error' : 'success', label: 'Redirects', message: redirectTrap ? 'Simulated: would redirect to private IP' : 'No private redirect patterns detected' });
+    if (redirectTrap) blocked = true;
+
+    // Final decision
+    const decision = blocked ? 'error' : 'success';
+    const decisionText = blocked ? '❌ Request would be BLOCKED' : '✅ Request would be ALLOWED';
+
+    results.innerHTML = `
+      <div class="ssrf-result ${decision}">${decisionText}</div>
+      <div class="ssrf-steps">
+        ${steps.map(s => `<div class="rls-result ${s.status}"><strong>${s.label}:</strong> <span>${s.message}</span></div>`).join('')}
+      </div>
+      <div class="security-note">Key: Allowlist exact hosts, permit only http/https on standard ports, block private IPs (IPv4/IPv6), and reject redirects to private ranges.</div>
+    `;
   };
 
-  // Add sample dangerous URLs
+  // Add sample URLs (safe and unsafe)
   const container = document.querySelector('#ssrfDemo');
   if (!container) return; // Safety check
   const samples = document.createElement('div');
@@ -630,7 +727,16 @@ function initSSRFDemo() {
     <div class="sample-buttons">
       <button onclick="document.querySelector('#ssrfDemo input').value = 'http://169.254.169.254/latest/meta-data/'">AWS Metadata</button>
       <button onclick="document.querySelector('#ssrfDemo input').value = 'http://localhost:3000/admin'">Localhost</button>
-      <button onclick="document.querySelector('#ssrfDemo input').value = 'https://example.com/api'">Safe External</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://127.0.0.1'">127.0.0.1</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://[::1]/'">IPv6 ::1</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://2130706433/'">Decimal 2130706433</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://0x7f000001/'">Hex 0x7f000001</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://localhost@evil.com/'">Userinfo Trick</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'gopher://example.com'">gopher://</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'http://example.com:8080'">Port 8080</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'https://example.com/redirect-to-localhost'">Redirect Trap (simulated)</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'https://example.com/api'">Allowed: example.com</button>
+      <button onclick="document.querySelector('#ssrfDemo input').value = 'https://api.myapp.com/v1/data'">Allowed: api.myapp.com</button>
     </div>
   `;
   container.appendChild(samples);

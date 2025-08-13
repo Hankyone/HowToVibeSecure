@@ -250,12 +250,12 @@
 <section class="slide" id="server-calls" data-color="teal" tabindex="-1">
   <h2>Server‑Side API Calls</h2>
   <div class="key-rules">
-    <h3>Never ship keys; validate responses</h3>
+    <h3>SSRF: Server fetching attacker URLs</h3>
     <ul>
-      <li>All API keys stay server-side only</li>
-      <li>Validate LLM responses against schema</li>
-      <li>Rate limit outbound calls</li>
-      <li>Allowlist outbound destinations (prevent SSRF)</li>
+      <li>Use an outbound allowlist (exact hosts)</li>
+      <li>Block private/loopback/metadata IPs (IPv4/IPv6)</li>
+      <li>Only allow http/https on standard ports</li>
+      <li>Disallow redirects/userinfo tricks; resolve DNS before fetch</li>
     </ul>
   </div>
   <div id="ssrfDemo" class="demo">
