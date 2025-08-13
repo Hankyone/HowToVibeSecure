@@ -262,79 +262,154 @@
   margin: 1rem 0; 
 }
 
-/* Compact vulnerability list - no cards */
+/* Enhanced vulnerability cards with consistent styling */
 .vuln-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-  gap: 1rem 2rem; 
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+  gap: 1.5rem; 
   margin: 1rem 0; 
 }
 .vuln-card { 
-  padding: 0;
-  background: none;
-  border: none;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-pastel);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+.vuln-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-left-color: var(--accent);
 }
 .vuln-card h4 { 
-  margin: 0 0 0.5rem 0; 
-  color: var(--text); 
+  margin: 0 0 0.75rem 0; 
+  color: var(--accent); 
   font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.vuln-card h4::before {
+  content: '⚠️';
   font-size: 1rem;
 }
 .vuln-card p { 
-  margin: 0.25rem 0; 
+  margin: 0.5rem 0; 
   font-size: 0.9rem; 
-  line-height: 1.3;
+  line-height: 1.4;
 }
 .vuln-card p:first-of-type {
   color: var(--text-dim);
-}
-.vuln-card p:last-of-type {
-  color: var(--danger);
   font-weight: 500;
 }
+.vuln-card p:last-of-type {
+  color: var(--accent-danger);
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.75rem;
+}
+.vuln-card p:last-of-type::before {
+  content: '🚨 ';
+  margin-right: 0.25rem;
+}
 
-/* Compact testing steps */
+/* Enhanced testing steps with card styling */
 .testing-steps { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
   gap: 1.5rem; 
   margin: 1rem 0; 
 }
 .step { 
-  padding: 0;
-  background: none;
-  border: none;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-pastel);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+.step:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-left-color: var(--accent);
 }
 .step h3 { 
-  margin: 0 0 0.5rem 0; 
-  color: var(--text); 
+  margin: 0 0 0.75rem 0; 
+  color: var(--accent); 
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.step h3::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  background: var(--accent);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.testing-steps {
+  counter-reset: step-counter;
+}
+.step p {
+  margin: 0;
+  line-height: 1.4;
+  color: var(--text-dim);
 }
 
-/* Compact checklist */
+/* Enhanced checklist with card styling */
 .checklist-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-  gap: 0.5rem; 
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+  gap: 1rem; 
   margin: 1rem 0; 
 }
 .checklist-item { 
   display: flex; 
   align-items: flex-start; 
-  gap: 0.75rem; 
-  padding: 0.5rem 0; 
-  background: none; 
-  border: none; 
+  gap: 1rem; 
+  padding: 1rem; 
+  background: var(--bg-card); 
+  border: 1px solid var(--border); 
+  border-radius: 6px;
+  border-left: 3px solid var(--accent-pastel);
   cursor: pointer; 
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+.checklist-item:hover { 
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left-color: var(--accent);
 }
 .checklist-item input[type="checkbox"] { 
   margin: 0.2rem 0 0 0; 
   flex-shrink: 0;
+  transform: scale(1.2);
+  accent-color: var(--accent);
 }
 .checklist-item span { 
-  line-height: 1.3; 
+  line-height: 1.4; 
   font-size: 0.95rem;
+  color: var(--text);
+}
+.checklist-item span strong {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* Resources styling */

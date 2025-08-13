@@ -1,16 +1,34 @@
 /* Clean, projection-optimized design */
 :root {
-  /* Light theme with high contrast for projection */
+  /* Light theme with cohesive pastel palette for projection */
   --bg: #ffffff; 
   --bg-elev: #f8fafc; 
   --bg-card: #f1f5f9;
   --text: #0f172a; 
   --text-dim: #475569; 
-  --accent: #2563eb; 
-  --accent-dim: #1d4ed8;
-  --accent-rgb: 37, 99, 235;
-  --danger: #dc2626;
-  --warning: #f59e0b;
+  --text-muted: #64748b;
+  
+  /* Cohesive pastel palette */
+  --pastel-blue: #93c5fd;
+  --pastel-indigo: #a5b4fc;
+  --pastel-violet: #c4b5fd;
+  --pastel-teal: #5eead4;
+  --pastel-green: #86efac;
+  --pastel-orange: #fdba74;
+  --pastel-red: #fca5a5;
+  
+  /* Primary accent colors for interactive elements */
+  --accent-primary: #3b82f6;
+  --accent-secondary: #8b5cf6;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+  
+  /* Default accent (will be overridden per slide) */
+  --accent: var(--accent-primary); 
+  --accent-dim: #2563eb;
+  --accent-rgb: 59, 130, 246;
+  
   --border: #e2e8f0; 
   --subtle: #f1f5f9;
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -53,13 +71,25 @@ body {
   position: relative;
 }
 
-/* Clean, readable typography */
+/* Clean, readable typography with improved contrast */
 .slide h1 { 
   font-size: clamp(2.2rem, 4vw, 3.2rem); 
   margin: 0 0 0.5rem 0; 
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.01em;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+.slide h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-pastel));
+  border-radius: 2px;
 }
 .slide h2 { 
   font-size: clamp(1.6rem, 2.5vw, 2.4rem); 
@@ -67,6 +97,18 @@ body {
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+.slide h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
 }
 .slide p, .slide li { 
   line-height: 1.4; 
@@ -81,6 +123,9 @@ body {
 .hint { 
   color: var(--text-dim); 
   font-size: 0.9rem; 
+}
+.muted {
+  color: var(--text-muted);
 }
 
 .demo { 
@@ -253,12 +298,52 @@ a:hover {
   }
 }
 
-/* Per-slide color themes - more vibrant and distinctive */
-.slide { --accent: #00ff88; --accent-dim: #10b981; }
-.slide[data-color="blue"]  { --accent: #0099ff; --accent-dim: #0066cc; }
-.slide[data-color="indigo"]{ --accent: #6366f1; --accent-dim: #4f46e5; }
-.slide[data-color="violet"]{ --accent: #a855f7; --accent-dim: #9333ea; }
-.slide[data-color="teal"]  { --accent: #06b6d4; --accent-dim: #0891b2; }
-.slide[data-color="green"] { --accent: #00ff88; --accent-dim: #10b981; }
-.slide[data-color="orange"]{ --accent: #ff8800; --accent-dim: #ea580c; }
-.slide[data-color="red"]   { --accent: #ff3366; --accent-dim: #dc2626; }
+/* Per-slide cohesive pastel palette - harmonized colors */
+.slide { 
+  --accent: var(--accent-primary); 
+  --accent-dim: #2563eb;
+  --accent-rgb: 59, 130, 246;
+  --accent-pastel: var(--pastel-blue);
+}
+.slide[data-color="blue"] { 
+  --accent: var(--accent-primary); 
+  --accent-dim: #2563eb;
+  --accent-rgb: 59, 130, 246;
+  --accent-pastel: var(--pastel-blue);
+}
+.slide[data-color="indigo"] { 
+  --accent: #6366f1; 
+  --accent-dim: #4f46e5;
+  --accent-rgb: 99, 102, 241;
+  --accent-pastel: var(--pastel-indigo);
+}
+.slide[data-color="violet"] { 
+  --accent: var(--accent-secondary); 
+  --accent-dim: #7c3aed;
+  --accent-rgb: 139, 92, 246;
+  --accent-pastel: var(--pastel-violet);
+}
+.slide[data-color="teal"] { 
+  --accent: #14b8a6; 
+  --accent-dim: #0f766e;
+  --accent-rgb: 20, 184, 166;
+  --accent-pastel: var(--pastel-teal);
+}
+.slide[data-color="green"] { 
+  --accent: var(--accent-success); 
+  --accent-dim: #059669;
+  --accent-rgb: 16, 185, 129;
+  --accent-pastel: var(--pastel-green);
+}
+.slide[data-color="orange"] { 
+  --accent: var(--accent-warning); 
+  --accent-dim: #d97706;
+  --accent-rgb: 245, 158, 11;
+  --accent-pastel: var(--pastel-orange);
+}
+.slide[data-color="red"] { 
+  --accent: var(--accent-danger); 
+  --accent-dim: #dc2626;
+  --accent-rgb: 239, 68, 68;
+  --accent-pastel: var(--pastel-red);
+}
