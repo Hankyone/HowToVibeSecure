@@ -269,6 +269,7 @@ function main() {
     initKeyboardNav();
     initSnapWheel();
     initTOC();
+    initViewportStabilization();
     
     // Auto-show timeline on interaction
     let uiTimer = null;
@@ -284,6 +285,43 @@ function main() {
       }
     });
   });
+}
+
+function initViewportStabilization() {
+  const scroller = getScroller();
+  if (!scroller) return;
+  
+  let lastScrollPos = 0;
+  let lastViewportHeight = window.innerHeight;
+  let resizeTimeout = null;
+  
+  // Track scroll position
+  const trackScroll = () => {
+    lastScrollPos = scroller.scrollTop;
+  };
+  
+  // Handle viewport changes (like dev console open/close)
+  const handleViewportChange = () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const currentHeight = window.innerHeight;
+      const heightDiff = Math.abs(currentHeight - lastViewportHeight);
+      
+      // If viewport height changed significantly (like dev console)
+      if (heightDiff > 100) {
+        // Restore scroll position after a brief delay
+        setTimeout(() => {
+          scroller.scrollTop = lastScrollPos;
+        }, 50);
+      }
+      
+      lastViewportHeight = currentHeight;
+      checkContentOverflow();
+    }, 100);
+  };
+  
+  scroller.addEventListener('scroll', trackScroll, { passive: true });
+  window.addEventListener('resize', handleViewportChange, { passive: true });
 }
 
 document.addEventListener('DOMContentLoaded', main);
