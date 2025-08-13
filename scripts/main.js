@@ -86,6 +86,40 @@ function initProgress() {
   // Check content overflow on load and resize
   checkContentOverflow();
   window.addEventListener('resize', checkContentOverflow, { passive: true });
+
+  // Robust slide detection: also use IntersectionObserver when available
+  if (typeof IntersectionObserver !== 'undefined' && scroller) {
+    const observedSections = getSections();
+    let lastIdx = -1;
+    const io = new IntersectionObserver((entries) => {
+      // Pick the most visible slide
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const idx = observedSections.indexOf(visible.target);
+      if (idx !== -1 && idx !== lastIdx) {
+        lastIdx = idx;
+        if (currentSlideSpan) currentSlideSpan.textContent = idx + 1;
+        updateTOCActive(idx);
+      }
+    }, { root: scroller, threshold: [0.51] });
+    observedSections.forEach(s => io.observe(s));
+  }
+
+  // Fallback: RAF watcher in case scroll events are missed by the scroller
+  if (scroller && typeof requestAnimationFrame !== 'undefined') {
+    let lastTop = -1;
+    const tick = () => {
+      const top = scroller.scrollTop || 0;
+      if (top !== lastTop) {
+        onScroll();
+        lastTop = top;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 }
 
 function checkContentOverflow() {
@@ -216,6 +250,14 @@ function initTOC() {
     // Show TOC when hovering slide indicator
     slideIndicator.addEventListener('mouseenter', showTOC);
     slideIndicator.addEventListener('mouseleave', hideTOC);
+    // Also show TOC on click/tap for touch devices
+    slideIndicator.addEventListener('click', () => {
+      if (!toc.classList.contains('show')) {
+        showTOC();
+      } else {
+        toc.classList.remove('show');
+      }
+    });
     
     // Keep TOC open when hovering over it
     toc.addEventListener('mouseenter', () => {
@@ -382,4 +424,9 @@ function initViewportStabilization() {
   updateCurrentSlide();
 }
 
-document.addEventListener('DOMContentLoaded', main);
+// Ensure initialization even if DOMContentLoaded already fired
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', main);
+} else {
+  main();
+}
