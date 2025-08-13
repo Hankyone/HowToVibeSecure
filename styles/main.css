@@ -28,14 +28,7 @@ body {
   overflow: hidden; /* scrolling happens on #content */
 }
 
-/* Timeline navigation (bottom, subtle) */
-#timeline { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 40; opacity: 0; pointer-events: none; transition: opacity 160ms ease; }
-body[data-ui-awake="true"] #timeline, #timeline:hover { opacity: 1; pointer-events: auto; }
-#timeline .track { position: relative; width: min(820px, 86vw); height: 6px; background: color-mix(in oklab, var(--bg-elev), black 8%); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
-#timeline .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: linear-gradient(90deg, var(--accent-weak), var(--accent)); }
-#timeline .dots { position: relative; width: min(820px, 86vw); height: 0; }
-#timeline .dot { position: absolute; top: -6px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--bg-elev); border: 2px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; }
-#timeline .dot.active { background: var(--accent); border-color: var(--accent); }
+/* Timeline removed for cleaner look */
 
 /* Slides */
 .content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
@@ -55,17 +48,7 @@ body[data-ui-awake="true"] #timeline, #timeline:hover { opacity: 1; pointer-even
   position: relative;
 }
 
-/* Left border hover trigger for TOC */
-.slide::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 0;
-  bottom: 0;
-  width: 26px;
-  z-index: 10;
-  cursor: pointer;
-}
+/* Slides have colored left border for visual appeal */
 .slide h1 { font-size: clamp(2rem, 4vw + 1rem, 3rem); margin: 0; }
 .slide h2 { font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem); margin: 0; }
 .slide p, .slide li { line-height: 1.55; }
@@ -86,6 +69,10 @@ a { color: var(--accent); }
 /* Intro slide specific */
 .subtitle { font-size: 1.2rem; font-weight: 600; color: var(--muted); margin: 0.5rem 0 1.5rem 0; }
 .about-author { margin-top: 2rem; padding: 1rem; background: color-mix(in oklab, var(--bg-elev), var(--accent) 8%); border-radius: 0.5rem; border-left: 3px solid var(--accent); }
+.about-author a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.about-author a:hover { text-decoration: underline; }
+.author-background { margin-top: 1rem; }
+.author-background p { margin: 0.5rem 0; color: var(--muted); font-size: 0.9rem; }
 
 /* Demo components */
 .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
@@ -253,23 +240,25 @@ a { color: var(--accent); }
 /* Slide indicator */
 .slide-indicator {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
-  background: color-mix(in oklab, var(--bg-elev), black 10%);
-  color: var(--text);
-  padding: 0.5rem 1rem;
-  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 24px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   z-index: 50;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border);
-  opacity: 0;
-  transition: opacity 160ms ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border: 2px solid var(--accent-weak);
+  opacity: 0.9;
+  transition: all 200ms ease;
 }
 
-body[data-ui-awake="true"] .slide-indicator {
+.slide-indicator:hover {
   opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
 }
 
 /* Table of Contents */
