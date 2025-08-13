@@ -1,14 +1,20 @@
 /* Demo-specific styling */
 
-/* Demo components */
+/* Enhanced demo components with consistent card styling */
 .demo { 
   background: var(--bg-card); 
   border: 1px solid var(--border); 
-  border-radius: 12px; 
+  border-radius: 8px; 
   padding: 1.5rem; 
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
+  border-left: 4px solid var(--accent-pastel);
+  transition: all 0.2s ease;
+}
+.demo:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-left-color: var(--accent);
 }
 .demo::before {
   content: '';
@@ -16,21 +22,23 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dim) 50%, var(--accent) 100%);
+  height: 2px;
+  background: var(--accent);
 }
 .demo h4 { 
-  margin-top: 0; 
+  margin: 0 0 1rem 0; 
   color: var(--accent); 
   font-weight: 600;
   font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
 }
 .demo h4::before {
   content: '🔧';
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .demo-controls { 
@@ -39,60 +47,126 @@
   gap: 1rem; 
 }
 
-/* Modern button styling */
-button, .demo button, .user-tab {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-  color: var(--bg);
-  border: none;
+/* Unified button styling with consistent design */
+button, .demo button, .user-tab, .sample-buttons button, .test-actions button, .limit-controls button {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
   border-radius: 6px;
   padding: 0.75rem 1.25rem;
   font-weight: 600;
   font-size: 0.9rem;
+  font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.2);
   position: relative;
-  overflow: hidden;
+  min-width: 44px; /* Accessibility: minimum touch target */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-button:hover, .demo button:hover, .user-tab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.4);
+button:hover, .demo button:hover, .user-tab:hover, .sample-buttons button:hover, .test-actions button:hover, .limit-controls button:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent-dim);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
 }
 
-button:active, .demo button:active, .user-tab:active {
+button:active, .demo button:active, .user-tab:active, .sample-buttons button:active, .test-actions button:active, .limit-controls button:active {
   transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(var(--accent-rgb), 0.2);
 }
 
+/* Button variants with semantic meaning */
 .danger-btn {
-  background: linear-gradient(135deg, var(--danger) 0%, #cc1f47 100%) !important;
-  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3) !important;
+  background: var(--accent-danger) !important;
+  border-color: var(--accent-danger) !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2) !important;
+}
+.danger-btn:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+.danger-btn::before {
+  content: '⚠️ ';
 }
 
 .safe-btn {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%) !important;
+  background: var(--accent-success) !important;
+  border-color: var(--accent-success) !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2) !important;
+}
+.safe-btn:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+}
+.safe-btn::before {
+  content: '✓ ';
+}
+
+.warning-btn {
+  background: var(--accent-warning) !important;
+  border-color: var(--accent-warning) !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2) !important;
+}
+.warning-btn:hover {
+  background: #d97706 !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Secondary button style */
+.secondary-btn {
+  background: var(--bg) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 1px 4px rgba(var(--accent-rgb), 0.1) !important;
+}
+.secondary-btn:hover {
+  background: var(--accent) !important;
+  color: white !important;
 }
 
 button:disabled {
   background: var(--border) !important;
   color: var(--text-dim) !important;
+  border-color: var(--border) !important;
   cursor: not-allowed !important;
   transform: none !important;
   box-shadow: none !important;
+  opacity: 0.6;
 }
 .demo-status { 
-  margin: 0; 
+  margin: 1rem 0 0 0; 
   padding: 0.75rem; 
   background: var(--bg-elev); 
-  border-radius: 0.375rem; 
+  border-radius: 6px; 
   border: 1px solid var(--border); 
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
 }
 .demo-instructions { 
   margin-top: 1rem; 
   padding: 1rem; 
-  background: color-mix(in oklab, var(--bg-elev), var(--accent) 5%); 
-  border-radius: 0.5rem; 
-  font-size: 0.9rem; 
+  background: rgba(var(--accent-rgb), 0.05); 
+  border: 1px solid rgba(var(--accent-rgb), 0.1);
+  border-radius: 6px; 
+  font-size: 0.9rem;
+  border-left: 3px solid var(--accent-pastel);
+}
+.demo-instructions::before {
+  content: '📝 ';
+  font-weight: 600;
+  color: var(--accent);
 }
 
 /* User tabs for RLS demo */
@@ -103,15 +177,18 @@ button:disabled {
 }
 .user-tab { 
   padding: 0.5rem 1rem; 
-  border: 1px solid var(--border); 
-  background: var(--bg-elev); 
-  border-radius: 0.375rem; 
-  cursor: pointer; 
+  font-size: 0.9rem;
+}
+.user-tab:not(.active) {
+  background: var(--bg-elev) !important;
+  color: var(--accent) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
 }
 .user-tab.active { 
-  background: var(--accent); 
-  color: white; 
-  border-color: var(--accent); 
+  background: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
 }
 
 .test-actions { 
@@ -122,13 +199,7 @@ button:disabled {
 }
 .test-actions button { 
   padding: 0.5rem 1rem; 
-  border: 1px solid var(--border); 
-  background: var(--bg-elev); 
-  border-radius: 0.375rem; 
-  cursor: pointer; 
-}
-.test-actions button:hover { 
-  background: var(--accent-weak); 
+  font-size: 0.85rem;
 }
 
 /* Results styling */
@@ -175,28 +246,7 @@ button:disabled {
   margin-top: 0.5rem; 
   flex-wrap: wrap; 
 }
-.danger-btn { 
-  background: #ef4444; 
-  color: white; 
-  border: none; 
-  padding: 0.5rem 1rem; 
-  border-radius: 0.375rem; 
-  cursor: pointer; 
-}
-.safe-btn { 
-  background: #22c55e; 
-  color: white; 
-  border: none; 
-  padding: 0.5rem 1rem; 
-  border-radius: 0.375rem; 
-  cursor: pointer; 
-}
-.danger-btn:hover { 
-  background: #dc2626; 
-}
-.safe-btn:hover { 
-  background: #16a34a; 
-}
+/* Legacy button overrides - handled by unified styling above */
 
 .xss-output { 
   padding: 1rem; 
@@ -225,12 +275,10 @@ button:disabled {
   margin-top: 0.5rem; 
 }
 .sample-buttons button { 
-  padding: 0.25rem 0.5rem; 
+  padding: 0.375rem 0.75rem; 
   font-size: 0.8rem; 
-  background: var(--bg-elev); 
-  border: 1px solid var(--border); 
-  border-radius: 0.25rem; 
-  cursor: pointer; 
+  min-width: auto;
+  min-height: auto;
 }
 
 /* Rate limit demo styling */
@@ -242,14 +290,7 @@ button:disabled {
 }
 .limit-controls button { 
   padding: 0.5rem 1rem; 
-  background: var(--accent); 
-  color: white; 
-  border: none; 
-  border-radius: 0.375rem; 
-  cursor: pointer; 
-}
-.limit-controls button:hover { 
-  background: color-mix(in oklab, var(--accent), black 10%); 
+  font-size: 0.85rem;
 }
 
 /* Secrets demo styling */

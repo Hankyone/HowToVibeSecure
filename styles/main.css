@@ -111,21 +111,28 @@ body {
   border-radius: 1px;
 }
 .slide p, .slide li { 
-  line-height: 1.4; 
-  font-size: 1rem; 
-  margin: 0.5rem 0;
+  line-height: 1.5; 
+  font-size: clamp(1rem, 2vw, 1.1rem); 
+  margin: 0.75rem 0;
 }
 .lead { 
-  margin: 0 0 1rem 0; 
-  font-size: 1.1rem; 
+  margin: 0 0 1.5rem 0; 
+  font-size: clamp(1.1rem, 2.5vw, 1.25rem); 
   font-weight: 500;
+  line-height: 1.4;
 }
 .hint { 
   color: var(--text-dim); 
-  font-size: 0.9rem; 
+  font-size: clamp(0.9rem, 1.8vw, 1rem); 
+  line-height: 1.4;
 }
 .muted {
   color: var(--text-muted);
+}
+/* Improved spacing system */
+.slide {
+  padding: clamp(2rem, 5vw, 4rem);
+  gap: 1.5rem;
 }
 
 .demo { 
@@ -149,24 +156,29 @@ body {
 .notes { color: var(--text-dim); }
 .notes summary { cursor: pointer; }
 
-/* Basics */
+/* Basics with improved readability */
 code, pre { 
   font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; 
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
 }
 pre { 
   background: var(--bg-card); 
   border: 1px solid var(--border); 
-  padding: 1rem; 
+  padding: 1.25rem; 
   border-radius: 8px; 
   overflow: auto;
   box-shadow: var(--shadow);
+  line-height: 1.4;
+  margin: 1rem 0;
 }
 code {
-  background: rgba(0, 255, 136, 0.1);
-  padding: 0.2rem 0.4rem;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-dim);
+  padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+  font-weight: 500;
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
 }
 a { 
   color: var(--accent); 
