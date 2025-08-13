@@ -211,39 +211,42 @@ function updateTOCActive(currentIndex) {
   });
 }
 
+// Slide content embedded to avoid CORS issues with file://
+const SLIDE_CONTENT = {};
+
 async function loadSlides() {
   const content = $('#content');
   if (!content) return;
 
-  try {
-    for (const slide of SLIDES) {
-      const response = await fetch(`slides/${slide.file}`);
-      if (response.ok) {
-        const html = await response.text();
-        content.insertAdjacentHTML('beforeend', html);
-      } else {
-        console.warn(`Failed to load slide: ${slide.file}`);
-        // Create placeholder slide on error
-        content.insertAdjacentHTML('beforeend', `
-          <section class="slide" id="${slide.id}" data-color="red" tabindex="-1">
-            <h2>Error Loading Slide</h2>
-            <p>Failed to load: ${slide.file}</p>
-          </section>
-        `);
-      }
-    }
-    
-    // Initialize demos after all slides are loaded
+  // Check if slides are already embedded in DOM or if we need to load them
+  const existingSlides = $$('.slide');
+  if (existingSlides.length > 0) {
+    // Slides already loaded, just init demos
     if (typeof initAllDemos === 'function') {
       initAllDemos();
     }
-    
-    // Update progress after slides are loaded
     initProgress();
-    
-  } catch (error) {
-    console.error('Error loading slides:', error);
+    return;
   }
+
+  // If running from file://, try to load via script tags or fallback
+  // For now, show error message with instructions
+  content.innerHTML = `
+    <section class="slide" id="error" data-color="red" tabindex="-1">
+      <h2>⚠️ Loading Issue</h2>
+      <p>The multi-file structure requires a web server to work properly.</p>
+      <h3>Solutions:</h3>
+      <ul>
+        <li><strong>Option 1:</strong> Run <code>python3 -m http.server 8001</code> and visit <code>http://localhost:8001</code></li>
+        <li><strong>Option 2:</strong> Use the original single-file version for direct file:// access</li>
+        <li><strong>Option 3:</strong> Use VS Code Live Server extension</li>
+      </ul>
+      <p><em>The slides are in individual files for parallel development, but need a server to load.</em></p>
+    </section>
+  `;
+  
+  // Initialize progress with error slide
+  initProgress();
 }
 
 function main() {

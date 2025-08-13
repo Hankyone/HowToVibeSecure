@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How To Vibe Secure — One‑Page App</title>
+    <meta name="description" content="A single-page, scrollable presentation with interactive security demos." />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="preload" href="styles/main.css" as="style" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/slides.css" />
+    <link rel="stylesheet" href="styles/demos.css" />
+  </head>
+  <body>
+
+    <main id="content">
+      <!-- Slides will be dynamically loaded here -->
+    </main>
+
+    <!-- Slide indicator -->
+    <div id="slideIndicator" class="slide-indicator">
+      <span id="currentSlide">1</span>/<span id="totalSlides">16</span>
+    </div>
+
+    <!-- Table of Contents -->
+    <div id="tableOfContents" class="table-of-contents">
+      <div class="toc-header">Table of Contents</div>
+      <div class="toc-content">
+        <div class="toc-item" data-slide="intro">
+          <span class="toc-number">1</span>
+          <span class="toc-title">How To Vibe Secure</span>
+        </div>
+        <div class="toc-item" data-slide="mindset">
+          <span class="toc-number">2</span>
+          <span class="toc-title">Mindset: Default‑Deny</span>
+        </div>
+        <div class="toc-item" data-slide="frontend-backend">
+          <span class="toc-number">3</span>
+          <span class="toc-title">Frontend vs Backend</span>
+        </div>
+        <div class="toc-item" data-slide="ai-prompts">
+          <span class="toc-number">4</span>
+          <span class="toc-title">How to Talk to Your AI</span>
+        </div>
+        <div class="toc-item" data-slide="secrets">
+          <span class="toc-number">5</span>
+          <span class="toc-title">Secrets Management</span>
+        </div>
+        <div class="toc-item" data-slide="rls">
+          <span class="toc-number">6</span>
+          <span class="toc-title">Data Access (RLS)</span>
+        </div>
+        <div class="toc-item" data-slide="xss-demo">
+          <span class="toc-number">7</span>
+          <span class="toc-title">Input Validation & XSS</span>
+        </div>
+        <div class="toc-item" data-slide="api-limits">
+          <span class="toc-number">8</span>
+          <span class="toc-title">API Surface & Rate Limiting</span>
+        </div>
+        <div class="toc-item" data-slide="cors-headers">
+          <span class="toc-number">9</span>
+          <span class="toc-title">CORS & Headers</span>
+        </div>
+        <div class="toc-item" data-slide="storage">
+          <span class="toc-number">10</span>
+          <span class="toc-title">Storage & File Uploads</span>
+        </div>
+        <div class="toc-item" data-slide="server-calls">
+          <span class="toc-number">11</span>
+          <span class="toc-title">Server‑Side API Calls</span>
+        </div>
+        <div class="toc-item" data-slide="vuln-classes">
+          <span class="toc-number">12</span>
+          <span class="toc-title">Vulnerability Classes</span>
+        </div>
+        <div class="toc-item" data-slide="keep-current">
+          <span class="toc-number">13</span>
+          <span class="toc-title">Keep It Current</span>
+        </div>
+        <div class="toc-item" data-slide="rls-testing">
+          <span class="toc-number">14</span>
+          <span class="toc-title">RLS Testing in 3 Steps</span>
+        </div>
+        <div class="toc-item" data-slide="checklist">
+          <span class="toc-number">15</span>
+          <span class="toc-title">10‑Minute Hardening Checklist</span>
+        </div>
+        <div class="toc-item" data-slide="resources">
+          <span class="toc-number">16</span>
+          <span class="toc-title">Resources & Next Steps</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script src="scripts/demos.js"></script>
+  </body>
+</html>

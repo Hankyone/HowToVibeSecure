@@ -496,7 +496,204 @@
       </div>
     </div>
 
-    <script src="scripts/main.js"></script>
     <script src="scripts/demos.js"></script>
+    <script>
+      // Simplified main.js for static content (no dynamic loading needed)
+      const $ = (sel, ctx = document) => ctx.querySelector(sel);
+      const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+      const getScroller = () => document.getElementById('content');
+
+      function getSections() {
+        return $$('.slide');
+      }
+
+      function nextSection(dir = 1) {
+        const scroller = getScroller();
+        const sections = getSections();
+        const pos = (scroller?.scrollTop || 0) + 1;
+        let currentIndex = sections.findIndex(s => {
+          const top = s.offsetTop;
+          const bottom = top + s.offsetHeight;
+          return pos >= top && pos < bottom;
+        });
+        if (currentIndex === -1) currentIndex = 0;
+        const target = sections[Math.min(Math.max(currentIndex + dir, 0), sections.length - 1)];
+        if (scroller && target) {
+          scroller.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+          target.focus({ preventScroll: true });
+        }
+      }
+
+      function initProgress() {
+        const scroller = getScroller();
+        const currentSlideSpan = $('#currentSlide');
+        const totalSlidesSpan = $('#totalSlides');
+        const sections = getSections();
+        
+        if (totalSlidesSpan) totalSlidesSpan.textContent = sections.length;
+        
+        const onScroll = () => {
+          const scrolled = scroller?.scrollTop || 0;
+          let idx = 0;
+          for (let i = 0; i < sections.length; i++) {
+            const top = sections[i].offsetTop;
+            if (scrolled >= top - 1) idx = i; else break;
+          }
+          if (currentSlideSpan) currentSlideSpan.textContent = idx + 1;
+          updateTOCActive(idx);
+        };
+        
+        scroller?.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+
+      function initKeyboardNav() {
+        window.addEventListener('keydown', (e) => {
+          if (['INPUT', 'TEXTAREA'].includes((e.target && e.target.tagName) || '')) return;
+          if (e.key === 'j' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+            e.preventDefault();
+            nextSection(1);
+          }
+          if (e.key === 'k' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            nextSection(-1);
+          }
+          if (e.key === 'Home') {
+            e.preventDefault();
+            getSections()[0]?.scrollIntoView({ behavior: 'smooth' });
+          }
+          if (e.key === 'End') {
+            e.preventDefault();
+            const s = getSections();
+            s[s.length - 1]?.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      }
+
+      function initSnapWheel() {
+        const scroller = getScroller();
+        if (!scroller) return;
+        let animating = false;
+        let accum = 0;
+        let targetTop = null;
+        const reset = () => { animating = false; targetTop = null; accum = 0; };
+        const onWheel = (e) => {
+          if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+          accum += e.deltaY;
+          if (animating) { e.preventDefault(); return; }
+          const threshold = 40;
+          if (Math.abs(accum) > threshold) {
+            e.preventDefault();
+            const dir = accum > 0 ? 1 : -1;
+            accum = 0;
+            const sections = getSections();
+            let idx = 0;
+            for (let i = 0; i < sections.length; i++) {
+              if ((scroller.scrollTop + 1) >= sections[i].offsetTop) idx = i; else break;
+            }
+            const nextIdx = Math.min(Math.max(idx + dir, 0), sections.length - 1);
+            const target = sections[nextIdx];
+            if (!target) return;
+            animating = true;
+            targetTop = target.offsetTop;
+            scroller.scrollTo({ top: targetTop, behavior: 'smooth' });
+            setTimeout(reset, 600);
+          }
+        };
+        const onScroll = () => {
+          if (targetTop == null) return;
+          const diff = Math.abs(scroller.scrollTop - targetTop);
+          if (diff < 2) reset();
+        };
+        scroller.addEventListener('wheel', onWheel, { passive: false });
+        scroller.addEventListener('scroll', onScroll, { passive: true });
+      }
+
+      function initTOC() {
+        const tocItems = $$('.toc-item');
+        const scroller = getScroller();
+        const toc = $('#tableOfContents');
+        
+        tocItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const slideId = item.dataset.slide;
+            const targetSlide = $(`#${slideId}`);
+            if (targetSlide && scroller) {
+              scroller.scrollTo({ top: targetSlide.offsetTop, behavior: 'smooth' });
+            }
+          });
+        });
+        
+        let tocVisible = false;
+        let hideTimeout;
+        
+        function showTOC() {
+          if (toc) {
+            clearTimeout(hideTimeout);
+            tocVisible = true;
+            toc.style.opacity = '1';
+            toc.style.pointerEvents = 'auto';
+            toc.style.transform = 'translateX(0)';
+          }
+        }
+        
+        function hideTOC() {
+          if (toc) {
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+              tocVisible = false;
+              toc.style.opacity = '0';
+              toc.style.pointerEvents = 'none';
+              toc.style.transform = 'translateX(-100%)';
+            }, 300);
+          }
+        }
+        
+        document.addEventListener('mousemove', (e) => {
+          if (e.clientX <= 25 && !tocVisible) {
+            showTOC();
+          } else if (e.clientX > 340 && tocVisible) {
+            hideTOC();
+          }
+        });
+        
+        if (toc) {
+          toc.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+          });
+          toc.addEventListener('mouseleave', () => {
+            hideTOC();
+          });
+        }
+      }
+
+      function updateTOCActive(currentIndex) {
+        const tocItems = $$('.toc-item');
+        tocItems.forEach((item, i) => {
+          item.classList.toggle('active', i === currentIndex);
+        });
+      }
+
+      function main() {
+        initProgress();
+        initKeyboardNav();
+        initSnapWheel();
+        initTOC();
+        
+        if (typeof initAllDemos === 'function') {
+          initAllDemos();
+        }
+        
+        let uiTimer = null;
+        const wakeUI = () => {
+          document.body.setAttribute('data-ui-awake', 'true');
+          clearTimeout(uiTimer);
+          uiTimer = setTimeout(() => document.body.setAttribute('data-ui-awake', 'false'), 1500);
+        };
+        ['mousemove','keydown','touchstart','wheel'].forEach(ev => window.addEventListener(ev, wakeUI, { passive: true }));
+      }
+
+      document.addEventListener('DOMContentLoaded', main);
+    </script>
   </body>
 </html>

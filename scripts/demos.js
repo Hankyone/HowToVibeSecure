@@ -146,9 +146,9 @@ function initRLSDemo() {
     results.innerHTML = resultMsg;
     
     if (!shouldSucceed && !isOwn) {
-      results.innerHTML += '<p class="security-note">✅ Good! RLS is working - users cannot access other users\\' data.</p>';
+      results.innerHTML += '<p class="security-note">✅ Good! RLS is working - users cannot access other users\' data.</p>';
     } else if (shouldSucceed && !isOwn) {
-      results.innerHTML += '<p class="security-warning">⚠️ Security Issue! User can access other users\\' data. Check your RLS policies!</p>';
+      results.innerHTML += '<p class="security-warning">⚠️ Security Issue! User can access other users\' data. Check your RLS policies!</p>';
     }
   };
 }
