@@ -38,11 +38,24 @@ for (const slideFile of SLIDES) {
   }
 }
 
-// Replace the content placeholder with actual slides
-const finalHTML = indexTemplate.replace(
-  '<!-- Slides will be dynamically loaded here -->',
-  allSlidesContent
-);
+// Read and inline all CSS files
+const cssFiles = ['styles/main.css', 'styles/slides.css', 'styles/demos.css'];
+let inlinedCSS = '';
+
+for (const cssFile of cssFiles) {
+  if (fs.existsSync(cssFile)) {
+    const cssContent = fs.readFileSync(cssFile, 'utf8');
+    inlinedCSS += cssContent + '\n';
+  }
+}
+
+// Replace CSS links with inlined styles and add slides content
+let finalHTML = indexTemplate
+  .replace('<!-- Slides will be dynamically loaded here -->', allSlidesContent)
+  .replace(
+    '<link rel="stylesheet" href="styles/main.css" />\n    <link rel="stylesheet" href="styles/slides.css" />\n    <link rel="stylesheet" href="styles/demos.css" />',
+    `<style>\n${inlinedCSS}    </style>`
+  );
 
 // Backup original and write the combined file as main index.html
 if (fs.existsSync('index.html') && !fs.existsSync('index-dev.html')) {
