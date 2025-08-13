@@ -47,7 +47,7 @@ function nextSection(dir = 1) {
 
 function initProgress() {
   const scroller = getScroller();
-  const sections = getSections;
+  const sections = getSections();
   const currentSlideSpan = $('#currentSlide');
   const totalSlidesSpan = $('#totalSlides');
   

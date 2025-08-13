@@ -22,6 +22,9 @@
     <ul>
       <li>Show an <code>&lt;img onerror&gt;</code> payload executing in the insecure path</li>
       <li>Toggle to the secure path to see proper escaping</li>
+      <li>Demo the "Cookie Theft" payload - explain how this steals session cookies</li>
+      <li><strong>Important:</strong> CORS doesn't prevent XSS cookie theft because the malicious script runs on your own domain (same-origin)</li>
+      <li><strong>What prevents cookie theft:</strong> CSP (blocks script execution), HttpOnly cookies (prevents document.cookie access), input sanitization</li>
       <li>Highlight CSP and DOMPurify as production options</li>
     </ul>
   </details>

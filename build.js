@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// Read the base index.html template
-const indexTemplate = fs.readFileSync('index.html', 'utf8');
+// Read the base index-dev.html template (clean template without embedded content)
+const indexTemplate = fs.readFileSync('index-dev.html', 'utf8');
 
 // Slide configuration
 const SLIDES = [

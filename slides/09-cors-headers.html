@@ -3,31 +3,45 @@
   <div class="what-not-to-do">
     <h3>❌ What NOT to do</h3>
     <ul class="dont-list">
-      <li><code>Access-Control-Allow-Origin: *</code> with credentials - allows any origin to access sensitive data</li>
-      <li>Missing CSP headers - no protection against XSS and code injection</li>
-      <li>No HSTS on production - traffic can be downgraded to insecure HTTP</li>
-      <li>Allowing inline scripts without nonces - makes XSS attacks trivial</li>
+      <li><code>Access-Control-Allow-Origin: *</code> with credentials</li>
+      <li>Missing CSP headers - no XSS protection</li>
+      <li>No HSTS on production - insecure downgrades</li>
     </ul>
   </div>
   
   <div class="security-headers-guide">
     <h3>🛡️ Essential Security Headers</h3>
-    <ul>
-      <li><strong>CSP</strong>: Content Security Policy blocks XSS attacks</li>
-      <li><strong>HSTS</strong>: HTTP Strict Transport Security enforces HTTPS</li>
-      <li><strong>X-Frame-Options</strong>: Prevents clickjacking via iframes</li>
-      <li><strong>CORS</strong>: Cross-Origin Resource Sharing controls API access</li>
-    </ul>
-  </div>
-  <div class="assistant-brief">
-    <h3>✅ Ask AI to analyze & configure</h3>
-    <div class="prompt-box">
-      <p>"Analyze our current security headers and show me which ones we have set vs missing. For each header (CSP, HSTS, X-Frame-Options, CORS), explain the security implications and provide production-ready configurations that work with our current assets. Include nonces/hashes for CSP and exact origins for CORS."</p>
+    <div class="headers-grid">
+      <div class="header-item">
+        <strong>CSP</strong> - Content Security Policy
+        <small>Prevents XSS by controlling which resources can load</small>
+      </div>
+      <div class="header-item">
+        <strong>HSTS</strong> - HTTP Strict Transport Security  
+        <small>Forces HTTPS connections, prevents downgrade attacks</small>
+      </div>
+      <div class="header-item">
+        <strong>X-Frame-Options</strong> - Clickjacking Protection
+        <small>Blocks malicious sites from embedding your pages</small>
+      </div>
+      <div class="header-item">
+        <strong>CORS</strong> - Cross-Origin Resource Sharing
+        <small>Controls which <span class="origin-note">origins</span> can access your API</small>
+      </div>
     </div>
+    <p class="origin-explanation"><strong>Origin</strong> = protocol + domain + port (e.g., https://app.example.com:443)</p>
   </div>
+  
   <div id="headersDemo" class="demo">
-    <h4>Headers Inspector</h4>
-    <button onclick="checkHeaders()">Check Current Headers</button>
+    <h4>Interactive Header Inspector</h4>
+    <button onclick="analyzeHeaders()">Analyze Security Headers</button>
     <div class="headers-output"></div>
+  </div>
+  
+  <div class="assistant-brief">
+    <h3>✅ Ask AI to configure</h3>
+    <div class="prompt-box">
+      <p>"Set up security headers for my app. Include CSP that allows our assets, HSTS for HTTPS-only, X-Frame-Options to prevent embedding, and CORS that only allows our domain origins. Explain each header's purpose."</p>
+    </div>
   </div>
 </section>

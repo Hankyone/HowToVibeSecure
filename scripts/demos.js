@@ -432,31 +432,71 @@ function initRateLimitDemo() {
 
 // Headers Demo
 function initHeadersDemo() {
-  window.checkHeaders = function() {
+  window.analyzeHeaders = function() {
     const output = document.querySelector('#headersDemo .headers-output');
     if (!output) return;
-
-    // Simulate checking headers (in real app, this would be a fetch)
-    const mockHeaders = {
-      'Content-Security-Policy': 'default-src \'self\'; script-src \'self\' \'unsafe-inline\'',
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-      'X-Frame-Options': 'DENY',
-      'X-Content-Type-Options': 'nosniff',
-      'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Access-Control-Allow-Origin': window.location.origin
-    };
-
-    const headersHtml = Object.entries(mockHeaders).map(([key, value]) => `
-      <div class="header-item">
-        <strong>${key}:</strong><br>
-        <code>${value}</code>
+    
+    const currentOrigin = window.location.origin;
+    const isFileProtocol = window.location.protocol === 'file:';
+    
+    // Educational headers with explanations
+    const securityHeaders = [
+      {
+        name: 'Content-Security-Policy',
+        value: 'default-src \'self\'; script-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\'',
+        status: 'warning',
+        explanation: 'Allows inline scripts/styles (unsafe for production)',
+        improvement: 'Use nonces or hashes instead of \'unsafe-inline\''
+      },
+      {
+        name: 'Strict-Transport-Security',
+        value: isFileProtocol ? 'Not applicable (file:// protocol)' : 'max-age=31536000; includeSubDomains',
+        status: isFileProtocol ? 'info' : 'good',
+        explanation: isFileProtocol ? 'HSTS only works over HTTPS' : 'Forces HTTPS for 1 year, includes subdomains',
+        improvement: isFileProtocol ? 'Deploy with HTTPS to enable HSTS' : null
+      },
+      {
+        name: 'X-Frame-Options',
+        value: 'DENY',
+        status: 'good',
+        explanation: 'Prevents this page from being embedded in frames',
+        improvement: null
+      },
+      {
+        name: 'Access-Control-Allow-Origin',
+        value: isFileProtocol ? 'null (file:// origin)' : currentOrigin,
+        status: 'good',
+        explanation: `Only allows requests from ${isFileProtocol ? 'file system' : 'this origin'}`,
+        improvement: null
+      }
+    ];
+    
+    const headersHtml = securityHeaders.map(header => `
+      <div class="security-header-analysis">
+        <div class="header-name">
+          <strong>${header.name}</strong>
+          <span class="status-badge status-${header.status}">${header.status}</span>
+        </div>
+        <div class="header-value"><code>${header.value}</code></div>
+        <div class="header-explanation">${header.explanation}</div>
+        ${header.improvement ? `<div class="header-improvement">💡 ${header.improvement}</div>` : ''}
       </div>
     `).join('');
-
+    
     output.innerHTML = `
-      <div class="headers-list">
-        <h4>Current Security Headers:</h4>
-        ${headersHtml}
+      <div class="headers-analysis">
+        <h4>Security Headers Analysis</h4>
+        <div class="origin-info">
+          <strong>Current Origin:</strong> <code>${currentOrigin}</code>
+          ${isFileProtocol ? '<br><small>Note: Some headers don\'t apply to file:// protocol</small>' : ''}
+        </div>
+        <div class="headers-list">
+          ${headersHtml}
+        </div>
+        <div class="security-summary">
+          <strong>Key Takeaway:</strong> Each header protects against specific attack vectors. 
+          Origins (protocol + domain + port) are the foundation of web security.
+        </div>
       </div>
     `;
   };
@@ -582,6 +622,7 @@ function initSSRFDemo() {
 
   // Add sample dangerous URLs
   const container = document.querySelector('#ssrfDemo');
+  if (!container) return; // Safety check
   const samples = document.createElement('div');
   samples.className = 'ssrf-samples';
   samples.innerHTML = `
