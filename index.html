@@ -13,65 +13,494 @@
 
     <main id="content">
       <section class="slide" id="intro" data-color="blue" tabindex="-1">
-        <h1>How To Vibe Secure</h1>
-        <p>A practical, demo‑driven walkthrough of securing small apps.</p>
+        <h1>Vibe‑Coded App Security</h1>
+        <p class="subtitle">Fast, Practical Playbook</p>
         <ul class="lead">
-          <li>Scroll to advance. Everything is live.</li>
-          <li>Each section includes a quick explanation and a hands‑on demo.</li>
-          <li>Open this page directly to explore on your own.</li>
+          <li><strong>Audience:</strong> non‑dev builders shipping AI-backed apps fast</li>
+          <li><strong>Goal:</strong> ship without obvious security foot‑guns</li>
+          <li><strong>Format:</strong> 15 slides + demos. 15–25 minutes</li>
         </ul>
         <div class="hint">Tip: Press J/K or Arrow keys to navigate.</div>
+        <div class="about-author">
+          <p>Created by <strong>@hankyone</strong> — security engineer turned AI builder</p>
+        </div>
       </section>
 
-      <section class="slide" id="xss-demo" data-color="violet" tabindex="-1">
-        <h2>Cross‑Site Scripting (XSS)</h2>
-        <p>Demonstrates unsafe <code>innerHTML</code> vs safe escaping/sanitization. Try pasting HTML or a script payload.</p>
-        <div id="xssMount" class="demo"></div>
+      <section class="slide" id="mindset" data-color="red" tabindex="-1">
+        <h2>Mindset: Default‑Deny</h2>
+        <div class="demo">
+          <div class="sticky-rules">
+            <h3>Sticky Rules</h3>
+            <ol>
+              <li class="rule">Assume the UI lies</li>
+              <li class="rule">Assume inputs lie</li>
+              <li class="rule">Assume something already broke—limit blast radius</li>
+            </ol>
+          </div>
+        </div>
+        <ul class="key-points">
+          <li><strong>Think adversarially:</strong> ask "How would I break this?" Map abuse flows before happy paths</li>
+          <li><strong>Frontend is UX, not security:</strong> treat the client as compromised. Enforce rules on server/DB</li>
+          <li><strong>Never trust input:</strong> strictly validate; bound lengths; reject unknown fields</li>
+          <li><strong>Internet = outside:</strong> if you leave it out, it gets kicked, peed on, or stolen</li>
+        </ul>
+        <div class="hook-example">
+          <strong>Hook example:</strong> "Disable the Pay button in the UI, then open DevTools and click it anyway. Does the server stop you?"
+        </div>
+      </section>
+
+      <section class="slide" id="frontend-backend" data-color="violet" tabindex="-1">
+        <h2>Frontend vs Backend: UX vs Security</h2>
+        <div class="comparison">
+          <div class="frontend-side">
+            <h3>Frontend = UX</h3>
+            <p>Assume attackers can change anything in the browser</p>
+          </div>
+          <div class="backend-side">
+            <h3>Backend = Authority</h3>
+            <p>Enforce all checks server/DB-side</p>
+          </div>
+        </div>
+        <div id="frontendBackendDemo" class="demo">
+          <h4>Demo: DevTools Button Bypass</h4>
+          <div class="demo-controls">
+            <button id="checkoutBtn" disabled>💳 Checkout ($99.99)</button>
+            <p class="demo-status">Button is disabled in UI. Try enabling it with DevTools!</p>
+          </div>
+        </div>
         <details class="notes">
-          <summary>Speaker notes</summary>
+          <summary>Examples</summary>
           <ul>
-            <li>Show an <code>&lt;img onerror&gt;</code> payload executing in the insecure path.</li>
-            <li>Toggle to the secure path to see proper escaping.</li>
-            <li>Highlight CSP and DOMPurify as production options.</li>
+            <li>Disabled button → DevTools removes <code>disabled</code> → request still hits server</li>
+            <li>Hidden price field → user edits price client-side → server must compute price from DB</li>
+            <li>Read-only role selector → user flips to <code>admin</code> → server ignores and uses server-side role</li>
           </ul>
         </details>
       </section>
 
-      <section class="slide" id="hardening" data-color="orange" tabindex="-1">
-        <h2>Hardening Basics</h2>
-        <ul>
-          <li><strong>CSP:</strong> Default‑src 'self'; avoid <code>unsafe‑inline</code>.</li>
-          <li><strong>Headers:</strong> <code>Strict‑Transport‑Security</code>, <code>X‑Content‑Type‑Options</code>, <code>Referrer‑Policy</code>.</li>
-          <li><strong>Auth:</strong> Use short‑lived tokens, rotate secrets.</li>
-          <li><strong>Inputs:</strong> Validate on server and client.</li>
-          <li><strong>Dependencies:</strong> Pin versions, verify integrity.</li>
-        </ul>
+      <section class="slide" id="ai-prompts" data-color="indigo" tabindex="-1">
+        <h2>How to Talk to Your AI</h2>
+        <div class="prompt-template">
+          <h3>Add this to every feature request:</h3>
+          <ul class="security-criteria">
+            <li><strong>Validation:</strong> list inputs with type/format/min/max; reject unknown fields</li>
+            <li><strong>Ownership/Access:</strong> who can read/change which records? enforce on server/DB (RLS/policies)</li>
+            <li><strong>Abuse controls:</strong> per‑IP/user/key rate limits; quotas for costly routes</li>
+            <li><strong>Headers/CORS:</strong> exact origins; CSP/HSTS/Frame‑Ancestors set</li>
+            <li><strong>Storage:</strong> use signed URLs; MIME/size caps; scan</li>
+            <li><strong>Logging/Errors:</strong> generic messages to users; detailed server logs; basic alerts</li>
+            <li><strong>Verification:</strong> provide a simple script or steps so I can see failures (429, 403, 400) on demand</li>
+          </ul>
+        </div>
+        <div class="one-liner">
+          <strong>One‑liner to keep repeating:</strong><br>
+          <em>"Explain how this feature validates inputs, enforces ownership, and rate‑limits abuse. Give me quick steps to verify it works."</em>
+        </div>
       </section>
 
-      <section class="slide" id="checklist" data-color="green" tabindex="-1">
-        <h2>Ship Checklist</h2>
-        <ol>
-          <li>Threat model and data classification</li>
-          <li>Secure defaults and headers</li>
-          <li>Input handling and output encoding</li>
-          <li>Dependency and secret hygiene</li>
-          <li>Monitoring and incident playbook</li>
-        </ol>
+      <section class="slide" id="secrets" data-color="orange" tabindex="-1">
+        <h2>Secrets Management</h2>
+        <div class="assistant-brief">
+          <h3>Assistant Brief</h3>
+          <div class="prompt-box">
+            <p>"Move all secrets to platform env vars; remove any keys from code, logs, and build output. Scope keys minimally. Enable GitHub secret scanning and add Gitleaks. Produce a PR and a rotation plan. Confirm no Supabase service‑role key is reachable from the browser."</p>
+          </div>
+        </div>
+        <div class="verify-section">
+          <h3>Verify</h3>
+          <ul class="checklist">
+            <li>✅ Grep/build for keys → none</li>
+            <li>✅ Hitting the site doesn't expose secrets</li>
+            <li>✅ Key rotation steps documented and tested</li>
+          </ul>
+        </div>
+        <div id="secretsDemo" class="demo">
+          <h4>Red Flag Scanner</h4>
+          <textarea placeholder="Paste code to scan for potential secrets..." rows="4"></textarea>
+          <button onclick="scanForSecrets(this)">Scan for Red Flags</button>
+          <div class="scan-results"></div>
+        </div>
       </section>
 
-      <section class="slide" id="resources" data-color="red" tabindex="-1">
-        <h2>Resources</h2>
-        <ul>
-          <li><a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">OWASP Top 10</a></li>
-          <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" target="_blank" rel="noopener noreferrer">MDN Web Security</a></li>
-        </ul>
-        <p class="footnote">Built as a single static page. No build step required.</p>
+      <section class="slide" id="rls" data-color="teal" tabindex="-1">
+        <h2>Data Access (RLS Made Simple)</h2>
+        <div class="mental-model">
+          <h3>Mental Model</h3>
+          <p><strong>"Who can see/change what"</strong> lives in DB policies. Turn <span class="highlight">RLS on</span> for all tables.</p>
+        </div>
+        <div class="assistant-brief">
+          <h3>Assistant Brief</h3>
+          <div class="prompt-box">
+            <p>"Create user‑owns‑row and org‑membership policies; add tests with users A/B; fail CI if B can read/write A."</p>
+          </div>
+        </div>
+        <div id="rlsDemo" class="demo">
+          <h4>RLS Test Simulator</h4>
+          <div class="user-tabs">
+            <button class="user-tab active" data-user="A">User A</button>
+            <button class="user-tab" data-user="B">User B</button>
+          </div>
+          <div class="test-actions">
+            <button onclick="testRLS('read', 'own')">Read Own Data</button>
+            <button onclick="testRLS('read', 'other')">Read Other's Data</button>
+            <button onclick="testRLS('write', 'own')">Write Own Data</button>
+            <button onclick="testRLS('write', 'other')">Write Other's Data</button>
+          </div>
+          <div class="rls-results"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="xss-demo" data-color="violet" tabindex="-1">
+        <h2>Input Validation & XSS</h2>
+        <p>Keep it simple: expect exact types/lengths/formats. Never trust user input.</p>
+        <div id="xssMount" class="demo">
+          <h4>XSS Protection Demo</h4>
+          <div class="demo-inputs">
+            <label for="xssInput"><strong>Try some HTML/JS</strong></label>
+            <textarea id="xssInput" rows="4" placeholder="Try: &lt;img src=x onerror=alert('XSS!')&gt;"></textarea>
+            <div class="demo-buttons">
+              <button id="btnInsecure" class="danger-btn">Render (insecure)</button>
+              <button id="btnSecure" class="safe-btn">Render (escaped)</button>
+              <button id="btnClear">Clear</button>
+            </div>
+          </div>
+          <div class="demo-output">
+            <strong>Output</strong>
+            <div id="xssOut"></div>
+          </div>
+        </div>
+        <details class="notes">
+          <summary>Speaker notes</summary>
+          <ul>
+            <li>Show an <code>&lt;img onerror&gt;</code> payload executing in the insecure path</li>
+            <li>Toggle to the secure path to see proper escaping</li>
+            <li>Highlight CSP and DOMPurify as production options</li>
+          </ul>
+        </details>
+      </section>
+
+      <section class="slide" id="api-limits" data-color="blue" tabindex="-1">
+        <h2>API Surface & Rate Limiting</h2>
+        <div class="key-concepts">
+          <h3>Global limits + quotas for everything</h3>
+          <ul>
+            <li>Per-IP limits (prevent DDoS)</li>
+            <li>Per-user limits (prevent abuse)</li>
+            <li>Per-key limits (API quotas)</li>
+            <li>Costly operations get lower limits</li>
+          </ul>
+        </div>
+        <div id="rateLimitDemo" class="demo">
+          <h4>Rate Limit Demo</h4>
+          <div class="limit-controls">
+            <button onclick="makeRequest()">Make API Request</button>
+            <button onclick="floodRequests()">Flood Requests (10x)</button>
+            <button onclick="resetLimits()">Reset Limits</button>
+          </div>
+          <div class="request-log"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="cors-headers" data-color="orange" tabindex="-1">
+        <h2>CORS & Headers</h2>
+        <div class="what-not-to-do">
+          <h3>❌ What NOT to do</h3>
+          <ul class="dont-list">
+            <li><code>Access-Control-Allow-Origin: *</code> with credentials</li>
+            <li>Missing CSP headers</li>
+            <li>No HSTS on production</li>
+            <li>Allowing inline scripts without nonces</li>
+          </ul>
+        </div>
+        <div class="assistant-brief">
+          <h3>✅ Ask AI to set</h3>
+          <div class="prompt-box">
+            <p>"Add HSTS, Frame‑Ancestors, and a strict CSP that works with our current assets (use nonces/hashes as needed). Set exact CORS origins."</p>
+          </div>
+        </div>
+        <div id="headersDemo" class="demo">
+          <h4>Headers Inspector</h4>
+          <button onclick="checkHeaders()">Check Current Headers</button>
+          <div class="headers-output"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="storage" data-color="indigo" tabindex="-1">
+        <h2>Storage & File Uploads</h2>
+        <div class="storage-rules">
+          <h3>Rules</h3>
+          <ul>
+            <li>Private buckets by default</li>
+            <li>Signed URLs for access</li>
+            <li>MIME/size caps strictly enforced</li>
+            <li>Virus scanning for user uploads</li>
+            <li>Never serve files directly from app server</li>
+          </ul>
+        </div>
+        <div id="uploadDemo" class="demo">
+          <h4>Upload Validation Demo</h4>
+          <input type="file" id="fileInput" />
+          <div class="upload-status"></div>
+          <div class="validation-results"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="server-calls" data-color="teal" tabindex="-1">
+        <h2>Server‑Side API Calls</h2>
+        <div class="key-rules">
+          <h3>Never ship keys; validate responses</h3>
+          <ul>
+            <li>All API keys stay server-side only</li>
+            <li>Validate LLM responses against schema</li>
+            <li>Rate limit outbound calls</li>
+            <li>Allowlist outbound destinations (prevent SSRF)</li>
+          </ul>
+        </div>
+        <div id="ssrfDemo" class="demo">
+          <h4>SSRF Protection Demo</h4>
+          <input type="url" placeholder="Enter URL to fetch..." />
+          <button onclick="testSSRF(this)">Test Fetch</button>
+          <div class="ssrf-results"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="vuln-classes" data-color="red" tabindex="-1">
+        <h2>Lightning Round: Vulnerability Classes</h2>
+        <div class="vuln-grid">
+          <div class="vuln-card">
+            <h4>Injection</h4>
+            <p><strong>Model:</strong> untrusted input becomes code</p>
+            <p><strong>Do:</strong> parameterized queries, no string concat</p>
+            <p><strong>Red flag:</strong> <code>WHERE id = ${req.query.id}</code></p>
+          </div>
+          <div class="vuln-card">
+            <h4>XSS</h4>
+            <p><strong>Model:</strong> untrusted data renders as HTML/JS</p>
+            <p><strong>Do:</strong> auto-escape templates, CSP</p>
+            <p><strong>Red flag:</strong> <code>dangerouslySetInnerHTML</code></p>
+          </div>
+          <div class="vuln-card">
+            <h4>SSRF</h4>
+            <p><strong>Model:</strong> server fetches attacker URLs</p>
+            <p><strong>Do:</strong> outbound allowlist, block private IPs</p>
+            <p><strong>Red flag:</strong> arbitrary URL fetchers</p>
+          </div>
+          <div class="vuln-card">
+            <h4>IDOR/BOLA</h4>
+            <p><strong>Model:</strong> users access objects they don't own</p>
+            <p><strong>Do:</strong> enforce ownership in DB (RLS)</p>
+            <p><strong>Red flag:</strong> only "is logged in" check</p>
+          </div>
+          <div class="vuln-card">
+            <h4>Mass Assignment</h4>
+            <p><strong>Model:</strong> user sets unintended fields</p>
+            <p><strong>Do:</strong> whitelist updateable fields</p>
+            <p><strong>Red flag:</strong> <code>update(model, req.body)</code></p>
+          </div>
+          <div class="vuln-card">
+            <h4>File Uploads</h4>
+            <p><strong>Model:</strong> files as malware/bombs</p>
+            <p><strong>Do:</strong> MIME limits, object storage, scan</p>
+            <p><strong>Red flag:</strong> serving uploads from app server</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" id="keep-current" data-color="green" tabindex="-1">
+        <h2>Keep It Current</h2>
+        <div class="assistant-brief">
+          <h3>Assistant Prompt</h3>
+          <div class="prompt-box">
+            <p>"Upgrade to latest LTS/runtime and safe minor versions of all dependencies. Replace deprecated packages. Generate a PR with: 1) changelog diff of breaking changes, 2) snapshot tests updated, 3) a smoke‑test script that hits key routes, 4) <code>npm audit</code> output showing no critical vulns. Schedule weekly automated update PRs."</p>
+          </div>
+        </div>
+        <div class="verify-section">
+          <h3>Verify</h3>
+          <ul class="checklist">
+            <li>✅ App boots</li>
+            <li>✅ Smoke tests pass</li>
+            <li>✅ Audit shows 0 high/critical</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="slide" id="rls-testing" data-color="violet" tabindex="-1">
+        <h2>RLS Testing in 3 Steps</h2>
+        <div class="testing-steps">
+          <div class="step">
+            <h3>1. Create Test Users</h3>
+            <p>Create two test users (A/B) and sign in to get user tokens</p>
+          </div>
+          <div class="step">
+            <h3>2. Test User A</h3>
+            <p>With <strong>user A</strong> token, try: read/write A rows, read/write B rows (should fail)</p>
+          </div>
+          <div class="step">
+            <h3>3. Test User B</h3>
+            <p>With <strong>user B</strong> token, repeat. Log denials; fix policies until only intended access works</p>
+          </div>
+        </div>
+        <div id="rlsTestDemo" class="demo">
+          <h4>Quick RLS Test</h4>
+          <button onclick="runRLSTest()">Run 3-Step Test</button>
+          <div class="test-output"></div>
+        </div>
+      </section>
+
+      <section class="slide" id="checklist" data-color="blue" tabindex="-1">
+        <h2>10‑Minute Hardening Checklist</h2>
+        <div class="checklist-grid">
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Secret-scan repo/build; rotate if exposed</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Enable email‑verified sign‑ups; disable anonymous</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span><strong>RLS on</strong> for all tables; write explicit policies</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Rate‑limit auth and all write endpoints</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Add bot gate on signup/reset (Turnstile/hCaptcha)</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>CORS: exact origins; credentials only if needed</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>CSP policy; disable inline scripts or use nonces</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>File uploads: MIME/size limits; signed URLs</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Egress allowlist for server fetch of user URLs</span>
+          </label>
+          <label class="checklist-item">
+            <input type="checkbox" />
+            <span>Configure basic alerts (5xx, auth failures, rate limits)</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="slide" id="resources" data-color="indigo" tabindex="-1">
+        <h2>Resources & Next Steps</h2>
+        <div class="resources-grid">
+          <div class="resource-section">
+            <h3>Learn More</h3>
+            <ul>
+              <li><a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">OWASP Top 10</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" target="_blank" rel="noopener noreferrer">MDN Web Security</a></li>
+              <li><a href="https://supabase.com/docs/guides/auth/row-level-security" target="_blank" rel="noopener noreferrer">Supabase RLS Docs</a></li>
+            </ul>
+          </div>
+          <div class="resource-section">
+            <h3>Copy‑Paste Prompts</h3>
+            <div class="prompt-examples">
+              <div class="prompt-example">
+                <strong>Security Review:</strong>
+                <code>"Audit this repository for: secrets, auth, RLS, rate limiting, CORS, CSP, file uploads. Return exact file changes."</code>
+              </div>
+              <div class="prompt-example">
+                <strong>Endpoint Guards:</strong>
+                <code>"Add schema validation, rate limiting, ownership checks, and helpful 4xx errors to this route."</code>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="footnote">Built as a single static page. No build step required. ✨</p>
       </section>
     </main>
 
     <div id="timeline" aria-label="Slide timeline">
       <div class="track"><div class="fill" id="timelineFill"></div></div>
       <div class="dots" id="timelineDots" role="navigation" aria-label="Slides"></div>
+    </div>
+
+    <!-- Slide indicator -->
+    <div id="slideIndicator" class="slide-indicator">
+      <span id="currentSlide">1</span>/<span id="totalSlides">16</span>
+    </div>
+
+    <!-- Table of Contents -->
+    <div id="tableOfContents" class="table-of-contents">
+      <div class="toc-header">Table of Contents</div>
+      <div class="toc-content">
+        <div class="toc-item" data-slide="intro">
+          <span class="toc-number">1</span>
+          <span class="toc-title">Vibe‑Coded App Security</span>
+        </div>
+        <div class="toc-item" data-slide="mindset">
+          <span class="toc-number">2</span>
+          <span class="toc-title">Mindset: Default‑Deny</span>
+        </div>
+        <div class="toc-item" data-slide="frontend-backend">
+          <span class="toc-number">3</span>
+          <span class="toc-title">Frontend vs Backend</span>
+        </div>
+        <div class="toc-item" data-slide="ai-prompts">
+          <span class="toc-number">4</span>
+          <span class="toc-title">How to Talk to Your AI</span>
+        </div>
+        <div class="toc-item" data-slide="secrets">
+          <span class="toc-number">5</span>
+          <span class="toc-title">Secrets Management</span>
+        </div>
+        <div class="toc-item" data-slide="rls">
+          <span class="toc-number">6</span>
+          <span class="toc-title">Data Access (RLS)</span>
+        </div>
+        <div class="toc-item" data-slide="xss-demo">
+          <span class="toc-number">7</span>
+          <span class="toc-title">Input Validation & XSS</span>
+        </div>
+        <div class="toc-item" data-slide="api-limits">
+          <span class="toc-number">8</span>
+          <span class="toc-title">API Surface & Rate Limiting</span>
+        </div>
+        <div class="toc-item" data-slide="cors-headers">
+          <span class="toc-number">9</span>
+          <span class="toc-title">CORS & Headers</span>
+        </div>
+        <div class="toc-item" data-slide="storage">
+          <span class="toc-number">10</span>
+          <span class="toc-title">Storage & File Uploads</span>
+        </div>
+        <div class="toc-item" data-slide="server-calls">
+          <span class="toc-number">11</span>
+          <span class="toc-title">Server‑Side API Calls</span>
+        </div>
+        <div class="toc-item" data-slide="vuln-classes">
+          <span class="toc-number">12</span>
+          <span class="toc-title">Vulnerability Classes</span>
+        </div>
+        <div class="toc-item" data-slide="keep-current">
+          <span class="toc-number">13</span>
+          <span class="toc-title">Keep It Current</span>
+        </div>
+        <div class="toc-item" data-slide="rls-testing">
+          <span class="toc-number">14</span>
+          <span class="toc-title">RLS Testing in 3 Steps</span>
+        </div>
+        <div class="toc-item" data-slide="checklist">
+          <span class="toc-number">15</span>
+          <span class="toc-title">10‑Minute Hardening Checklist</span>
+        </div>
+        <div class="toc-item" data-slide="resources">
+          <span class="toc-number">16</span>
+          <span class="toc-title">Resources & Next Steps</span>
+        </div>
+      </div>
     </div>
     <script type="module" src="scripts/main.js"></script>
   </body>

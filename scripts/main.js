@@ -30,6 +30,13 @@ function initProgress() {
   const fill = $('#timelineFill');
   const dotsWrap = $('#timelineDots');
   const sections = getSections();
+  const slideIndicator = $('#slideIndicator');
+  const currentSlideSpan = $('#currentSlide');
+  const totalSlidesSpan = $('#totalSlides');
+  
+  // Update total slides count
+  if (totalSlidesSpan) totalSlidesSpan.textContent = sections.length;
+  
   // Build dots
   if (dotsWrap && sections.length) {
     dotsWrap.innerHTML = '';
@@ -49,20 +56,31 @@ function initProgress() {
       window.addEventListener('resize', setPos);
     });
   }
+  
   const onScroll = () => {
     const scrolled = scroller?.scrollTop || 0;
     const max = (scroller?.scrollHeight || 0) - (scroller?.clientHeight || 0);
     const pct = Math.max(0, Math.min(1, max ? scrolled / max : 0));
     if (fill) fill.style.width = `${pct * 100}%`;
-    // Determine current section index for active dot
+    
+    // Determine current section index for active dot and slide indicator
     let idx = 0;
     for (let i = 0; i < sections.length; i++) {
       const top = sections[i].offsetTop;
       if (scrolled >= top - 1) idx = i; else break;
     }
+    
+    // Update slide indicator
+    if (currentSlideSpan) currentSlideSpan.textContent = idx + 1;
+    
+    // Update active dot
     const dots = $$('.dot', dotsWrap || document);
     dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    
+    // Update table of contents active item
+    updateTOCActive(idx);
   };
+  
   scroller?.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 }
@@ -136,32 +154,74 @@ function initSnapWheel() {
 
 function initNavActive() { /* replaced by timeline */ }
 
-function mountXSSPlaceholder() {
-  const mount = $('#xssMount');
-  if (!mount) return;
-  mount.innerHTML = `
-    <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">
-      <div style="flex:1;min-width:260px">
-        <label for="xssInput"><strong>Try some HTML/JS</strong></label>
-        <textarea id="xssInput" rows="5" style="width:100%" placeholder="e.g. &lt;img src=x onerror=alert(1)&gt;"></textarea>
-        <div style="margin-top:0.5rem;display:flex;gap:0.5rem;flex-wrap:wrap">
-          <button id="btnInsecure">Render (insecure)</button>
-          <button id="btnSecure">Render (escaped)</button>
-          <button id="btnClear">Clear</button>
-        </div>
-      </div>
-      <div style="flex:1;min-width:260px">
-        <div><strong>Output</strong></div>
-        <div id="xssOut" style="min-height:4rem;border:1px solid var(--border);border-radius:0.5rem;padding:0.5rem;background:color-mix(in oklab, var(--bg-elev), white 2%)"></div>
-      </div>
-    </div>
-    <p style="margin-top:0.75rem;color:var(--muted)">This is a placeholder. Next step adds the real insecure vs secure paths.</p>
-  `;
-  const input = $('#xssInput');
-  const out = $('#xssOut');
-  $('#btnInsecure')?.addEventListener('click', () => { out.innerHTML = input.value; });
-  $('#btnSecure')?.addEventListener('click', () => { out.textContent = input.value; });
-  $('#btnClear')?.addEventListener('click', () => { input.value = ''; out.textContent = ''; });
+function initTOC() {
+  const tocItems = $$('.toc-item');
+  const scroller = getScroller();
+  const toc = $('#tableOfContents');
+  const slides = $$('.slide');
+  
+  // Handle TOC item clicks
+  tocItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const slideId = item.dataset.slide;
+      const targetSlide = $(`#${slideId}`);
+      if (targetSlide && scroller) {
+        scroller.scrollTo({ top: targetSlide.offsetTop, behavior: 'smooth' });
+      }
+    });
+  });
+  
+  // Handle left border hover to show TOC
+  let tocTimeout;
+  
+  slides.forEach(slide => {
+    const leftBorder = slide;
+    
+    leftBorder.addEventListener('mouseenter', (e) => {
+      // Only trigger if hovering near the left edge
+      if (e.clientX <= 30) {
+        clearTimeout(tocTimeout);
+        if (toc) {
+          toc.style.opacity = '1';
+          toc.style.pointerEvents = 'auto';
+          toc.style.transform = 'translateX(0)';
+        }
+      }
+    });
+  });
+  
+  // Handle TOC hover to keep it open
+  if (toc) {
+    toc.addEventListener('mouseenter', () => {
+      clearTimeout(tocTimeout);
+    });
+    
+    toc.addEventListener('mouseleave', () => {
+      tocTimeout = setTimeout(() => {
+        toc.style.opacity = '0';
+        toc.style.pointerEvents = 'none';
+        toc.style.transform = 'translateX(-100%)';
+      }, 500);
+    });
+  }
+  
+  // Hide TOC when mouse leaves left area
+  document.addEventListener('mousemove', (e) => {
+    if (e.clientX > 350 && toc) {
+      tocTimeout = setTimeout(() => {
+        toc.style.opacity = '0';
+        toc.style.pointerEvents = 'none';
+        toc.style.transform = 'translateX(-100%)';
+      }, 1000);
+    }
+  });
+}
+
+function updateTOCActive(currentIndex) {
+  const tocItems = $$('.toc-item');
+  tocItems.forEach((item, i) => {
+    item.classList.toggle('active', i === currentIndex);
+  });
 }
 
 function main() {
@@ -169,6 +229,11 @@ function main() {
   initKeyboardNav();
   initSnapWheel();
   initNavActive();
+  initTOC();
+  
+  // Initialize all interactive demos
+  initAllDemos();
+  
   // Auto-show timeline on interaction
   let uiTimer = null;
   const wakeUI = () => {
@@ -182,7 +247,6 @@ function main() {
       /* nothing to close now */
     }
   });
-  mountXSSPlaceholder();
 }
 
 document.addEventListener('DOMContentLoaded', main);
