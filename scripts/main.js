@@ -291,37 +291,53 @@ function initViewportStabilization() {
   const scroller = getScroller();
   if (!scroller) return;
   
-  let lastScrollPos = 0;
+  // Disable browser scroll restoration
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  
+  let currentScrollPos = 0;
   let lastViewportHeight = window.innerHeight;
-  let resizeTimeout = null;
   
-  // Track scroll position
-  const trackScroll = () => {
-    lastScrollPos = scroller.scrollTop;
+  // Simple, reliable scroll tracking
+  const updateScrollPos = () => {
+    currentScrollPos = scroller.scrollTop;
   };
   
-  // Handle viewport changes (like dev console open/close)
-  const handleViewportChange = () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const currentHeight = window.innerHeight;
-      const heightDiff = Math.abs(currentHeight - lastViewportHeight);
+  // Handle viewport changes with a simple approach
+  const handleResize = () => {
+    const newHeight = window.innerHeight;
+    const heightChange = Math.abs(newHeight - lastViewportHeight);
+    
+    // Only intervene for significant height changes (dev console scenarios)
+    if (heightChange > 50) {
+      // Store the position before the change takes effect
+      const preservedPos = currentScrollPos;
       
-      // If viewport height changed significantly (like dev console)
-      if (heightDiff > 100) {
-        // Restore scroll position after a brief delay
-        setTimeout(() => {
-          scroller.scrollTop = lastScrollPos;
-        }, 50);
-      }
-      
-      lastViewportHeight = currentHeight;
+      // Use requestAnimationFrame to restore after layout
+      requestAnimationFrame(() => {
+        if (scroller.scrollTop === 0 && preservedPos > 0) {
+          scroller.scrollTop = preservedPos;
+        }
+      });
+    }
+    
+    lastViewportHeight = newHeight;
+  };
+  
+  // Throttled resize handler
+  let resizeTimer = null;
+  const throttledResize = () => {
+    if (resizeTimer) return;
+    resizeTimer = setTimeout(() => {
+      handleResize();
       checkContentOverflow();
-    }, 100);
+      resizeTimer = null;
+    }, 16); // ~60fps
   };
   
-  scroller.addEventListener('scroll', trackScroll, { passive: true });
-  window.addEventListener('resize', handleViewportChange, { passive: true });
+  scroller.addEventListener('scroll', updateScrollPos, { passive: true });
+  window.addEventListener('resize', throttledResize, { passive: true });
 }
 
 document.addEventListener('DOMContentLoaded', main);
