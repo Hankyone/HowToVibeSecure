@@ -683,6 +683,52 @@ function initRLSTestingDemo() {
   };
 }
 
+// Mindset Demo
+function initMindsetDemo() {
+  // Make sure the function is globally available
+  if (typeof window !== 'undefined') {
+    window.showThinking = function(type) {
+      const output = document.getElementById('thinkingOutput');
+      if (!output) {
+        console.log('thinkingOutput element not found');
+        return;
+      }
+      
+      console.log('showThinking called with type:', type);
+      
+      if (type === 'developer') {
+        output.innerHTML = `
+          <div class="thinking-result developer">
+            <h4>👨‍💻 Developer Perspective:</h4>
+            <ul>
+              <li>"User clicks button → item gets added to cart"</li>
+              <li>"Need to update the cart count in the UI"</li>
+              <li>"Make sure the button doesn't double-click"</li>
+              <li>"Check if item is in stock"</li>
+            </ul>
+            <p class="thinking-note">Focus: Functionality and user experience</p>
+          </div>
+        `;
+      } else if (type === 'attacker') {
+        output.innerHTML = `
+          <div class="thinking-result attacker">
+            <h4>🔥 Attacker Perspective:</h4>
+            <ul>
+              <li>"Can I add negative quantities to get money back?"</li>
+              <li>"What if I change the product ID to something expensive?"</li>
+              <li>"Can I add items that don't exist or are deleted?"</li>
+              <li>"What if I spam this 1000 times per second?"</li>
+              <li>"Can I add items for other users' carts?"</li>
+              <li>"What happens if I modify the price in the request?"</li>
+            </ul>
+            <p class="thinking-note danger">Focus: How to exploit and break the system</p>
+          </div>
+        `;
+      }
+    };
+  }
+}
+
 // Initialize all demos
 function initAllDemos() {
   // Wait for DOM to be ready
@@ -693,6 +739,7 @@ function initAllDemos() {
     return;
   }
 
+  initMindsetDemo();
   initFrontendBackendDemo();
   initSecretsDemo();
   initRLSDemo();

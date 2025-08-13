@@ -31,26 +31,34 @@
       </section>
 
       <section class="slide" id="mindset" data-color="red" tabindex="-1">
-        <h2>Mindset: Default‑Deny</h2>
-        <div class="demo">
-          <div class="sticky-rules">
-            <h3>Sticky Rules</h3>
-            <ol>
-              <li class="rule">Assume the UI lies</li>
-              <li class="rule">Assume inputs lie</li>
-              <li class="rule">Assume something already broke—limit blast radius</li>
-            </ol>
-          </div>
+        <h2>Security Mindset: Think Like an Attacker</h2>
+        
+        <div class="lead-question">
+          <h3>Before you build or implement a feature, ask:</h3>
+          <div class="big-question">"How would I break this?"</div>
         </div>
-        <ul class="key-points">
-          <li><strong>Think adversarially:</strong> ask "How would I break this?" Map abuse flows before happy paths</li>
-          <li><strong>Frontend is UX, not security:</strong> treat the client as compromised. Enforce rules on server/DB</li>
-          <li><strong>Never trust input:</strong> strictly validate; bound lengths; reject unknown fields</li>
-          <li><strong>Internet = outside:</strong> if you leave it out, it gets kicked, peed on, or stolen</li>
-        </ul>
-        <div class="hook-example">
-          <strong>Hook example:</strong> "Disable the Pay button in the UI, then open DevTools and click it anyway. Does the server stop you?"
+
+        <div class="one-prompt-away">
+          <h3>🤖 You're just one prompt away from security</h3>
+          <ul class="ai-prompts">
+            <li><strong>Don't understand the feature?</strong> → Ask AI to explain it</li>
+            <li><strong>Not sure if it's secure?</strong> → Ask "Why is this secure?"</li>
+            <li><strong>Push back on the AI</strong> → "What could go wrong with this approach?"</li>
+          </ul>
         </div>
+
+        <div class="adversarial-questions">
+          <h3>⚡ Adversarial Questions Checklist</h3>
+          <ul class="question-list">
+            <li>What would a malicious user input?</li>
+            <li>What if someone modifies the frontend code?</li>
+            <li>What happens if this runs 1000x per second?</li>
+            <li>What if the user lies about their identity?</li>
+            <li>What data could leak if this fails?</li>
+          </ul>
+        </div>
+
+
       </section>
 
       <section class="slide" id="frontend-backend" data-color="violet" tabindex="-1">
