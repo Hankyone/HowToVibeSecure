@@ -66,6 +66,7 @@ body {
 }
 .slide {
   height: 100vh;
+  min-height: 100vh;
   padding: clamp(1.5rem, 3vw, 2rem);
   display: grid;
   align-content: center;
@@ -77,6 +78,7 @@ body {
   position: relative;
   overflow-y: auto;
   box-sizing: border-box;
+  isolation: isolate;
 }
 
 /* When content overflows, align to start instead of center */

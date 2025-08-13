@@ -584,6 +584,17 @@ button:disabled {
   margin-top: 1rem; 
   font-size: 0.9rem; 
 }
+/* Ensure SSRF samples only appear within the server-calls slide */
+.ssrf-samples {
+  position: relative;
+  z-index: 1;
+}
+#server-calls .ssrf-samples {
+  display: block;
+}
+.slide:not(#server-calls) .ssrf-samples {
+  display: none !important;
+}
 .sample-buttons { 
   display: flex; 
   gap: 0.5rem; 
