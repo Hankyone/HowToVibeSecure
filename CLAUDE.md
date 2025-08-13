@@ -4,24 +4,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a comprehensive security presentation called "Vibe‑Coded App Security" - a fast, practical playbook for non-dev builders shipping AI-backed apps. It's a single-page interactive presentation with 15+ slides and live security demonstrations, designed for 15-25 minute talks.
+This is a comprehensive security presentation called "Vibe‑Coded App Security" - a fast, practical playbook for non-dev builders shipping AI-backed apps. It's a single-page interactive presentation with 16 slides and live security demonstrations, designed for 15-25 minute talks.
 
-## Development
+## Development Architecture
 
-### Running the Project
-- Open `index.html` directly in a browser (most features work)
-- For full functionality and testing interactive demos, use a local server:
-  ```bash
-  python3 -m http.server 8001
-  # or
-  npx serve
-  ```
+### Multi-File Development with Build System
+The project uses a hybrid architecture that enables parallel development while maintaining file:// compatibility:
+
+**Key Files:**
+- `index.html` - Final combined presentation (auto-generated, works with file://)
+- `index-dev.html` - Development template for dynamic loading
+- `slides/` - Individual slide HTML files (01-intro.html through 16-resources.html)
+- `build.js` - Combines slide files into main index.html
+- `watch.js` - Auto-rebuilds on slide changes
+
+### Development Commands
+```bash
+# Build the combined presentation
+node build.js
+
+# Start file watcher for auto-rebuild on changes
+node watch.js
+
+# Direct viewing (no server needed)
+# Open index.html directly in browser
+```
 
 ### Project Structure
-- `index.html` - Main presentation with all security content and interactive demos
-- `scripts/main.js` - Navigation, scroll handling, and UI interactions
-- `scripts/slide-modules.js` - Modular interactive demonstrations for each security topic
-- `styles/main.css` - Comprehensive styling with color themes and responsive design
+- `index.html` - Combined presentation (auto-built from slides/)
+- `slides/` - Individual slide files for parallel development
+- `scripts/main.js` - Navigation, scroll handling, dynamic loading
+- `scripts/demos.js` - All interactive security demonstrations
+- `styles/main.css` - Core layout, navigation, themes
+- `styles/slides.css` - Slide-specific styling
+- `styles/demos.css` - Demo component styling
 
 ## Key Features
 
@@ -95,7 +111,7 @@ This is a comprehensive security presentation called "Vibe‑Coded App Security"
 
 ## Modular Demo System
 
-The `slide-modules.js` file contains individual demo initializers:
+The `scripts/demos.js` file contains individual demo initializers:
 - `initFrontendBackendDemo()` - DevTools bypass demo
 - `initSecretsDemo()` - Code scanning for secrets
 - `initRLSDemo()` - User access control testing
@@ -136,15 +152,30 @@ This is an educational security demonstration app:
 - Speaker notes provided for presentation context
 - Real security patterns demonstrated in safe environment
 
-### No Build Process
-Intentionally simple architecture:
-- Native ES modules for JavaScript
-- CSS custom properties for theming
-- No dependencies or build tools required
-- Everything runs directly in modern browsers
+## Development Workflow
 
-### Presentation Optimized
-- Light-mode only for projection visibility
-- High contrast colors and large text
-- Keyboard navigation for presentation flow
-- Auto-hiding timeline for clean slides during presentation
+### Making Changes
+1. **Edit slides**: Modify individual files in `slides/` folder
+2. **Auto-rebuild**: Run `node watch.js` for automatic rebuilds on file changes
+3. **Manual build**: Run `node build.js` to manually combine slides
+4. **View changes**: Refresh `index.html` in browser (no server required)
+
+### File:// Compatibility
+The build system ensures the presentation works when opened directly from the filesystem:
+- All slides are embedded into a single `index.html`
+- No external HTTP requests or dynamic imports
+- CSS and JavaScript are included or inlined
+- Works in any modern browser without a server
+
+### Parallel Development
+The slide system enables multiple developers to work simultaneously:
+- Each slide is a separate HTML file
+- Independent editing without conflicts
+- Modular CSS structure (main.css, slides.css, demos.css)
+- Self-contained demo functionality
+
+### Dark Theme & Modern Design
+- Dark cyberpunk-inspired theme with neon accents
+- Gradient backgrounds and glowing effects
+- Smooth animations and hover transitions
+- High contrast for readability and projection

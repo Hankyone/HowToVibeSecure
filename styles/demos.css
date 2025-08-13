@@ -2,22 +2,83 @@
 
 /* Demo components */
 .demo { 
-  background: color-mix(in oklab, var(--bg-elev), white 2%); 
+  background: var(--bg-card); 
   border: 1px solid var(--border); 
-  border-radius: 0.75rem; 
-  padding: 1rem; 
+  border-radius: 12px; 
+  padding: 1.5rem; 
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.demo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dim) 50%, var(--accent) 100%);
 }
 .demo h4 { 
   margin-top: 0; 
   color: var(--accent); 
-  border-bottom: 2px solid var(--accent-weak); 
-  padding-bottom: 0.5rem; 
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.demo h4::before {
+  content: '🔧';
+  font-size: 1.2rem;
 }
 
 .demo-controls { 
   display: flex; 
   flex-direction: column; 
-  gap: 0.75rem; 
+  gap: 1rem; 
+}
+
+/* Modern button styling */
+button, .demo button, .user-tab {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+  color: var(--bg);
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover, .demo button:hover, .user-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.4);
+}
+
+button:active, .demo button:active, .user-tab:active {
+  transform: translateY(0);
+}
+
+.danger-btn {
+  background: linear-gradient(135deg, var(--danger) 0%, #cc1f47 100%) !important;
+  box-shadow: 0 4px 12px rgba(255, 51, 102, 0.3) !important;
+}
+
+.safe-btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%) !important;
+}
+
+button:disabled {
+  background: var(--border) !important;
+  color: var(--text-dim) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 .demo-status { 
   margin: 0; 

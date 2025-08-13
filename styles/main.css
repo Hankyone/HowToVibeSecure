@@ -1,32 +1,39 @@
-/* Minimal, no-build stylesheet for one-page app */
+/* Clean, projection-optimized design */
 :root {
-  /* Projection-friendly light theme only */
-  --bg: #f8fafc; 
-  --bg-elev: #ffffff; 
+  /* Light theme with high contrast for projection */
+  --bg: #ffffff; 
+  --bg-elev: #f8fafc; 
+  --bg-card: #f1f5f9;
   --text: #0f172a; 
-  --muted: #475569; 
-  --accent: #0ea5e9; 
-  --accent-weak: #bae6fd; 
-  --accent-rgb: 14, 165, 233;
+  --text-dim: #475569; 
+  --accent: #2563eb; 
+  --accent-dim: #1d4ed8;
+  --accent-rgb: 37, 99, 235;
+  --danger: #dc2626;
+  --warning: #f59e0b;
   --border: #e2e8f0; 
+  --subtle: #f1f5f9;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 html {
   scroll-behavior: smooth;
-  overscroll-behavior-y: none; /* avoid top/bottom bounce showing page chrome */
-  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+  overscroll-behavior-y: none;
+  background: var(--bg);
 }
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
   color: var(--text);
-  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elev) 100%);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  height: 100svh; /* lock body height to viewport to prevent rubber-banding */
-  overflow: hidden; /* scrolling happens on #content */
+  height: 100svh;
+  overflow: hidden;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 /* Timeline removed for cleaner look */
@@ -35,35 +42,96 @@ body {
 .content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
 .slide {
   min-height: 100svh;
-  padding: clamp(1rem, 3vw + 1rem, 3rem);
+  padding: clamp(2rem, 5vw, 3rem);
   display: grid;
   align-content: start;
-  gap: 1rem;
+  gap: 1.25rem;
   border-bottom: 1px solid var(--border);
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  border-left: 6px solid var(--accent);
-  background: linear-gradient(180deg,
-      color-mix(in oklab, var(--bg), var(--accent) 6%),
-      var(--bg-elev));
+  background: var(--bg);
   position: relative;
 }
 
-/* Slides have colored left border for visual appeal */
-.slide h1 { font-size: clamp(2rem, 4vw + 1rem, 3rem); margin: 0; }
-.slide h2 { font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem); margin: 0; }
-.slide p, .slide li { line-height: 1.55; }
-.lead { margin: 0; padding-left: 1.2rem; }
-.hint { color: var(--muted); font-size: 0.95rem; }
+/* Clean, readable typography */
+.slide h1 { 
+  font-size: clamp(2.2rem, 4vw, 3.2rem); 
+  margin: 0 0 0.5rem 0; 
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.slide h2 { 
+  font-size: clamp(1.6rem, 2.5vw, 2.4rem); 
+  margin: 0 0 1rem 0; 
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.slide p, .slide li { 
+  line-height: 1.4; 
+  font-size: 1rem; 
+  margin: 0.5rem 0;
+}
+.lead { 
+  margin: 0 0 1rem 0; 
+  font-size: 1.1rem; 
+  font-weight: 500;
+}
+.hint { 
+  color: var(--text-dim); 
+  font-size: 0.9rem; 
+}
 
-.demo { background: color-mix(in oklab, var(--bg-elev), white 2%); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; }
-.notes { color: var(--muted); }
+.demo { 
+  background: var(--bg-card); 
+  border: 1px solid var(--border); 
+  border-radius: 12px; 
+  padding: 1.5rem; 
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.demo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dim) 100%);
+}
+.notes { color: var(--text-dim); }
 .notes summary { cursor: pointer; }
 
 /* Basics */
-code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-pre { background: color-mix(in oklab, var(--bg-elev), black 8%); border: 1px solid var(--border); padding: 0.75rem; border-radius: 0.5rem; overflow: auto; }
-a { color: var(--accent); }
+code, pre { 
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; 
+  font-size: 0.9rem;
+}
+pre { 
+  background: var(--bg-card); 
+  border: 1px solid var(--border); 
+  padding: 1rem; 
+  border-radius: 8px; 
+  overflow: auto;
+  box-shadow: var(--shadow);
+}
+code {
+  background: rgba(0, 255, 136, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+a { 
+  color: var(--accent); 
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+a:hover {
+  color: var(--accent-dim);
+  text-shadow: var(--glow);
+}
 
 /* Enhanced styling for security presentation */
 
@@ -185,12 +253,12 @@ a { color: var(--accent); }
   }
 }
 
-/* Per-slide color themes */
-.slide { --accent: #0ea5e9; --accent-weak: #bae6fd; }
-.slide[data-color="blue"]  { --accent: #0ea5e9; --accent-weak: #bae6fd; }
-.slide[data-color="indigo"]{ --accent: #6366f1; --accent-weak: #c7d2fe; }
-.slide[data-color="violet"]{ --accent: #8b5cf6; --accent-weak: #ddd6fe; }
-.slide[data-color="teal"]  { --accent: #14b8a6; --accent-weak: #99f6e4; }
-.slide[data-color="green"] { --accent: #22c55e; --accent-weak: #bbf7d0; }
-.slide[data-color="orange"]{ --accent: #f59e0b; --accent-weak: #fde68a; }
-.slide[data-color="red"]   { --accent: #ef4444; --accent-weak: #fecaca; }
+/* Per-slide color themes - more vibrant and distinctive */
+.slide { --accent: #00ff88; --accent-dim: #10b981; }
+.slide[data-color="blue"]  { --accent: #0099ff; --accent-dim: #0066cc; }
+.slide[data-color="indigo"]{ --accent: #6366f1; --accent-dim: #4f46e5; }
+.slide[data-color="violet"]{ --accent: #a855f7; --accent-dim: #9333ea; }
+.slide[data-color="teal"]  { --accent: #06b6d4; --accent-dim: #0891b2; }
+.slide[data-color="green"] { --accent: #00ff88; --accent-dim: #10b981; }
+.slide[data-color="orange"]{ --accent: #ff8800; --accent-dim: #ea580c; }
+.slide[data-color="red"]   { --accent: #ff3366; --accent-dim: #dc2626; }

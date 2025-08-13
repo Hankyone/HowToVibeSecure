@@ -1,19 +1,26 @@
 <section class="slide" id="ai-prompts" data-color="indigo" tabindex="-1">
   <h2>How to Talk to Your AI</h2>
+  
+  <div class="context-first">
+    <h3>🎯 Give Context First</h3>
+    <p><strong>Ramble!</strong> Explain your app, users, tech stack, concerns. More context = better security advice.</p>
+    <div class="example-context">
+      <em>"I'm building a recipe sharing app with Supabase. Users upload photos and recipes. I'm worried about people uploading malware or accessing other users' private recipes..."</em>
+    </div>
+  </div>
+
   <div class="prompt-template">
-    <h3>Add this to every feature request:</h3>
+    <h3>✅ Then ask for these 4 things:</h3>
     <ul class="security-criteria">
-      <li><strong>Validation:</strong> list inputs with type/format/min/max; reject unknown fields</li>
-      <li><strong>Ownership/Access:</strong> who can read/change which records? enforce on server/DB (RLS/policies)</li>
-      <li><strong>Abuse controls:</strong> per‑IP/user/key rate limits; quotas for costly routes</li>
-      <li><strong>Headers/CORS:</strong> exact origins; CSP/HSTS/Frame‑Ancestors set</li>
-      <li><strong>Storage:</strong> use signed URLs; MIME/size caps; scan</li>
-      <li><strong>Logging/Errors:</strong> generic messages to users; detailed server logs; basic alerts</li>
-      <li><strong>Verification:</strong> provide a simple script or steps so I can see failures (429, 403, 400) on demand</li>
+      <li><strong>Input checking:</strong> What could users send that would break things?</li>
+      <li><strong>Who sees what:</strong> How do I make sure users only see their own stuff?</li>
+      <li><strong>Spam protection:</strong> How do I stop someone from spamming my app?</li>
+      <li><strong>Quick test:</strong> Give me a way to verify these protections actually work</li>
     </ul>
   </div>
+  
   <div class="one-liner">
-    <strong>One‑liner to keep repeating:</strong><br>
-    <em>"Explain how this feature validates inputs, enforces ownership, and rate‑limits abuse. Give me quick steps to verify it works."</em>
+    <strong>Copy-paste starter:</strong><br>
+    <em>"Make this secure by default. Show me how to test that users can't access each other's data or spam the system."</em>
   </div>
 </section>
