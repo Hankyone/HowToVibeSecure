@@ -2683,7 +2683,7 @@ input[type="file"]:hover {
 // Minimal client script: progress and navigation (light mode only)
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 const getScroller = () => document.getElementById('content');
 
 // Slide configuration
@@ -2707,7 +2707,7 @@ const SLIDES = [
 ];
 
 function getSections() {
-  return $('.slide');
+  return $$('.slide');
 }
 
 function nextSection(dir = 1) {
@@ -2864,7 +2864,7 @@ function initSnapWheel() {
 }
 
 function initTOC() {
-  const tocItems = $('.toc-item');
+  const tocItems = $$('.toc-item');
   const scroller = getScroller();
   const toc = $('#tableOfContents');
   const slideIndicator = $('#slideIndicator');
@@ -2909,7 +2909,7 @@ function initTOC() {
 }
 
 function updateTOCActive(currentIndex) {
-  const tocItems = $('.toc-item');
+  const tocItems = $$('.toc-item');
   tocItems.forEach((item, i) => {
     item.classList.toggle('active', i === currentIndex);
   });
@@ -2923,7 +2923,7 @@ async function loadSlides() {
   if (!content) return;
 
   // Check if slides are already embedded in DOM or if we need to load them
-  const existingSlides = $('.slide');
+  const existingSlides = $$('.slide');
   if (existingSlides.length > 0) {
     // Slides already loaded, just init demos
     if (typeof initAllDemos === 'function') {

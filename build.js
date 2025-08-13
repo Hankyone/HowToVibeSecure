@@ -61,15 +61,16 @@ for (const jsFile of jsFiles) {
 }
 
 // Replace CSS links with inlined styles and JS scripts with inlined code
+// Use functional replace to avoid "$" sequence expansion in replacement strings
 let finalHTML = indexTemplate
-  .replace('<!-- Slides will be dynamically loaded here -->', allSlidesContent)
+  .replace('<!-- Slides will be dynamically loaded here -->', () => allSlidesContent)
   .replace(
     '<link rel="stylesheet" href="styles/main.css" />\n    <link rel="stylesheet" href="styles/slides.css" />\n    <link rel="stylesheet" href="styles/demos.css" />',
-    `<style>\n${inlinedCSS}    </style>`
+    () => `<style>\n${inlinedCSS}    </style>`
   )
   .replace(
     '<script src="scripts/main.js"></script>\n    <script src="scripts/demos.js"></script>',
-    `<script>\n${inlinedJS}    </script>`
+    () => `<script>\n${inlinedJS}    </script>`
   );
 
 // Backup original and write the combined file as main index.html
