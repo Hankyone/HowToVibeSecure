@@ -258,7 +258,7 @@ function initHeadersDemo() {
 
     // Simulate checking headers (in real app, this would be a fetch)
     const mockHeaders = {
-      'Content-Security-Policy': 'default-src \\'self\\'; script-src \\'self\\' \\'unsafe-inline\\'',
+      'Content-Security-Policy': 'default-src \'self\'; script-src \'self\' \'unsafe-inline\'',
       'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
       'X-Frame-Options': 'DENY',
       'X-Content-Type-Options': 'nosniff',

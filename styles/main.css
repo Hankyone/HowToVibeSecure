@@ -192,12 +192,11 @@ a:hover {
 
 /* Enhanced styling for security presentation */
 
-/* Slide indicator - moved to left side */
+/* Slide indicator - positioned at bottom-left */
 .slide-indicator {
   position: fixed;
-  top: 50%;
+  bottom: 20px;
   left: 20px;
-  transform: translateY(-50%);
   background: var(--accent);
   color: white;
   padding: 0.75rem 1rem;
@@ -215,7 +214,7 @@ a:hover {
 
 .slide-indicator:hover {
   opacity: 1;
-  transform: translateY(-50%) translateX(2px);
+  transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(0,0,0,0.2);
 }
 
