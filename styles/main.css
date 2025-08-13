@@ -192,31 +192,34 @@ a:hover {
 
 /* Enhanced styling for security presentation */
 
-/* Slide indicator */
+/* Slide indicator - moved to left side */
 .slide-indicator {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
   background: var(--accent);
   color: white;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-radius: 24px;
   font-weight: 600;
   font-size: 0.85rem;
   z-index: 50;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  border: 2px solid var(--accent-weak);
   opacity: 0.9;
   transition: all 200ms ease;
+  cursor: pointer;
+  min-width: 80px;
+  text-align: center;
 }
 
 .slide-indicator:hover {
   opacity: 1;
-  transform: translateY(-2px);
+  transform: translateY(-50%) translateX(2px);
   box-shadow: 0 12px 32px rgba(0,0,0,0.2);
 }
 
-/* Table of Contents */
+/* Table of Contents - only triggered by slide indicator hover */
 .table-of-contents {
   position: fixed;
   left: 0;
@@ -234,7 +237,8 @@ a:hover {
   overflow-y: auto;
 }
 
-.table-of-contents:hover {
+/* Show TOC when slide indicator is hovered (controlled by JS) */
+.table-of-contents.show {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);

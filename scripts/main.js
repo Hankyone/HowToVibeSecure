@@ -145,6 +145,7 @@ function initTOC() {
   const tocItems = $$('.toc-item');
   const scroller = getScroller();
   const toc = $('#tableOfContents');
+  const slideIndicator = $('#slideIndicator');
   
   // Handle TOC item clicks
   tocItems.forEach(item => {
@@ -157,50 +158,31 @@ function initTOC() {
     });
   });
   
-  // Simple left edge hover detection
-  let tocVisible = false;
-  let hideTimeout;
-  
-  function showTOC() {
-    if (toc) {
+  if (toc && slideIndicator) {
+    let hideTimeout;
+    
+    function showTOC() {
       clearTimeout(hideTimeout);
-      tocVisible = true;
-      toc.style.opacity = '1';
-      toc.style.pointerEvents = 'auto';
-      toc.style.transform = 'translateX(0)';
+      toc.classList.add('show');
     }
-  }
-  
-  function hideTOC() {
-    if (toc) {
+    
+    function hideTOC() {
       clearTimeout(hideTimeout);
       hideTimeout = setTimeout(() => {
-        tocVisible = false;
-        toc.style.opacity = '0';
-        toc.style.pointerEvents = 'none';
-        toc.style.transform = 'translateX(-100%)';
-      }, 300);
+        toc.classList.remove('show');
+      }, 200);
     }
-  }
-  
-  // Show TOC when hovering near left edge of any slide
-  document.addEventListener('mousemove', (e) => {
-    if (e.clientX <= 25 && !tocVisible) {
-      showTOC();
-    } else if (e.clientX > 340 && tocVisible) {
-      hideTOC();
-    }
-  });
-  
-  // Keep TOC open when hovering over it
-  if (toc) {
+    
+    // Show TOC when hovering slide indicator
+    slideIndicator.addEventListener('mouseenter', showTOC);
+    slideIndicator.addEventListener('mouseleave', hideTOC);
+    
+    // Keep TOC open when hovering over it
     toc.addEventListener('mouseenter', () => {
       clearTimeout(hideTimeout);
     });
     
-    toc.addEventListener('mouseleave', () => {
-      hideTOC();
-    });
+    toc.addEventListener('mouseleave', hideTOC);
   }
 }
 
