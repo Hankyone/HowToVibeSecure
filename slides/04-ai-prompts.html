@@ -3,9 +3,9 @@
   
   <div class="context-first">
     <h3>🎯 Give Context First</h3>
-    <p><strong>Ramble!</strong> Explain your app, users, tech stack, concerns. More context = better security advice.</p>
+    <p><strong>Ramble!</strong> Start with what you want to build, then keep talking about your security concerns. The more you share your worries, the better security advice you get.</p>
     <div class="example-context">
-      <em>"I'm building a recipe sharing app with Supabase. Users upload photos and recipes. I'm worried about people uploading malware or accessing other users' private recipes..."</em>
+      <em>"I need a recipe sharing feature where users can upload photos and recipes. Actually, I'm using Supabase for the backend. Oh wait, I'm worried about people uploading malware disguised as images. Also, what if users can see other people's private recipes? And what if someone spams the upload endpoint? I'm not sure how to handle file validation either..."</em>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
   </div>
   
   <div class="one-liner">
-    <strong>Copy-paste starter:</strong><br>
-    <em>"Make this secure by default. Show me how to test that users can't access each other's data or spam the system."</em>
+    <strong>Copy-paste starter for production security:</strong><br>
+    <em>"Before this goes live: Are all routes properly authenticated? Can users only access their own data? Are there rate limits to prevent spam and abuse? How do I verify that unauthorized users get rejected with proper error codes? Walk me through testing these security controls step by step."</em>
   </div>
 </section>

