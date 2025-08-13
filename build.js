@@ -60,6 +60,11 @@ for (const jsFile of jsFiles) {
   }
 }
 
+// Escape closing script tags inside JS so inline <script> isn't prematurely terminated
+const inlinedJSForHTML = inlinedJS.replace(/<\/_?script>/gi, match => match.replace('</script>', '<\\/script>'))
+  .replace(/<\/_?script>/g, '<\\/script>')
+  .replace(/<\/_?SCRIPT>/g, '<\\/script>');
+
 // Replace CSS links with inlined styles and JS scripts with inlined code
 // Use functional replace to avoid "$" sequence expansion in replacement strings
 let finalHTML = indexTemplate
@@ -70,7 +75,7 @@ let finalHTML = indexTemplate
   )
   .replace(
     '<script src="scripts/main.js"></script>\n    <script src="scripts/demos.js"></script>',
-    () => `<script>\n${inlinedJS}    </script>`
+    () => `<script>\n${inlinedJSForHTML}    </script>`
   );
 
 // Backup original and write the combined file as main index.html

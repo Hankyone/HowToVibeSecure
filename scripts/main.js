@@ -55,32 +55,28 @@ function initProgress() {
   if (totalSlidesSpan) totalSlidesSpan.textContent = SLIDES.length;
   
   const onScroll = () => {
-    const scrolled = scroller?.scrollTop || 0;
     const allSections = getSections();
-    
-    // Determine current section index for slide indicator
+    // Robust detection: choose the section intersecting the viewport center
+    const viewportCenterY = Math.floor(window.innerHeight / 2);
     let idx = 0;
     for (let i = 0; i < allSections.length; i++) {
-      const section = allSections[i];
-      const sectionTop = section.offsetTop;
-      const sectionBottom = sectionTop + (section.offsetHeight * 0.5); // Use midpoint
-      
-      if (scrolled >= sectionTop && scrolled < sectionBottom) {
+      const rect = allSections[i].getBoundingClientRect();
+      const top = Math.floor(rect.top);
+      const bottom = Math.floor(rect.bottom);
+      if (top <= viewportCenterY && bottom > viewportCenterY) {
         idx = i;
         break;
-      } else if (scrolled >= sectionTop) {
-        idx = i; // Fallback for last section
       }
+      // Fallback: if center isn't inside any, approximate by top crossing
+      if (top <= 1) idx = i;
     }
-    
-    // Update slide indicator
     if (currentSlideSpan) currentSlideSpan.textContent = idx + 1;
-    
-    // Update table of contents active item
     updateTOCActive(idx);
   };
   
   scroller?.addEventListener('scroll', onScroll, { passive: true });
+  // Also listen on window to catch browser/viewport scrolling cases
+  window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   
   // Check content overflow on load and resize
@@ -103,7 +99,7 @@ function initProgress() {
         if (currentSlideSpan) currentSlideSpan.textContent = idx + 1;
         updateTOCActive(idx);
       }
-    }, { root: scroller, threshold: [0.51] });
+    }, { root: scroller, threshold: [0.25, 0.5, 0.75] });
     observedSections.forEach(s => io.observe(s));
   }
 

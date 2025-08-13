@@ -57,7 +57,7 @@ body {
 /* Timeline removed for cleaner look */
 
 /* Slides */
-.content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
+.content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch; }
 
 /* Temporarily disable scroll-snap during viewport changes */
 .content.no-snap, #content.no-snap { 
