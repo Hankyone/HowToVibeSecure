@@ -49,12 +49,27 @@ for (const cssFile of cssFiles) {
   }
 }
 
-// Replace CSS links with inlined styles and add slides content
+// Read and inline all JavaScript files
+const jsFiles = ['scripts/main.js', 'scripts/demos.js'];
+let inlinedJS = '';
+
+for (const jsFile of jsFiles) {
+  if (fs.existsSync(jsFile)) {
+    const jsContent = fs.readFileSync(jsFile, 'utf8');
+    inlinedJS += jsContent + '\n';
+  }
+}
+
+// Replace CSS links with inlined styles and JS scripts with inlined code
 let finalHTML = indexTemplate
   .replace('<!-- Slides will be dynamically loaded here -->', allSlidesContent)
   .replace(
     '<link rel="stylesheet" href="styles/main.css" />\n    <link rel="stylesheet" href="styles/slides.css" />\n    <link rel="stylesheet" href="styles/demos.css" />',
     `<style>\n${inlinedCSS}    </style>`
+  )
+  .replace(
+    '<script src="scripts/main.js"></script>\n    <script src="scripts/demos.js"></script>',
+    `<script>\n${inlinedJS}    </script>`
   );
 
 // Backup original and write the combined file as main index.html
