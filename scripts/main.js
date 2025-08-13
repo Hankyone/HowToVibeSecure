@@ -74,6 +74,38 @@ function initProgress() {
   
   scroller?.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+  
+  // Check content overflow on load and resize
+  checkContentOverflow();
+  window.addEventListener('resize', checkContentOverflow, { passive: true });
+}
+
+function checkContentOverflow() {
+  const slides = getSections();
+  slides.forEach(slide => {
+    // Reset classes
+    slide.classList.remove('overflow-content', 'scale-content');
+    
+    // Check if content is taller than viewport
+    const slideHeight = slide.offsetHeight;
+    const viewportHeight = window.innerHeight;
+    const contentHeight = slide.scrollHeight;
+    
+    if (contentHeight > viewportHeight * 0.95) {
+      // If content is very tall, try scaling first
+      if (contentHeight > viewportHeight * 1.2) {
+        slide.classList.add('scale-content');
+        // Re-check after scaling
+        setTimeout(() => {
+          if (slide.scrollHeight > viewportHeight * 0.98) {
+            slide.classList.add('overflow-content');
+          }
+        }, 100);
+      } else {
+        slide.classList.add('overflow-content');
+      }
+    }
+  });
 }
 
 function initKeyboardNav() {

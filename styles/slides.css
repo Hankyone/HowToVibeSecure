@@ -265,12 +265,12 @@
 /* Enhanced vulnerability cards with consistent styling */
 .vuln-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-  gap: 1.5rem; 
-  margin: 1rem 0; 
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+  gap: 1.25rem; 
+  margin: 0.75rem 0; 
 }
 .vuln-card { 
-  padding: 1.25rem;
+  padding: 1rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -321,12 +321,12 @@
 /* Enhanced testing steps with card styling */
 .testing-steps { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-  gap: 1.5rem; 
-  margin: 1rem 0; 
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+  gap: 1.25rem; 
+  margin: 0.75rem 0; 
 }
 .step { 
-  padding: 1.25rem;
+  padding: 1rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -374,15 +374,15 @@
 /* Enhanced checklist with card styling */
 .checklist-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-  gap: 1rem; 
-  margin: 1rem 0; 
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+  gap: 0.8rem; 
+  margin: 0.75rem 0; 
 }
 .checklist-item { 
   display: flex; 
   align-items: flex-start; 
-  gap: 1rem; 
-  padding: 1rem; 
+  gap: 0.8rem; 
+  padding: 0.8rem; 
   background: var(--bg-card); 
   border: 1px solid var(--border); 
   border-radius: 6px;

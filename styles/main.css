@@ -59,16 +59,39 @@ body {
 /* Slides */
 .content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
 .slide {
-  min-height: 100svh;
-  padding: clamp(2rem, 5vw, 3rem);
+  height: 100svh;
+  padding: clamp(1.5rem, 3vw, 2rem);
   display: grid;
-  align-content: start;
-  gap: 1.25rem;
+  align-content: center;
+  gap: 1rem;
   border-bottom: 1px solid var(--border);
   scroll-snap-align: start;
   scroll-snap-stop: always;
   background: var(--bg);
   position: relative;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* When content overflows, align to start instead of center */
+.slide.overflow-content {
+  align-content: start;
+}
+
+/* Presentation mode scaling for content that's too tall */
+.slide.scale-content {
+  transform-origin: center top;
+  transform: scale(0.92);
+  padding-top: clamp(1rem, 2vw, 1.5rem);
+}
+
+/* Ensure minimum readable sizes */
+.slide.scale-content h2 {
+  font-size: clamp(1.3rem, 2.2vw, 1.9rem);
+}
+.slide.scale-content p,
+.slide.scale-content li {
+  font-size: clamp(0.9rem, 1.7vw, 1rem);
 }
 
 /* Clean, readable typography with improved contrast */
@@ -92,13 +115,13 @@ body {
   border-radius: 2px;
 }
 .slide h2 { 
-  font-size: clamp(1.6rem, 2.5vw, 2.4rem); 
-  margin: 0 0 1rem 0; 
+  font-size: clamp(1.4rem, 2.2vw, 2rem); 
+  margin: 0 0 0.75rem 0; 
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
   position: relative;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
 }
 .slide h2::after {
   content: '';
@@ -111,13 +134,13 @@ body {
   border-radius: 1px;
 }
 .slide p, .slide li { 
-  line-height: 1.5; 
-  font-size: clamp(1rem, 2vw, 1.1rem); 
-  margin: 0.75rem 0;
+  line-height: 1.4; 
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem); 
+  margin: 0.5rem 0;
 }
 .lead { 
-  margin: 0 0 1.5rem 0; 
-  font-size: clamp(1.1rem, 2.5vw, 1.25rem); 
+  margin: 0 0 1rem 0; 
+  font-size: clamp(1.05rem, 2.2vw, 1.2rem); 
   font-weight: 500;
   line-height: 1.4;
 }
@@ -129,10 +152,10 @@ body {
 .muted {
   color: var(--text-muted);
 }
-/* Improved spacing system */
+/* Improved spacing system - more compact */
 .slide {
-  padding: clamp(2rem, 5vw, 4rem);
-  gap: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  gap: 1rem;
 }
 
 .demo { 
