@@ -61,8 +61,16 @@ function initProgress() {
     // Determine current section index for slide indicator
     let idx = 0;
     for (let i = 0; i < allSections.length; i++) {
-      const top = allSections[i].offsetTop;
-      if (scrolled >= top - 1) idx = i; else break;
+      const section = allSections[i];
+      const sectionTop = section.offsetTop;
+      const sectionBottom = sectionTop + (section.offsetHeight * 0.5); // Use midpoint
+      
+      if (scrolled >= sectionTop && scrolled < sectionBottom) {
+        idx = i;
+        break;
+      } else if (scrolled >= sectionTop) {
+        idx = i; // Fallback for last section
+      }
     }
     
     // Update slide indicator
@@ -296,48 +304,82 @@ function initViewportStabilization() {
     history.scrollRestoration = 'manual';
   }
   
-  let currentScrollPos = 0;
-  let lastViewportHeight = window.innerHeight;
+  let currentSlideIndex = 0;
+  let isResizing = false;
+  let resizeTimeout = null;
   
-  // Simple, reliable scroll tracking
-  const updateScrollPos = () => {
-    currentScrollPos = scroller.scrollTop;
-  };
-  
-  // Handle viewport changes with a simple approach
-  const handleResize = () => {
-    const newHeight = window.innerHeight;
-    const heightChange = Math.abs(newHeight - lastViewportHeight);
+  // Track current slide index based on scroll position
+  const updateCurrentSlide = () => {
+    if (isResizing) return; // Don't update during resize
     
-    // Only intervene for significant height changes (dev console scenarios)
-    if (heightChange > 50) {
-      // Store the position before the change takes effect
-      const preservedPos = currentScrollPos;
+    const sections = getSections();
+    const scrolled = scroller.scrollTop + 1; // Small offset for edge cases
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTop = section.offsetTop;
+      const sectionBottom = sectionTop + section.offsetHeight;
       
-      // Use requestAnimationFrame to restore after layout
-      requestAnimationFrame(() => {
-        if (scroller.scrollTop === 0 && preservedPos > 0) {
-          scroller.scrollTop = preservedPos;
-        }
-      });
+      if (scrolled >= sectionTop && scrolled < sectionBottom) {
+        currentSlideIndex = i;
+        break;
+      }
     }
+  };
+  
+  // Handle resize start - disable snap immediately
+  const handleResizeStart = () => {
+    if (isResizing) return;
     
-    lastViewportHeight = newHeight;
+    isResizing = true;
+    scroller.classList.add('no-snap');
+    
+    // Clear any existing timeout
+    clearTimeout(resizeTimeout);
   };
   
-  // Throttled resize handler
-  let resizeTimer = null;
-  const throttledResize = () => {
-    if (resizeTimer) return;
-    resizeTimer = setTimeout(() => {
-      handleResize();
-      checkContentOverflow();
-      resizeTimer = null;
-    }, 16); // ~60fps
+  // Handle resize end - restore position and re-enable snap
+  const handleResizeEnd = () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const sections = getSections();
+      const targetSection = sections[currentSlideIndex];
+      
+      if (targetSection) {
+        // Scroll to the correct slide without animation
+        scroller.scrollTo({
+          top: targetSection.offsetTop,
+          behavior: 'auto'
+        });
+        
+        // Re-enable snap after a brief delay
+        setTimeout(() => {
+          scroller.classList.remove('no-snap');
+          isResizing = false;
+        }, 50);
+      } else {
+        scroller.classList.remove('no-snap');
+        isResizing = false;
+      }
+      
+      // Update content overflow after stabilization
+      setTimeout(() => {
+        checkContentOverflow();
+      }, 100);
+    }, 150); // Debounce resize events
   };
   
-  scroller.addEventListener('scroll', updateScrollPos, { passive: true });
-  window.addEventListener('resize', throttledResize, { passive: true });
+  // Listen for scroll to track current slide
+  scroller.addEventListener('scroll', updateCurrentSlide, { passive: true });
+  
+  // Listen for resize events
+  window.addEventListener('resize', () => {
+    handleResizeStart();
+    handleResizeEnd();
+  }, { passive: true });
+  
+  // Initialize current slide
+  updateCurrentSlide();
 }
 
 document.addEventListener('DOMContentLoaded', main);

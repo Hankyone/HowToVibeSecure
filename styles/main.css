@@ -58,6 +58,12 @@ body {
 
 /* Slides */
 .content, #content { position: fixed; inset: 0; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
+
+/* Temporarily disable scroll-snap during viewport changes */
+.content.no-snap, #content.no-snap { 
+  scroll-snap-type: none !important; 
+  scroll-behavior: auto !important;
+}
 .slide {
   height: 100vh;
   padding: clamp(1.5rem, 3vw, 2rem);
