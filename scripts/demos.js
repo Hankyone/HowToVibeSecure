@@ -342,7 +342,7 @@ function initXSSDemo() {
   samplesDiv.className = 'xss-samples';
   samplesDiv.innerHTML = `
     <details>
-      <summary>▼ Sample XSS Payloads (for testing)</summary>
+      <summary>Sample XSS Payloads (for testing)</summary>
       <div class="sample-buttons">
         <button type="button" data-payload="image">Image XSS</button>
         <button type="button" data-payload="script">Script Tag</button>
