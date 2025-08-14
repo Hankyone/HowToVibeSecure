@@ -3073,48 +3073,31 @@ input[type="file"]:hover {
   </div>
 </section>
 <section class="slide" id="checklist" data-color="blue" tabindex="-1">
-  <h2>Infrastructure Security Checklist</h2>
-  <div class="checklist-grid">
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>HTTPS-only; redirect all HTTP traffic</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Enable WAF with bot protection (Cloudflare/AWS Shield)</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Database: encrypted at rest + in transit; private subnets</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Secrets in environment/vault; never in code/config</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Firewall: allowlist-only; close unused ports (22, 3389)</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Enable audit logging for DB, API gateway, auth events</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Auto-patching enabled; container base images updated</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>CDN geo-blocking for suspicious regions (if applicable)</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Backup verification; test restore process monthly</span>
-    </label>
-    <label class="checklist-item">
-      <input type="checkbox" />
-      <span>Monitor: uptime, disk usage, memory, failed logins</span>
-    </label>
+  <h2>Infrastructure Security for Vibe Coders</h2>
+  
+  <div class="infra-tips">
+    <div class="tip-section">
+      <h3>🎯 Platform Choice Matters</h3>
+      <p><strong>Vercel/Netlify:</strong> Auto HTTPS, CDN, but check function timeouts for auth flows</p>
+      <p><strong>Railway/Render:</strong> Great for full-stack, but configure health checks and restart policies</p>
+      <p><strong>VPS (Digital Ocean/Linode):</strong> You own security—firewall, SSH keys, fail2ban, auto-updates</p>
+    </div>
+
+    <div class="tip-section">
+      <h3>🔐 The Deployment Gotchas</h3>
+      <p><strong>Environment Variables:</strong> Never commit .env files; use platform secret managers</p>
+      <p><strong>Default Passwords:</strong> Change database defaults immediately (postgres/admin123)</p>
+      <p><strong>Open Ports:</strong> VPS exposes everything—close 22, 3389, database ports to public</p>
+      <p><strong>SSL Certificates:</strong> Let's Encrypt auto-renewal; don't let certs expire</p>
+    </div>
+
+    <div class="tip-section">
+      <h3>⚠️ What Can Go Wrong</h3>
+      <p><strong>Exposed Admin Panels:</strong> /admin, /phpmyadmin, /wp-admin left accessible</p>
+      <p><strong>Debug Mode On:</strong> Stack traces leak internal paths and database structure</p>
+      <p><strong>Backup Exposure:</strong> .sql, .tar.gz files served by web server</p>
+      <p><strong>Directory Listing:</strong> Nginx/Apache serving file listings instead of 404s</p>
+    </div>
   </div>
 </section>
 <section class="slide" id="resources" data-color="indigo" tabindex="-1">
@@ -3209,9 +3192,9 @@ input[type="file"]:hover {
           <span class="toc-number">13</span>
           <span class="toc-title">Keep It Current</span>
         </div>
-        <div class="toc-item" data-slide="rls-testing">
+        <div class="toc-item" data-slide="threat-modeling">
           <span class="toc-number">14</span>
-          <span class="toc-title">RLS Testing in 3 Steps</span>
+          <span class="toc-title">Threat Modeling Primer</span>
         </div>
         <div class="toc-item" data-slide="checklist">
           <span class="toc-number">15</span>
