@@ -3,26 +3,27 @@
   
   <div class="infra-tips">
     <div class="tip-section">
-      <h3>🎯 Platform Choice Matters</h3>
-      <p><strong>Vercel/Netlify:</strong> Auto HTTPS, CDN, but check function timeouts for auth flows</p>
-      <p><strong>Railway/Render:</strong> Great for full-stack, but configure health checks and restart policies</p>
-      <p><strong>VPS (Digital Ocean/Linode):</strong> You own security—firewall, SSH keys, fail2ban, auto-updates</p>
+      <h3>🔒 Managed Platform Gotchas</h3>
+      <p><strong>Preview Deployments:</strong> Password-protect preview URLs; keep OAuth callbacks on stable domains</p>
+      <p><strong>Client Secrets:</strong> Never use NEXT_PUBLIC_* for API keys—it's literally public</p>
+      <p><strong>Function Timeouts:</strong> Auth flows can break if they exceed platform limits (30s on Vercel)</p>
+      <p><strong>WAF Off:</strong> Enable Cloudflare bot protection and rate limits at the edge</p>
     </div>
 
     <div class="tip-section">
-      <h3>🔐 The Deployment Gotchas</h3>
-      <p><strong>Environment Variables:</strong> Never commit .env files; use platform secret managers</p>
-      <p><strong>Default Passwords:</strong> Change database defaults immediately (postgres/admin123)</p>
-      <p><strong>Open Ports:</strong> VPS exposes everything—close 22, 3389, database ports to public</p>
-      <p><strong>SSL Certificates:</strong> Let's Encrypt auto-renewal; don't let certs expire</p>
+      <h3>⚡ Modern Security Headers</h3>
+      <p><strong>Edge Configuration:</strong> Set HSTS, CSP, and secure cookies via vercel.json/headers</p>
+      <p><strong>Storage Access:</strong> Default-private buckets; use signed URLs for R2/S3</p>
+      <p><strong>Logging Discipline:</strong> Mask PII/tokens in logs—they're not private by default</p>
+      <p><strong>CI/CD Supply Chain:</strong> Use GitHub OIDC, pin Actions versions, no long-lived keys</p>
     </div>
 
     <div class="tip-section">
-      <h3>⚠️ What Can Go Wrong</h3>
-      <p><strong>Exposed Admin Panels:</strong> /admin, /phpmyadmin, /wp-admin left accessible</p>
-      <p><strong>Debug Mode On:</strong> Stack traces leak internal paths and database structure</p>
-      <p><strong>Backup Exposure:</strong> .sql, .tar.gz files served by web server</p>
-      <p><strong>Directory Listing:</strong> Nginx/Apache serving file listings instead of 404s</p>
+      <h3>🚨 2025 Failure Modes</h3>
+      <p><strong>Preview URL Leaks:</strong> Private links indexed by Google or shared publicly</p>
+      <p><strong>LLM DoS:</strong> Expensive prompts without rate limits can drain your budget</p>
+      <p><strong>Webhook Vulnerabilities:</strong> Verify signatures, allowlist IPs, fail fast on bad data</p>
+      <p><strong>BOLA/BFLA:</strong> Missing object-level and function-level authorization checks</p>
     </div>
   </div>
 </section>
