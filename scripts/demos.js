@@ -452,29 +452,101 @@ function initHeadersDemo() {
     }
   };
 
-  window.analyzeHeaders = function() {
-    const output = document.querySelector('#headersDemo');
-    if (!output) return;
+  // Modal functions
+  window.openHeadersModal = function() {
+    const modal = document.getElementById('headersModal');
+    const analysisDiv = document.getElementById('headersAnalysis');
     
+    if (!modal || !analysisDiv) return;
+    
+    // Generate detailed analysis
     const isFileProtocol = window.location.protocol === 'file:';
+    const currentOrigin = window.location.origin;
     
-    // Simple inline analysis - no nested containers
     const headers = [
-      { name: 'CSP', present: false },
-      { name: 'HSTS', present: !isFileProtocol },
-      { name: 'X-Frame-Options', present: false },
-      { name: 'CORS', present: true }
+      {
+        name: 'CSP',
+        present: false,
+        description: 'Content Security Policy prevents XSS attacks by controlling which scripts can run.',
+        impact: 'Without CSP, malicious scripts can execute on your page, stealing user data or performing actions on their behalf.',
+        icon: '✖️'
+      },
+      {
+        name: 'HSTS',
+        present: !isFileProtocol,
+        description: 'HTTP Strict Transport Security forces browsers to use HTTPS connections.',
+        impact: isFileProtocol ? 'Not applicable for file:// protocol.' : 'Without HSTS, attackers can downgrade connections to HTTP and intercept traffic.',
+        icon: !isFileProtocol ? '✅' : '➖'
+      },
+      {
+        name: 'X-Frame-Options',
+        present: false,
+        description: 'Prevents your site from being embedded in malicious iframes.',
+        impact: 'Without this header, attackers can embed your site invisibly to trick users into clicking (clickjacking).',
+        icon: '✖️'
+      },
+      {
+        name: 'CORS',
+        present: true,
+        description: 'Cross-Origin Resource Sharing controls which domains can access your API.',
+        impact: 'Currently configured to allow requests from this origin only.',
+        icon: '✅'
+      }
     ];
     
     const missing = headers.filter(h => !h.present).length;
-    const statusEmoji = missing === 0 ? '✅' : '⚠️';
-    const statusText = missing === 0 ? 'All headers present' : `${missing} missing`;
-    const headersList = headers.map(h => `${h.name}: ${h.present ? '✅' : '❌'}`).join(' | ');
+    const summaryClass = missing === 0 ? 'good' : 'warning';
+    const summaryText = missing === 0 
+      ? '✅ All essential headers are configured!' 
+      : `⚠️ ${missing} essential header${missing > 1 ? 's' : ''} missing`;
     
-    // Single line result with minimal nesting
-    output.innerHTML = `<strong>${statusEmoji} ${statusText}</strong> — ${headersList}`;
-    output.style.display = 'block';
+    analysisDiv.innerHTML = `
+      <div class="headers-analysis">
+        <div class="analysis-summary ${summaryClass}">
+          ${summaryText}
+        </div>
+        
+        <div class="headers-detail">
+          ${headers.map(h => `
+            <div class="header-analysis-item ${h.present ? 'present' : 'missing'}">
+              <h4>${h.icon} ${h.name}</h4>
+              <p><strong>What it does:</strong> ${h.description}</p>
+              <p><strong>Security impact:</strong> ${h.impact}</p>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="origin-info-modal">
+          <strong>Current Origin:</strong> <code>${currentOrigin}</code><br>
+          <small>Origin = protocol + domain + port. This determines CORS and security header scope.</small>
+        </div>
+      </div>
+    `;
+    
+    modal.style.display = 'flex';
+    
+    // Focus management for accessibility
+    const closeButton = modal.querySelector('.modal-close');
+    if (closeButton) closeButton.focus();
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
   };
+
+  window.closeHeadersModal = function() {
+    const modal = document.getElementById('headersModal');
+    if (!modal) return;
+    
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeHeadersModal();
+    }
+  });
 }
 
 // File Upload Demo

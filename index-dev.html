@@ -93,6 +93,22 @@
       </div>
     </div>
 
+    <!-- Headers Analysis Modal -->
+    <div id="headersModal" class="modal" style="display: none;">
+      <div class="modal-overlay" onclick="closeHeadersModal()"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>🔍 Security Headers Analysis</h3>
+          <button class="modal-close" onclick="closeHeadersModal()" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <div id="headersAnalysis">
+            <!-- Analysis results will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="scripts/main.js"></script>
     <script src="scripts/demos.js"></script>
   </body>
