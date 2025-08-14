@@ -476,6 +476,49 @@
   margin: 1rem 0; 
 }
 
+.compact-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.rule-compact {
+  padding: 0.75rem;
+  background: var(--subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.rule-compact strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.rule-item {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--subtle);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.rule-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rule-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 /* Enhanced vulnerability cards with consistent styling */
 .vuln-grid { 
   display: grid; 

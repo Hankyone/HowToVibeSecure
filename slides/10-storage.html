@@ -2,13 +2,23 @@
   <h2>Storage & File Uploads</h2>
   <div class="storage-rules">
     <h3>Rules</h3>
-    <ul>
-      <li>Private buckets by default</li>
-      <li>Signed URLs for access</li>
-      <li>MIME/size caps strictly enforced</li>
-      <li>Virus scanning for user uploads</li>
-      <li>Never serve files directly from app server</li>
-    </ul>
+    <div class="compact-rules">
+      <div class="rule-compact">
+        <strong>Private buckets by default</strong> - Lock down storage with explicit access controls
+      </div>
+      <div class="rule-compact">
+        <strong>Signed URLs for access</strong> - Time-limited, cryptographic URLs for secure access
+      </div>
+      <div class="rule-compact">
+        <strong>MIME/size caps enforced</strong> - Validate by content, not extension. Check magic bytes
+      </div>
+      <div class="rule-compact">
+        <strong>Virus scanning (optional)</strong> - When users download each other's files
+      </div>
+      <div class="rule-compact">
+        <strong>Never serve from app server</strong> - Use CDN/object storage to prevent DoS
+      </div>
+    </div>
   </div>
   <div id="uploadDemo" class="demo">
     <h4>Upload Validation Demo</h4>

@@ -882,6 +882,49 @@ a:hover {
   margin: 1rem 0; 
 }
 
+.compact-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.rule-compact {
+  padding: 0.75rem;
+  background: var(--subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.rule-compact strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.rule-item {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: var(--subtle);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.rule-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rule-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 /* Enhanced vulnerability cards with consistent styling */
 .vuln-grid { 
   display: grid; 
@@ -1805,6 +1848,15 @@ input[type="file"]:hover {
   font-weight: 700;
   color: var(--accent-danger);
 }
+.validation-item.warning { 
+  background: rgba(245, 158, 11, 0.08); 
+  border-left: 3px solid #f59e0b;
+}
+.validation-item.warning::before {
+  content: '⚠ WARN: ';
+  font-weight: 700;
+  color: #f59e0b;
+}
 
 /* Input groups and labels */
 .input-group {
@@ -2418,13 +2470,23 @@ input[type="file"]:hover {
   <h2>Storage & File Uploads</h2>
   <div class="storage-rules">
     <h3>Rules</h3>
-    <ul>
-      <li>Private buckets by default</li>
-      <li>Signed URLs for access</li>
-      <li>MIME/size caps strictly enforced</li>
-      <li>Virus scanning for user uploads</li>
-      <li>Never serve files directly from app server</li>
-    </ul>
+    <div class="compact-rules">
+      <div class="rule-compact">
+        <strong>Private buckets by default</strong> - Lock down storage with explicit access controls
+      </div>
+      <div class="rule-compact">
+        <strong>Signed URLs for access</strong> - Time-limited, cryptographic URLs for secure access
+      </div>
+      <div class="rule-compact">
+        <strong>MIME/size caps enforced</strong> - Validate by content, not extension. Check magic bytes
+      </div>
+      <div class="rule-compact">
+        <strong>Virus scanning (optional)</strong> - When users download each other's files
+      </div>
+      <div class="rule-compact">
+        <strong>Never serve from app server</strong> - Use CDN/object storage to prevent DoS
+      </div>
+    </div>
   </div>
   <div id="uploadDemo" class="demo">
     <h4>Upload Validation Demo</h4>
@@ -3628,7 +3690,44 @@ function initUploadDemo() {
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'];
   const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-  fileInput.addEventListener('change', (e) => {
+  // Magic byte signatures for common file types
+  const magicBytes = {
+    'image/jpeg': [0xFF, 0xD8, 0xFF],
+    'image/png': [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+    'image/gif': [0x47, 0x49, 0x46, 0x38],
+    'application/pdf': [0x25, 0x50, 0x44, 0x46],
+    'exe': [0x4D, 0x5A], // MZ header for executables
+  };
+
+  function checkMagicBytes(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const bytes = new Uint8Array(e.target.result.slice(0, 16));
+        
+        // Check for executable signature
+        if (bytes[0] === 0x4D && bytes[1] === 0x5A) {
+          resolve({ isExecutable: true, detectedType: 'executable' });
+          return;
+        }
+        
+        // Check against known good signatures
+        for (const [type, signature] of Object.entries(magicBytes)) {
+          if (type === 'exe') continue; // Skip exe check in good types
+          const matches = signature.every((byte, i) => bytes[i] === byte);
+          if (matches) {
+            resolve({ isExecutable: false, detectedType: type });
+            return;
+          }
+        }
+        
+        resolve({ isExecutable: false, detectedType: 'unknown' });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -3636,11 +3735,35 @@ function initUploadDemo() {
     
     const validations = [];
     
-    // Type validation
-    if (ALLOWED_TYPES.includes(file.type)) {
-      validations.push({ check: 'File type', status: 'pass', message: `${file.type} is allowed` });
+    // Magic byte validation (file content check)
+    const magicCheck = await checkMagicBytes(file);
+    const ext = file.name.split('.').pop().toLowerCase();
+    
+    if (magicCheck.isExecutable) {
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'fail', 
+        message: `🚨 Executable file detected! (.${ext} → executable)` 
+      });
+    } else if (magicCheck.detectedType !== 'unknown') {
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'pass', 
+        message: `Content matches ${magicCheck.detectedType}` 
+      });
     } else {
-      validations.push({ check: 'File type', status: 'fail', message: `${file.type} is not allowed` });
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'warning', 
+        message: `Unknown file signature` 
+      });
+    }
+    
+    // Type validation (browser MIME)
+    if (ALLOWED_TYPES.includes(file.type)) {
+      validations.push({ check: 'MIME type', status: 'pass', message: `${file.type} is allowed` });
+    } else {
+      validations.push({ check: 'MIME type', status: 'fail', message: `${file.type} is not allowed` });
     }
     
     // Size validation
@@ -3651,7 +3774,6 @@ function initUploadDemo() {
     }
     
     // Extension check
-    const ext = file.name.split('.').pop().toLowerCase();
     const suspiciousExts = ['exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs', 'js', 'jar'];
     if (suspiciousExts.includes(ext)) {
       validations.push({ check: 'File extension', status: 'fail', message: `${ext} files are blocked for security` });
@@ -3660,10 +3782,11 @@ function initUploadDemo() {
     }
 
     const allPassed = validations.every(v => v.status === 'pass');
+    const hasFail = validations.some(v => v.status === 'fail');
     
     validationResults.innerHTML = `
-      <div class="validation-summary ${allPassed ? 'success' : 'error'}">
-        ${allPassed ? '✅ File would be accepted' : '❌ File would be rejected'}
+      <div class="validation-summary ${allPassed ? 'success' : hasFail ? 'error' : 'warning'}">
+        ${allPassed ? '✅ File would be accepted' : hasFail ? '❌ File would be rejected' : '⚠️ File flagged for review'}
       </div>
       <div class="validation-details">
         ${validations.map(v => `

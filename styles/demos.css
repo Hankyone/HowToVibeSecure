@@ -729,6 +729,15 @@ input[type="file"]:hover {
   font-weight: 700;
   color: var(--accent-danger);
 }
+.validation-item.warning { 
+  background: rgba(245, 158, 11, 0.08); 
+  border-left: 3px solid #f59e0b;
+}
+.validation-item.warning::before {
+  content: '⚠ WARN: ';
+  font-weight: 700;
+  color: #f59e0b;
+}
 
 /* Input groups and labels */
 .input-group {

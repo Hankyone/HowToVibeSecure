@@ -513,7 +513,44 @@ function initUploadDemo() {
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'];
   const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-  fileInput.addEventListener('change', (e) => {
+  // Magic byte signatures for common file types
+  const magicBytes = {
+    'image/jpeg': [0xFF, 0xD8, 0xFF],
+    'image/png': [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+    'image/gif': [0x47, 0x49, 0x46, 0x38],
+    'application/pdf': [0x25, 0x50, 0x44, 0x46],
+    'exe': [0x4D, 0x5A], // MZ header for executables
+  };
+
+  function checkMagicBytes(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const bytes = new Uint8Array(e.target.result.slice(0, 16));
+        
+        // Check for executable signature
+        if (bytes[0] === 0x4D && bytes[1] === 0x5A) {
+          resolve({ isExecutable: true, detectedType: 'executable' });
+          return;
+        }
+        
+        // Check against known good signatures
+        for (const [type, signature] of Object.entries(magicBytes)) {
+          if (type === 'exe') continue; // Skip exe check in good types
+          const matches = signature.every((byte, i) => bytes[i] === byte);
+          if (matches) {
+            resolve({ isExecutable: false, detectedType: type });
+            return;
+          }
+        }
+        
+        resolve({ isExecutable: false, detectedType: 'unknown' });
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -521,11 +558,35 @@ function initUploadDemo() {
     
     const validations = [];
     
-    // Type validation
-    if (ALLOWED_TYPES.includes(file.type)) {
-      validations.push({ check: 'File type', status: 'pass', message: `${file.type} is allowed` });
+    // Magic byte validation (file content check)
+    const magicCheck = await checkMagicBytes(file);
+    const ext = file.name.split('.').pop().toLowerCase();
+    
+    if (magicCheck.isExecutable) {
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'fail', 
+        message: `🚨 Executable file detected! (.${ext} → executable)` 
+      });
+    } else if (magicCheck.detectedType !== 'unknown') {
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'pass', 
+        message: `Content matches ${magicCheck.detectedType}` 
+      });
     } else {
-      validations.push({ check: 'File type', status: 'fail', message: `${file.type} is not allowed` });
+      validations.push({ 
+        check: 'Magic bytes', 
+        status: 'warning', 
+        message: `Unknown file signature` 
+      });
+    }
+    
+    // Type validation (browser MIME)
+    if (ALLOWED_TYPES.includes(file.type)) {
+      validations.push({ check: 'MIME type', status: 'pass', message: `${file.type} is allowed` });
+    } else {
+      validations.push({ check: 'MIME type', status: 'fail', message: `${file.type} is not allowed` });
     }
     
     // Size validation
@@ -536,7 +597,6 @@ function initUploadDemo() {
     }
     
     // Extension check
-    const ext = file.name.split('.').pop().toLowerCase();
     const suspiciousExts = ['exe', 'bat', 'cmd', 'com', 'pif', 'scr', 'vbs', 'js', 'jar'];
     if (suspiciousExts.includes(ext)) {
       validations.push({ check: 'File extension', status: 'fail', message: `${ext} files are blocked for security` });
@@ -545,10 +605,11 @@ function initUploadDemo() {
     }
 
     const allPassed = validations.every(v => v.status === 'pass');
+    const hasFail = validations.some(v => v.status === 'fail');
     
     validationResults.innerHTML = `
-      <div class="validation-summary ${allPassed ? 'success' : 'error'}">
-        ${allPassed ? '✅ File would be accepted' : '❌ File would be rejected'}
+      <div class="validation-summary ${allPassed ? 'success' : hasFail ? 'error' : 'warning'}">
+        ${allPassed ? '✅ File would be accepted' : hasFail ? '❌ File would be rejected' : '⚠️ File flagged for review'}
       </div>
       <div class="validation-details">
         ${validations.map(v => `
