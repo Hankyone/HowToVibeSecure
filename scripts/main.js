@@ -20,7 +20,7 @@ const SLIDES = [
   { id: 'vuln-classes', file: '12-vuln-classes.html', title: 'Vulnerability Classes' },
   { id: 'keep-current', file: '13-keep-current.html', title: 'Keep It Current' },
   { id: 'threat-modeling', file: '14-threat-modeling.html', title: 'Threat Modeling Primer' },
-  { id: 'checklist', file: '15-checklist.html', title: '10‑Minute Hardening Checklist' },
+  { id: 'checklist', file: '15-checklist.html', title: 'Infrastructure Security for Vibe Coders' },
   { id: 'resources', file: '16-resources.html', title: 'Resources & Next Steps' }
 ];
 
