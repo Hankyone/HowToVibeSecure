@@ -5,17 +5,17 @@
     <div class="tip-section">
       <h3>🔒 Managed Platform Gotchas</h3>
       <p><strong>Preview Deployments:</strong> Password-protect preview URLs; keep OAuth callbacks on stable domains</p>
-      <p><strong>Client Secrets:</strong> Never use NEXT_PUBLIC_* for API keys—it's literally public</p>
+      <p><strong>Client Secrets:</strong> Never use NEXT_PUBLIC_*/VITE_* for API keys—it's literally public</p>
       <p><strong>Function Timeouts:</strong> Auth flows can break if they exceed platform limits (30s on Vercel)</p>
-      <p><strong>WAF Off:</strong> Enable Cloudflare bot protection and rate limits at the edge</p>
+      <p><strong>WAF Protection:</strong> Enable Cloudflare's Bot Fight Mode or Vercel's Attack Challenge Mode</p>
     </div>
 
     <div class="tip-section">
       <h3>⚡ Modern Security Headers</h3>
-      <p><strong>Edge Configuration:</strong> Set HSTS, CSP, and secure cookies via vercel.json/headers</p>
+      <p><strong>Edge Configuration:</strong> Set HSTS, CSP, secure cookies via vercel.json/headers or Cloudflare Page Rules</p>
       <p><strong>Storage Access:</strong> Default-private buckets; use signed URLs for R2/S3</p>
       <p><strong>Logging Discipline:</strong> Mask PII/tokens in logs—they're not private by default</p>
-      <p><strong>CI/CD Supply Chain:</strong> Use GitHub OIDC, pin Actions versions, no long-lived keys</p>
+      <p><strong>CI/CD Supply Chain:</strong> Use GitHub OIDC (OpenID Connect) for secure cloud access, pin Actions versions, no long-lived keys</p>
     </div>
 
     <div class="tip-section">
@@ -23,7 +23,7 @@
       <p><strong>Preview URL Leaks:</strong> Private links indexed by Google or shared publicly</p>
       <p><strong>LLM DoS:</strong> Expensive prompts without rate limits can drain your budget</p>
       <p><strong>Webhook Vulnerabilities:</strong> Verify signatures, allowlist IPs, fail fast on bad data</p>
-      <p><strong>BOLA/BFLA:</strong> Missing object-level and function-level authorization checks</p>
+      <p><strong>BOLA/BFLA:</strong> Broken Object-Level Authorization & Broken Function-Level Authorization</p>
     </div>
   </div>
 </section>
