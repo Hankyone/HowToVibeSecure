@@ -456,43 +456,23 @@ function initHeadersDemo() {
     const output = document.querySelector('#headersDemo');
     if (!output) return;
     
-    const currentOrigin = window.location.origin;
     const isFileProtocol = window.location.protocol === 'file:';
     
-    // Simple, compact analysis
+    // Simple inline analysis - no nested containers
     const headers = [
-      { name: 'CSP', present: false, risk: 'XSS attacks possible' },
-      { name: 'HSTS', present: !isFileProtocol, risk: isFileProtocol ? 'N/A (file://)' : 'HTTP downgrade attacks' },
-      { name: 'X-Frame-Options', present: false, risk: 'Clickjacking possible' },
-      { name: 'CORS', present: true, risk: 'Currently allows this origin only' }
+      { name: 'CSP', present: false },
+      { name: 'HSTS', present: !isFileProtocol },
+      { name: 'X-Frame-Options', present: false },
+      { name: 'CORS', present: true }
     ];
     
-    const summary = headers.filter(h => !h.present).length;
-    const summaryText = summary === 0 ? 
-      '✅ All key headers present!' : 
-      `⚠️ ${summary} header(s) missing or weak`;
+    const missing = headers.filter(h => !h.present).length;
+    const statusEmoji = missing === 0 ? '✅' : '⚠️';
+    const statusText = missing === 0 ? 'All headers present' : `${missing} missing`;
+    const headersList = headers.map(h => `${h.name}: ${h.present ? '✅' : '❌'}`).join(' | ');
     
-    output.innerHTML = `
-      <div class="compact-analysis">
-        <div class="analysis-summary ${summary === 0 ? 'good' : 'warning'}">
-          ${summaryText}
-        </div>
-        <div class="headers-quick-list">
-          ${headers.map(h => `
-            <div class="header-status ${h.present ? 'has' : 'missing'}">
-              <span class="header-name">${h.name}</span>
-              <span class="status-icon">${h.present ? '✅' : '❌'}</span>
-              <span class="risk-note">${h.risk}</span>
-            </div>
-          `).join('')}
-        </div>
-        <div class="action-note">
-          <strong>Next step:</strong> Use the AI prompt below to get specific setup instructions for your framework.
-        </div>
-      </div>
-    `;
-    
-    // Show the output
+    // Single line result with minimal nesting
+    output.innerHTML = `<strong>${statusEmoji} ${statusText}</strong> — ${headersList}`;
     output.style.display = 'block';
   };
 }

@@ -1,39 +1,36 @@
 <section class="slide" id="cors-headers" data-color="orange" tabindex="-1">
   <h2>CORS & Headers</h2>
   
-  <div class="headers-overview">
-    <div class="headers-quick-facts">
-      <div class="fact-item avoid">
-        <strong>❌ Avoid:</strong> <code>Access-Control-Allow-Origin: *</code> + credentials
-      </div>
-      <div class="fact-item need">
-        <strong>✅ Need:</strong> CSP, HSTS, X-Frame-Options, proper CORS
-      </div>
-    </div>
-    
-    <div class="headers-compact-grid">
-      <div class="header-card" onclick="toggleHeaderDetail(this)">
+  <div class="quick-rules">
+    <span class="avoid-rule">❌ <strong>Avoid:</strong> <code>Access-Control-Allow-Origin: *</code> + credentials</span>
+    <span class="need-rule">✅ <strong>Need:</strong> The 4 essential headers below</span>
+  </div>
+  
+  <div class="essential-headers">
+    <h3>The 4 Essential Headers</h3>
+    <div class="headers-row">
+      <div class="header-item" onclick="toggleHeaderDetail(this)">
         <div class="header-name">CSP</div>
         <div class="header-purpose">Blocks XSS attacks</div>
         <div class="header-detail" style="display: none;">
-          Content Security Policy controls which scripts, styles, and resources can load on your page.
+          Content Security Policy controls which scripts, styles, and resources can load.
         </div>
       </div>
-      <div class="header-card" onclick="toggleHeaderDetail(this)">
+      <div class="header-item" onclick="toggleHeaderDetail(this)">
         <div class="header-name">HSTS</div>
         <div class="header-purpose">Forces HTTPS</div>
         <div class="header-detail" style="display: none;">
-          HTTP Strict Transport Security prevents browsers from downgrading to insecure HTTP.
+          Prevents browsers from downgrading to insecure HTTP.
         </div>
       </div>
-      <div class="header-card" onclick="toggleHeaderDetail(this)">
+      <div class="header-item" onclick="toggleHeaderDetail(this)">
         <div class="header-name">X-Frame-Options</div>
         <div class="header-purpose">Stops clickjacking</div>
         <div class="header-detail" style="display: none;">
-          Prevents malicious sites from embedding your page in an iframe to trick users.
+          Prevents malicious sites from embedding your page in an iframe.
         </div>
       </div>
-      <div class="header-card" onclick="toggleHeaderDetail(this)">
+      <div class="header-item" onclick="toggleHeaderDetail(this)">
         <div class="header-name">CORS</div>
         <div class="header-purpose">Controls API access</div>
         <div class="header-detail" style="display: none;">
@@ -41,16 +38,12 @@
         </div>
       </div>
     </div>
-    
-    <p class="origin-note"><strong>Origin</strong> = protocol + domain + port (e.g., https://app.example.com:443)</p>
   </div>
   
-  <div class="demo-section">
-    <div class="demo-header">
-      <span>🔍 Check Your Headers</span>
-      <button onclick="analyzeHeaders()" class="analyze-btn">Analyze Now</button>
-    </div>
-    <div id="headersDemo" class="headers-output" style="display: none;"></div>
+  <div class="headers-check">
+    🔍 <strong>Check Your Headers:</strong> 
+    <button onclick="analyzeHeaders()" class="inline-btn">Analyze Now</button>
+    <div id="headersDemo" style="display: none;"></div>
   </div>
   
   <div class="assistant-brief">
@@ -59,4 +52,6 @@
       <p>"Check what security headers my app currently has and explain if they're protecting me properly. Tell me in simple terms what each header does and what attacks they prevent. If any are missing or misconfigured, explain the risks."</p>
     </div>
   </div>
+  
+  <p class="origin-footnote">💡 <em>Origin = protocol + domain + port (e.g., https://app.example.com:443)</em></p>
 </section>
