@@ -1260,6 +1260,78 @@ a:hover {
   font-style: italic; 
 }
 
+/* Threat Modeling slide */
+.threat-modeling-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.questions-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.question {
+  padding: 1rem;
+  background: var(--subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.question h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.question p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.stride-model h3 {
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.stride-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.stride-item {
+  padding: 0.75rem;
+  background: var(--subtle);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.stride-item strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.stride-desc {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .threat-modeling-sections {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 /* Slide 09 compact styles removed to restore original spacing */
 /* Demo-specific styling */
 
@@ -2915,70 +2987,105 @@ input[type="file"]:hover {
     </ul>
   </div>
 </section>
-<section class="slide" id="rls-testing" data-color="violet" tabindex="-1">
-  <h2>RLS Testing in 3 Steps</h2>
-  <div class="testing-steps">
-    <div class="step">
-      <h3>1. Create Test Users</h3>
-      <p>Create two test users (A/B) and sign in to get user tokens</p>
+<section class="slide" id="threat-modeling" data-color="violet" tabindex="-1">
+  <h2>Threat Modeling Primer</h2>
+  
+  <div class="threat-modeling-sections">
+    <div class="four-questions">
+      <h3>Four Key Questions</h3>
+      <div class="questions-grid">
+        <div class="question">
+          <h4>1. What are we working on?</h4>
+          <p>Understand your system, components, and data flows</p>
+        </div>
+        <div class="question">
+          <h4>2. What can go wrong?</h4>
+          <p>Identify threats and attack scenarios</p>
+        </div>
+        <div class="question">
+          <h4>3. What are we going to do about it?</h4>
+          <p>Prioritize risks and pick concrete mitigations</p>
+        </div>
+        <div class="question">
+          <h4>4. Did we do a good enough job?</h4>
+          <p>Review, validate, and test your defenses</p>
+        </div>
+      </div>
     </div>
-    <div class="step">
-      <h3>2. Test User A</h3>
-      <p>With <strong>user A</strong> token, try: read/write A rows, read/write B rows (should fail)</p>
+
+    <div class="stride-model">
+      <h3>STRIDE Reference Model</h3>
+      <div class="stride-grid">
+        <div class="stride-item">
+          <strong>S</strong>poofing - Identity impersonation
+          <div class="stride-desc">Pretending to be someone or something else</div>
+        </div>
+        <div class="stride-item">
+          <strong>T</strong>ampering - Data modification
+          <div class="stride-desc">Maliciously changing data or code</div>
+        </div>
+        <div class="stride-item">
+          <strong>R</strong>epudiation - Action denial
+          <div class="stride-desc">Denying that an action was performed</div>
+        </div>
+        <div class="stride-item">
+          <strong>I</strong>nformation Disclosure - Data leaks
+          <div class="stride-desc">Exposing information to unauthorized parties</div>
+        </div>
+        <div class="stride-item">
+          <strong>D</strong>enial of Service - Availability attacks
+          <div class="stride-desc">Making systems unavailable to legitimate users</div>
+        </div>
+        <div class="stride-item">
+          <strong>E</strong>levation of Privilege - Unauthorized access
+          <div class="stride-desc">Gaining higher permissions than intended</div>
+        </div>
+      </div>
     </div>
-    <div class="step">
-      <h3>3. Test User B</h3>
-      <p>With <strong>user B</strong> token, repeat. Log denials; fix policies until only intended access works</p>
-    </div>
-  </div>
-  <div id="rlsTestDemo" class="demo">
-    <h4>Quick RLS Test</h4>
-    <button onclick="runRLSTest()">Run 3-Step Test</button>
-    <div class="test-output"></div>
   </div>
 </section>
 <section class="slide" id="checklist" data-color="blue" tabindex="-1">
-  <h2>10‑Minute Hardening Checklist</h2>
+  <h2>Infrastructure Security Checklist</h2>
   <div class="checklist-grid">
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Secret-scan repo/build; rotate if exposed</span>
+      <span>HTTPS-only; redirect all HTTP traffic</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Enable email‑verified sign‑ups; disable anonymous</span>
+      <span>Enable WAF with bot protection (Cloudflare/AWS Shield)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span><strong>RLS on</strong> for all tables; write explicit policies</span>
+      <span>Database: encrypted at rest + in transit; private subnets</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Rate‑limit auth and all write endpoints</span>
+      <span>Secrets in environment/vault; never in code/config</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Add bot gate on signup/reset (Turnstile/hCaptcha)</span>
+      <span>Firewall: allowlist-only; close unused ports (22, 3389)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>CORS: exact origins; credentials only if needed</span>
+      <span>Enable audit logging for DB, API gateway, auth events</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>CSP policy; disable inline scripts or use nonces</span>
+      <span>Auto-patching enabled; container base images updated</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>File uploads: MIME/size limits; signed URLs</span>
+      <span>CDN geo-blocking for suspicious regions (if applicable)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Egress allowlist for server fetch of user URLs</span>
+      <span>Backup verification; test restore process monthly</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Configure basic alerts (5xx, auth failures, rate limits)</span>
+      <span>Monitor: uptime, disk usage, memory, failed logins</span>
     </label>
   </div>
 </section>
@@ -3127,7 +3234,7 @@ const SLIDES = [
   { id: 'server-calls', file: '11-server-calls.html', title: 'Server‑Side API Calls' },
   { id: 'vuln-classes', file: '12-vuln-classes.html', title: 'Vulnerability Classes' },
   { id: 'keep-current', file: '13-keep-current.html', title: 'Keep It Current' },
-  { id: 'rls-testing', file: '14-rls-testing.html', title: 'RLS Testing in 3 Steps' },
+  { id: 'threat-modeling', file: '14-threat-modeling.html', title: 'Threat Modeling Primer' },
   { id: 'checklist', file: '15-checklist.html', title: '10‑Minute Hardening Checklist' },
   { id: 'resources', file: '16-resources.html', title: 'Resources & Next Steps' }
 ];
@@ -4388,52 +4495,6 @@ function initSSRFDemo() {
   container.appendChild(samples);
 }
 
-// RLS Testing Demo
-function initRLSTestingDemo() {
-  window.runRLSTest = function() {
-    const output = document.querySelector('#rlsTestDemo .test-output');
-    if (!output) return;
-
-    output.innerHTML = '<div class="loading">Running RLS tests...</div>';
-    
-    // Simulate the 3-step test
-    const steps = [
-      { step: 1, description: 'Creating test users A and B...', delay: 1000 },
-      { step: 2, description: 'Testing User A permissions...', delay: 2000 },
-      { step: 3, description: 'Testing User B permissions...', delay: 3000 },
-      { step: 4, description: 'Analyzing results...', delay: 4000 }
-    ];
-
-    steps.forEach(({ step, description, delay }) => {
-      setTimeout(() => {
-        if (step < 4) {
-          output.innerHTML += `<div class="test-step">Step ${step}: ${description}</div>`;
-        } else {
-          // Final results
-          const results = Math.random() > 0.5 ? 'pass' : 'fail';
-          output.innerHTML += `
-            <div class="test-results ${results}">
-              <h4>Test Results:</h4>
-              ${results === 'pass' ? `
-                <div class="result-item success">✅ User A can read/write own data</div>
-                <div class="result-item success">✅ User A cannot read User B's data</div>
-                <div class="result-item success">✅ User B can read/write own data</div>
-                <div class="result-item success">✅ User B cannot read User A's data</div>
-                <p class="conclusion success">🎉 RLS is working correctly!</p>
-              ` : `
-                <div class="result-item success">✅ User A can read/write own data</div>
-                <div class="result-item error">❌ User A can read User B's data</div>
-                <div class="result-item success">✅ User B can read/write own data</div>
-                <div class="result-item error">❌ User B can read User A's data</div>
-                <p class="conclusion error">⚠️ RLS policies need fixing!</p>
-              `}
-            </div>
-          `;
-        }
-      }, delay);
-    });
-  };
-}
 
 // Mindset Demo
 function initMindsetDemo() {
@@ -4500,7 +4561,6 @@ function initAllDemos() {
   initHeadersDemo();
   initUploadDemo();
   initSSRFDemo();
-  initRLSTestingDemo();
 }
     </script>
   </body>

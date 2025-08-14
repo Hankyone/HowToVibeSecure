@@ -854,4 +854,76 @@
   font-style: italic; 
 }
 
+/* Threat Modeling slide */
+.threat-modeling-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.questions-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.question {
+  padding: 1rem;
+  background: var(--subtle);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.question h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.question p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.stride-model h3 {
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.stride-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.stride-item {
+  padding: 0.75rem;
+  background: var(--subtle);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.stride-item strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.stride-desc {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .threat-modeling-sections {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 /* Slide 09 compact styles removed to restore original spacing */

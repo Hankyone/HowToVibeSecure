@@ -19,7 +19,7 @@ const SLIDES = [
   { id: 'server-calls', file: '11-server-calls.html', title: 'Server‑Side API Calls' },
   { id: 'vuln-classes', file: '12-vuln-classes.html', title: 'Vulnerability Classes' },
   { id: 'keep-current', file: '13-keep-current.html', title: 'Keep It Current' },
-  { id: 'rls-testing', file: '14-rls-testing.html', title: 'RLS Testing in 3 Steps' },
+  { id: 'threat-modeling', file: '14-threat-modeling.html', title: 'Threat Modeling Primer' },
   { id: 'checklist', file: '15-checklist.html', title: '10‑Minute Hardening Checklist' },
   { id: 'resources', file: '16-resources.html', title: 'Resources & Next Steps' }
 ];

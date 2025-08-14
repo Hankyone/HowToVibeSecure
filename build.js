@@ -21,7 +21,7 @@ const SLIDES = [
   '11-server-calls.html',
   '12-vuln-classes.html',
   '13-keep-current.html',
-  '14-rls-testing.html',
+  '14-threat-modeling.html',
   '15-checklist.html',
   '16-resources.html'
 ];

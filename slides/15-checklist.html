@@ -1,45 +1,45 @@
 <section class="slide" id="checklist" data-color="blue" tabindex="-1">
-  <h2>10‑Minute Hardening Checklist</h2>
+  <h2>Infrastructure Security Checklist</h2>
   <div class="checklist-grid">
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Secret-scan repo/build; rotate if exposed</span>
+      <span>HTTPS-only; redirect all HTTP traffic</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Enable email‑verified sign‑ups; disable anonymous</span>
+      <span>Enable WAF with bot protection (Cloudflare/AWS Shield)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span><strong>RLS on</strong> for all tables; write explicit policies</span>
+      <span>Database: encrypted at rest + in transit; private subnets</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Rate‑limit auth and all write endpoints</span>
+      <span>Secrets in environment/vault; never in code/config</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Add bot gate on signup/reset (Turnstile/hCaptcha)</span>
+      <span>Firewall: allowlist-only; close unused ports (22, 3389)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>CORS: exact origins; credentials only if needed</span>
+      <span>Enable audit logging for DB, API gateway, auth events</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>CSP policy; disable inline scripts or use nonces</span>
+      <span>Auto-patching enabled; container base images updated</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>File uploads: MIME/size limits; signed URLs</span>
+      <span>CDN geo-blocking for suspicious regions (if applicable)</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Egress allowlist for server fetch of user URLs</span>
+      <span>Backup verification; test restore process monthly</span>
     </label>
     <label class="checklist-item">
       <input type="checkbox" />
-      <span>Configure basic alerts (5xx, auth failures, rate limits)</span>
+      <span>Monitor: uptime, disk usage, memory, failed logins</span>
     </label>
   </div>
 </section>

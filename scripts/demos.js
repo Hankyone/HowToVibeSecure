@@ -850,52 +850,6 @@ function initSSRFDemo() {
   container.appendChild(samples);
 }
 
-// RLS Testing Demo
-function initRLSTestingDemo() {
-  window.runRLSTest = function() {
-    const output = document.querySelector('#rlsTestDemo .test-output');
-    if (!output) return;
-
-    output.innerHTML = '<div class="loading">Running RLS tests...</div>';
-    
-    // Simulate the 3-step test
-    const steps = [
-      { step: 1, description: 'Creating test users A and B...', delay: 1000 },
-      { step: 2, description: 'Testing User A permissions...', delay: 2000 },
-      { step: 3, description: 'Testing User B permissions...', delay: 3000 },
-      { step: 4, description: 'Analyzing results...', delay: 4000 }
-    ];
-
-    steps.forEach(({ step, description, delay }) => {
-      setTimeout(() => {
-        if (step < 4) {
-          output.innerHTML += `<div class="test-step">Step ${step}: ${description}</div>`;
-        } else {
-          // Final results
-          const results = Math.random() > 0.5 ? 'pass' : 'fail';
-          output.innerHTML += `
-            <div class="test-results ${results}">
-              <h4>Test Results:</h4>
-              ${results === 'pass' ? `
-                <div class="result-item success">✅ User A can read/write own data</div>
-                <div class="result-item success">✅ User A cannot read User B's data</div>
-                <div class="result-item success">✅ User B can read/write own data</div>
-                <div class="result-item success">✅ User B cannot read User A's data</div>
-                <p class="conclusion success">🎉 RLS is working correctly!</p>
-              ` : `
-                <div class="result-item success">✅ User A can read/write own data</div>
-                <div class="result-item error">❌ User A can read User B's data</div>
-                <div class="result-item success">✅ User B can read/write own data</div>
-                <div class="result-item error">❌ User B can read User A's data</div>
-                <p class="conclusion error">⚠️ RLS policies need fixing!</p>
-              `}
-            </div>
-          `;
-        }
-      }, delay);
-    });
-  };
-}
 
 // Mindset Demo
 function initMindsetDemo() {
@@ -962,5 +916,4 @@ function initAllDemos() {
   initHeadersDemo();
   initUploadDemo();
   initSSRFDemo();
-  initRLSTestingDemo();
 }
