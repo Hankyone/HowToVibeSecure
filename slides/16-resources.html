@@ -10,23 +10,23 @@
         <li><a href="https://docs.replit.com/tutorials/vibe-code-security-checklist" target="_blank" rel="noopener noreferrer">Replit Security Checklist</a></li>
         <li><a href="https://vercel.com/blog/v0-vibe-coding-securely" target="_blank" rel="noopener noreferrer">Vercel: Vibe Coding Securely</a></li>
       </ul>
+      
+      <div class="tagline-footer">
+        <h3>🤖 You're just one prompt away from security</h3>
+      </div>
     </div>
     <div class="resource-section">
       <h3>Copy‑Paste Prompts</h3>
       <div class="prompt-examples">
         <div class="prompt-example">
           <strong>Security Review:</strong>
-          <code>"Audit this repository for: secrets, auth, RLS, rate limiting, CORS, CSP, file uploads. Return exact file changes."</code>
+          <code>"Audit this codebase and deployment as a whole. Assume a managed edge host (e.g., Vercel/Netlify/Cloudflare) unless the repo says otherwise. Identify risks and misconfigs across: secrets exposure, auth and session flows, OAuth redirects, RBAC/ABAC and multitenancy, database RLS and migrations, API authZ (BOLA/BFLA), input validation, file uploads, SSRF, SQLi, XSS, CSRF, rate limiting, CORS, CSP, cookie flags, security headers, webhook verification, preview deployments access controls and indexing, object storage policies and CORS, CDN cache keys, WAF and DDoS posture, background jobs and retries, idempotency for writes, logging and PII redaction, monitoring and alerting, CI/CD supply chain (OIDC to cloud, pinned actions, signed artifacts), dependency risk, IaC least privilege, environment separation, secrets rotation, and backups at rest. Return a concise report with severity, impact, exploit sketch, blast radius, and exact remediation steps. Include file-level diffs or config snippets, commands to run, and a small test plan per fix. End with a 24-hour quick-wins checklist and a 2-week hardening backlog."</code>
         </div>
         <div class="prompt-example">
           <strong>Endpoint Guards:</strong>
-          <code>"Add schema validation, rate limiting, ownership checks, and helpful 4xx errors to this route."</code>
+          <code>"Harden the following route: <METHOD> <PATH>. Add strict schema validation for body, query, params, and headers. Enforce authentication, then RBAC plus ownership checks for multitenancy. Guarantee DB RLS or equivalent server-side filters. Make writes idempotent. Add rate limits and basic anti-automation. Apply CSRF protection for browser calls and tighten CORS to the minimal set. Cap payload size, validate content types, and sanitize filenames for uploads. Use parameterized queries and safe encoders. Wrap changes in a transaction where needed. Return helpful 4xx errors with stable codes, keep 5xx generic. Log structured events with request ID but no secrets or PII. Set caching headers correctly. Provide exact code diffs with imports, config additions, and tests that cover success, authZ failure, validation failure, rate-limit hit, and idempotency replay. Update OpenAPI if present."</code>
         </div>
       </div>
     </div>
-  </div>
-  
-  <div class="tagline-footer">
-    <h3>🤖 You're just one prompt away from security</h3>
   </div>
 </section>
