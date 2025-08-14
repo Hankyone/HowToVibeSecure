@@ -4,44 +4,72 @@
     <div class="vuln-card">
       <h4>Injection</h4>
       <p><strong>Model:</strong> untrusted input becomes code</p>
+      <p><strong>Example:</strong> <code>SELECT * FROM users WHERE id = ${userId}</code><br>
+      → User sends: <code>1; DROP TABLE users--</code></p>
       <p><strong>Do:</strong> parameterized queries, no string concat</p>
-      <p><strong>Red flag:</strong> <code>WHERE id = ${req.query.id}</code></p>
     </div>
     <div class="vuln-card">
       <h4>XSS</h4>
       <p><strong>Model:</strong> untrusted data renders as HTML/JS</p>
+      <p><strong>Example:</strong> <code>Welcome ${userName}!</code><br>
+      → User sends: <code>&lt;script&gt;alert('hacked')&lt;/script&gt;</code></p>
       <p><strong>Do:</strong> auto-escape templates, CSP</p>
-      <p><strong>Red flag:</strong> <code>dangerouslySetInnerHTML</code></p>
     </div>
     <div class="vuln-card">
       <h4>SSRF</h4>
       <p><strong>Model:</strong> server fetches attacker URLs</p>
+      <p><strong>Example:</strong> <code>fetch(userUrl)</code><br>
+      → User sends: <code>http://localhost:3306/admin</code></p>
       <p><strong>Do:</strong> outbound allowlist, block private IPs</p>
-      <p><strong>Red flag:</strong> arbitrary URL fetchers</p>
     </div>
     <div class="vuln-card">
       <h4>IDOR/BOLA</h4>
       <p><strong>Model:</strong> users access objects they don't own</p>
+      <p><strong>Example:</strong> <code>/api/user/123/profile</code><br>
+      → User changes to: <code>/api/user/124/profile</code></p>
       <p><strong>Do:</strong> enforce ownership in DB (RLS)</p>
-      <p><strong>Red flag:</strong> only "is logged in" check</p>
     </div>
     <div class="vuln-card">
       <h4>Mass Assignment</h4>
       <p><strong>Model:</strong> user sets unintended fields</p>
+      <p><strong>Example:</strong> <code>User.update(req.body)</code><br>
+      → User sends: <code>{name: "John", isAdmin: true}</code></p>
       <p><strong>Do:</strong> whitelist updateable fields</p>
-      <p><strong>Red flag:</strong> <code>update(model, req.body)</code></p>
     </div>
     <div class="vuln-card">
       <h4>File Uploads</h4>
       <p><strong>Model:</strong> files as malware/bombs</p>
+      <p><strong>Example:</strong> User uploads <code>image.jpg</code><br>
+      → Actually contains: <code>&lt;?php system($_GET['cmd']); ?&gt;</code></p>
       <p><strong>Do:</strong> MIME limits, object storage, scan</p>
-      <p><strong>Red flag:</strong> serving uploads from app server</p>
     </div>
     <div class="vuln-card">
       <h4>CSRF</h4>
       <p><strong>Model:</strong> malicious site submits forms on user's behalf</p>
+      <p><strong>Example:</strong> Evil site has: <code>&lt;form action="bank.com/transfer"&gt;</code><br>
+      → Submits when user visits (using their cookies)</p>
       <p><strong>Do:</strong> CSRF tokens, SameSite cookies</p>
-      <p><strong>Red flag:</strong> state changes without tokens</p>
+    </div>
+    <div class="vuln-card">
+      <h4>Path Traversal</h4>
+      <p><strong>Model:</strong> user accesses files outside intended directory</p>
+      <p><strong>Example:</strong> <code>GET /download?file=report.pdf</code><br>
+      → User sends: <code>../../../etc/passwd</code></p>
+      <p><strong>Do:</strong> validate paths, use allowlists, sandbox</p>
+    </div>
+    <div class="vuln-card">
+      <h4>Business Logic</h4>
+      <p><strong>Model:</strong> workflow assumptions attackers can break</p>
+      <p><strong>Example:</strong> Discount code for "first purchase only"<br>
+      → User deletes/recreates account repeatedly</p>
+      <p><strong>Do:</strong> validate business rules server-side</p>
+    </div>
+    <div class="vuln-card">
+      <h4>Race Conditions</h4>
+      <p><strong>Model:</strong> concurrent requests bypass checks</p>
+      <p><strong>Example:</strong> Check balance → withdraw money<br>
+      → User sends 100 withdrawals simultaneously</p>
+      <p><strong>Do:</strong> database transactions, atomic operations</p>
     </div>
   </div>
 </section>
