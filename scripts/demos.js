@@ -897,6 +897,161 @@ function initMindsetDemo() {
   }
 }
 
+// Vulnerability Stack Demo
+let currentVulnIndex = 0;
+const totalVulns = 10;
+
+function initVulnStackDemo() {
+  // Make sure the function is globally available
+  if (typeof window !== 'undefined') {
+    window.nextVuln = nextVuln;
+    window.resetVulnStack = resetVulnStack;
+  }
+  
+  updateVulnProgress();
+  
+  // Add keyboard support
+  document.addEventListener('keydown', (e) => {
+    // Only if we're on the vuln-classes slide
+    const activeSlide = document.querySelector('.slide:target, .slide[data-active="true"]') || 
+                       document.querySelector('#vuln-classes');
+    if (activeSlide && activeSlide.id === 'vuln-classes') {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        nextVuln();
+      } else if (e.key === 'ArrowLeft' || e.key === 'p' || e.key === 'P') {
+        e.preventDefault();
+        previousVuln();
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        resetVulnStack();
+      }
+    }
+  });
+}
+
+function nextVuln() {
+  if (currentVulnIndex >= totalVulns - 1) {
+    // At the end - reset or show completion
+    resetVulnStack();
+    return;
+  }
+  
+  const currentCard = document.querySelector('.vuln-stack-card.active');
+  const nextIndex = currentVulnIndex + 1;
+  const nextCard = document.querySelector(`.vuln-stack-card[data-index="${nextIndex}"]`);
+  
+  if (!currentCard || !nextCard) return;
+  
+  // Animate current card out
+  currentCard.classList.add('exiting');
+  currentCard.classList.remove('active');
+  
+  // Bring in next card after a short delay
+  setTimeout(() => {
+    nextCard.classList.add('entering');
+    nextCard.classList.add('active');
+    currentVulnIndex = nextIndex;
+    updateVulnProgress();
+    
+    // Clean up animations
+    setTimeout(() => {
+      currentCard.classList.remove('exiting');
+      nextCard.classList.remove('entering');
+    }, 400);
+  }, 150);
+  
+  // Update button text
+  const btn = document.getElementById('vulnNextBtn');
+  if (btn) {
+    if (currentVulnIndex >= totalVulns - 2) {
+      btn.textContent = 'Finish Round ⚡';
+    } else {
+      btn.textContent = 'Next Vuln ⚡';
+    }
+  }
+}
+
+function previousVuln() {
+  if (currentVulnIndex <= 0) return;
+  
+  const currentCard = document.querySelector('.vuln-stack-card.active');
+  const prevIndex = currentVulnIndex - 1;
+  const prevCard = document.querySelector(`.vuln-stack-card[data-index="${prevIndex}"]`);
+  
+  if (!currentCard || !prevCard) return;
+  
+  // Animate current card out (reverse direction)
+  currentCard.classList.remove('active');
+  currentCard.style.transform = 'translateX(100%) rotateY(30deg) scale(0.8)';
+  currentCard.style.opacity = '0';
+  
+  // Bring in previous card
+  setTimeout(() => {
+    prevCard.classList.add('active');
+    prevCard.style.transform = '';
+    prevCard.style.opacity = '';
+    currentVulnIndex = prevIndex;
+    updateVulnProgress();
+    
+    // Clean up
+    setTimeout(() => {
+      currentCard.style.transform = '';
+      currentCard.style.opacity = '';
+    }, 400);
+  }, 150);
+  
+  // Update button text
+  const btn = document.getElementById('vulnNextBtn');
+  if (btn) {
+    btn.textContent = 'Next Vuln ⚡';
+  }
+}
+
+function resetVulnStack() {
+  // Reset to first card
+  document.querySelectorAll('.vuln-stack-card').forEach((card, index) => {
+    card.classList.remove('active', 'exiting', 'entering');
+    if (index === 0) {
+      card.classList.add('active');
+    }
+  });
+  
+  currentVulnIndex = 0;
+  updateVulnProgress();
+  
+  // Reset button text
+  const btn = document.getElementById('vulnNextBtn');
+  if (btn) {
+    btn.textContent = 'Next Vuln ⚡';
+  }
+  
+  // Flash the reset
+  const container = document.querySelector('.vuln-stack-container');
+  if (container) {
+    container.style.animation = 'none';
+    container.offsetHeight; // Force reflow
+    container.style.animation = 'pulse 0.6s ease';
+    setTimeout(() => {
+      container.style.animation = '';
+    }, 600);
+  }
+}
+
+function updateVulnProgress() {
+  const counter = document.getElementById('vulnCounter');
+  const progressBar = document.getElementById('vulnProgressBar');
+  
+  if (counter) {
+    counter.textContent = currentVulnIndex + 1;
+  }
+  
+  if (progressBar) {
+    const progress = ((currentVulnIndex + 1) / totalVulns) * 100;
+    progressBar.style.width = `${progress}%`;
+  }
+}
+
 // Initialize all demos
 function initAllDemos() {
   // Wait for DOM to be ready
@@ -916,4 +1071,5 @@ function initAllDemos() {
   initHeadersDemo();
   initUploadDemo();
   initSSRFDemo();
+  initVulnStackDemo();
 }
