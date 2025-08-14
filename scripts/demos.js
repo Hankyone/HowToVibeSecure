@@ -432,73 +432,68 @@ function initRateLimitDemo() {
 
 // Headers Demo
 function initHeadersDemo() {
+  // Add toggle functionality for header cards
+  window.toggleHeaderDetail = function(card) {
+    const detail = card.querySelector('.header-detail');
+    const isVisible = detail.style.display !== 'none';
+    
+    // Close all other details
+    document.querySelectorAll('.header-card .header-detail').forEach(d => {
+      d.style.display = 'none';
+    });
+    document.querySelectorAll('.header-card').forEach(c => {
+      c.classList.remove('expanded');
+    });
+    
+    // Toggle current one
+    if (!isVisible) {
+      detail.style.display = 'block';
+      card.classList.add('expanded');
+    }
+  };
+
   window.analyzeHeaders = function() {
-    const output = document.querySelector('#headersDemo .headers-output');
+    const output = document.querySelector('#headersDemo');
     if (!output) return;
     
     const currentOrigin = window.location.origin;
     const isFileProtocol = window.location.protocol === 'file:';
     
-    // Educational headers with explanations
-    const securityHeaders = [
-      {
-        name: 'Content-Security-Policy',
-        value: 'default-src \'self\'; script-src \'self\' \'unsafe-inline\'; style-src \'self\' \'unsafe-inline\'',
-        status: 'warning',
-        explanation: 'Allows inline scripts/styles (unsafe for production)',
-        improvement: 'Use nonces or hashes instead of \'unsafe-inline\''
-      },
-      {
-        name: 'Strict-Transport-Security',
-        value: isFileProtocol ? 'Not applicable (file:// protocol)' : 'max-age=31536000; includeSubDomains',
-        status: isFileProtocol ? 'info' : 'good',
-        explanation: isFileProtocol ? 'HSTS only works over HTTPS' : 'Forces HTTPS for 1 year, includes subdomains',
-        improvement: isFileProtocol ? 'Deploy with HTTPS to enable HSTS' : null
-      },
-      {
-        name: 'X-Frame-Options',
-        value: 'DENY',
-        status: 'good',
-        explanation: 'Prevents this page from being embedded in frames',
-        improvement: null
-      },
-      {
-        name: 'Access-Control-Allow-Origin',
-        value: isFileProtocol ? 'null (file:// origin)' : currentOrigin,
-        status: 'good',
-        explanation: `Only allows requests from ${isFileProtocol ? 'file system' : 'this origin'}`,
-        improvement: null
-      }
+    // Simple, compact analysis
+    const headers = [
+      { name: 'CSP', present: false, risk: 'XSS attacks possible' },
+      { name: 'HSTS', present: !isFileProtocol, risk: isFileProtocol ? 'N/A (file://)' : 'HTTP downgrade attacks' },
+      { name: 'X-Frame-Options', present: false, risk: 'Clickjacking possible' },
+      { name: 'CORS', present: true, risk: 'Currently allows this origin only' }
     ];
     
-    const headersHtml = securityHeaders.map(header => `
-      <div class="security-header-analysis">
-        <div class="header-name">
-          <strong>${header.name}</strong>
-          <span class="status-badge status-${header.status}">${header.status}</span>
-        </div>
-        <div class="header-value"><code>${header.value}</code></div>
-        <div class="header-explanation">${header.explanation}</div>
-        ${header.improvement ? `<div class="header-improvement">💡 ${header.improvement}</div>` : ''}
-      </div>
-    `).join('');
+    const summary = headers.filter(h => !h.present).length;
+    const summaryText = summary === 0 ? 
+      '✅ All key headers present!' : 
+      `⚠️ ${summary} header(s) missing or weak`;
     
     output.innerHTML = `
-      <div class="headers-analysis">
-        <h4>Security Headers Analysis</h4>
-        <div class="origin-info">
-          <strong>Current Origin:</strong> <code>${currentOrigin}</code>
-          ${isFileProtocol ? '<br><small>Note: Some headers don\'t apply to file:// protocol</small>' : ''}
+      <div class="compact-analysis">
+        <div class="analysis-summary ${summary === 0 ? 'good' : 'warning'}">
+          ${summaryText}
         </div>
-        <div class="headers-list">
-          ${headersHtml}
+        <div class="headers-quick-list">
+          ${headers.map(h => `
+            <div class="header-status ${h.present ? 'has' : 'missing'}">
+              <span class="header-name">${h.name}</span>
+              <span class="status-icon">${h.present ? '✅' : '❌'}</span>
+              <span class="risk-note">${h.risk}</span>
+            </div>
+          `).join('')}
         </div>
-        <div class="security-summary">
-          <strong>Key Takeaway:</strong> Each header protects against specific attack vectors. 
-          Origins (protocol + domain + port) are the foundation of web security.
+        <div class="action-note">
+          <strong>Next step:</strong> Use the AI prompt below to get specific setup instructions for your framework.
         </div>
       </div>
     `;
+    
+    // Show the output
+    output.style.display = 'block';
   };
 }
 
