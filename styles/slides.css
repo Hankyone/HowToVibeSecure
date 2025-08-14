@@ -735,99 +735,123 @@
   margin-right: 0.25rem;
 }
 
-/* Vulnerability Stack Styles - Lightning Round */
+/* Vulnerability Carousel Styles - Lightning Round */
 .vuln-stack-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  margin: 2rem auto;
-  max-width: 800px;
+  gap: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 1100px;
+  width: 100%;
 }
 
-.vuln-stack {
+.vuln-carousel {
   position: relative;
   width: 100%;
-  height: 400px;
-  perspective: 1000px;
+  height: 380px;
+  overflow: hidden;
+}
+
+.vuln-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .vuln-stack-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 350px;
-  padding: 2rem;
+  flex: 0 0 70%;
+  margin: 0 15%;
+  padding: 2.5rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   border-left: 4px solid var(--accent-pastel);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-origin: center center;
-  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  min-height: 320px;
 }
 
-/* Stack positioning - cards behind the active one */
-.vuln-stack-card:not(.active) {
-  transform: translateY(20px) translateX(-10px) scale(0.95) rotateX(5deg);
-  opacity: 0.3;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.vuln-stack-card:not(.active):nth-child(2) {
-  transform: translateY(10px) translateX(-5px) scale(0.97) rotateX(3deg);
-  opacity: 0.5;
-  z-index: 2;
-}
-
-/* Active card */
 .vuln-stack-card.active {
-  transform: translateY(0) translateX(0) scale(1) rotateX(0deg);
-  opacity: 1;
-  z-index: 10;
   border-left-color: var(--accent);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Card exit animation */
-.vuln-stack-card.exiting {
-  transform: translateX(-100%) rotateY(-30deg) scale(0.8);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+/* Peek cards on sides */
+.vuln-stack-card:not(.active) {
+  opacity: 0.4;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
 }
 
-/* Card entering animation */
-.vuln-stack-card.entering {
-  transform: translateX(100%) rotateY(30deg) scale(0.8);
-  opacity: 0;
-  animation: cardSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 0.1s;
+/* Carousel Navigation */
+.vuln-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 1rem;
 }
 
-@keyframes cardSlideIn {
-  to {
-    transform: translateX(0) rotateY(0deg) scale(1);
-    opacity: 1;
-  }
+.vuln-nav-btn {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Card content styling */
+.vuln-nav-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.vuln-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.vuln-counter {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--bg-card);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  border: 2px solid var(--accent-pastel);
+  min-width: 100px;
+  text-align: center;
+}
+
+/* Carousel Card Content */
 .vuln-stack-card h4 {
   margin: 0 0 1rem 0;
   color: var(--accent);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  text-align: center;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .vuln-stack-card h4::before {
   content: '⚡';
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   opacity: 0.8;
 }
 
@@ -835,31 +859,38 @@
   margin: 0.75rem 0;
   font-size: 1rem;
   line-height: 1.5;
+  text-align: left;
 }
 
 .vuln-stack-card p:first-of-type {
-  color: var(--text-dim);
-  font-weight: 500;
-  font-size: 1.05rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .vuln-stack-card p:nth-of-type(2) {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(99, 102, 241, 0.08);
   padding: 1rem;
   border-radius: 8px;
   border-left: 3px solid var(--accent-pastel);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 1rem 0;
 }
 
 .vuln-stack-card p:last-of-type {
   color: var(--accent-danger);
   font-weight: 600;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.08);
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
   border-left: 3px solid var(--accent-danger);
+  font-size: 1rem;
+  text-align: center;
 }
 
 .vuln-stack-card p:last-of-type::before {
@@ -867,69 +898,7 @@
   margin-right: 0.5rem;
 }
 
-/* Controls styling */
-.vuln-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-}
-
-.vuln-counter {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-}
-
-.vuln-next-btn {
-  padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-bright));
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.vuln-next-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
-  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-}
-
-.vuln-next-btn:active {
-  transform: translateY(0) scale(0.98);
-  transition: all 0.1s ease;
-}
-
-.vuln-next-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
-}
-
-.vuln-progress {
-  width: 300px;
-  height: 8px;
-  background: rgba(99, 102, 241, 0.2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.vuln-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
-  border-radius: 4px;
-  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
-}
+/* Old controls removed - using carousel navigation instead */
 
 /* Enhanced testing steps with card styling */
 .testing-steps { 
@@ -1064,6 +1033,25 @@
   margin-top: 2rem; 
   color: var(--muted); 
   font-style: italic; 
+}
+
+/* Tagline footer for resources slide */
+.tagline-footer {
+  text-align: center;
+  margin: 2rem 0 0 0;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--bg-elev), var(--accent) 8%);
+  border-radius: 12px;
+  border: 2px solid var(--accent-pastel);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tagline-footer h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 /* Threat Modeling slide */

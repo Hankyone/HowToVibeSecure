@@ -1141,99 +1141,123 @@ a:hover {
   margin-right: 0.25rem;
 }
 
-/* Vulnerability Stack Styles - Lightning Round */
+/* Vulnerability Carousel Styles - Lightning Round */
 .vuln-stack-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  margin: 2rem auto;
-  max-width: 800px;
+  gap: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 1100px;
+  width: 100%;
 }
 
-.vuln-stack {
+.vuln-carousel {
   position: relative;
   width: 100%;
-  height: 400px;
-  perspective: 1000px;
+  height: 380px;
+  overflow: hidden;
+}
+
+.vuln-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .vuln-stack-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  min-height: 350px;
-  padding: 2rem;
+  flex: 0 0 70%;
+  margin: 0 15%;
+  padding: 2.5rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
   border-left: 4px solid var(--accent-pastel);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-origin: center center;
-  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  min-height: 320px;
 }
 
-/* Stack positioning - cards behind the active one */
-.vuln-stack-card:not(.active) {
-  transform: translateY(20px) translateX(-10px) scale(0.95) rotateX(5deg);
-  opacity: 0.3;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.vuln-stack-card:not(.active):nth-child(2) {
-  transform: translateY(10px) translateX(-5px) scale(0.97) rotateX(3deg);
-  opacity: 0.5;
-  z-index: 2;
-}
-
-/* Active card */
 .vuln-stack-card.active {
-  transform: translateY(0) translateX(0) scale(1) rotateX(0deg);
-  opacity: 1;
-  z-index: 10;
   border-left-color: var(--accent);
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Card exit animation */
-.vuln-stack-card.exiting {
-  transform: translateX(-100%) rotateY(-30deg) scale(0.8);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+/* Peek cards on sides */
+.vuln-stack-card:not(.active) {
+  opacity: 0.4;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
 }
 
-/* Card entering animation */
-.vuln-stack-card.entering {
-  transform: translateX(100%) rotateY(30deg) scale(0.8);
-  opacity: 0;
-  animation: cardSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 0.1s;
+/* Carousel Navigation */
+.vuln-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 1rem;
 }
 
-@keyframes cardSlideIn {
-  to {
-    transform: translateX(0) rotateY(0deg) scale(1);
-    opacity: 1;
-  }
+.vuln-nav-btn {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Card content styling */
+.vuln-nav-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.vuln-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.vuln-counter {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--bg-card);
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  border: 2px solid var(--accent-pastel);
+  min-width: 100px;
+  text-align: center;
+}
+
+/* Carousel Card Content */
 .vuln-stack-card h4 {
   margin: 0 0 1rem 0;
   color: var(--accent);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  text-align: center;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .vuln-stack-card h4::before {
   content: '⚡';
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   opacity: 0.8;
 }
 
@@ -1241,31 +1265,38 @@ a:hover {
   margin: 0.75rem 0;
   font-size: 1rem;
   line-height: 1.5;
+  text-align: left;
 }
 
 .vuln-stack-card p:first-of-type {
-  color: var(--text-dim);
-  font-weight: 500;
-  font-size: 1.05rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .vuln-stack-card p:nth-of-type(2) {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(99, 102, 241, 0.08);
   padding: 1rem;
   border-radius: 8px;
   border-left: 3px solid var(--accent-pastel);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 1rem 0;
 }
 
 .vuln-stack-card p:last-of-type {
   color: var(--accent-danger);
   font-weight: 600;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.08);
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
   border-left: 3px solid var(--accent-danger);
+  font-size: 1rem;
+  text-align: center;
 }
 
 .vuln-stack-card p:last-of-type::before {
@@ -1273,69 +1304,7 @@ a:hover {
   margin-right: 0.5rem;
 }
 
-/* Controls styling */
-.vuln-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-}
-
-.vuln-counter {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-}
-
-.vuln-next-btn {
-  padding: 0.75rem 2rem;
-  background: linear-gradient(135deg, var(--accent), var(--accent-bright));
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-  letter-spacing: 0.5px;
-}
-
-.vuln-next-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
-  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-}
-
-.vuln-next-btn:active {
-  transform: translateY(0) scale(0.98);
-  transition: all 0.1s ease;
-}
-
-.vuln-next-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
-}
-
-.vuln-progress {
-  width: 300px;
-  height: 8px;
-  background: rgba(99, 102, 241, 0.2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.vuln-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
-  border-radius: 4px;
-  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
-}
+/* Old controls removed - using carousel navigation instead */
 
 /* Enhanced testing steps with card styling */
 .testing-steps { 
@@ -1470,6 +1439,25 @@ a:hover {
   margin-top: 2rem; 
   color: var(--muted); 
   font-style: italic; 
+}
+
+/* Tagline footer for resources slide */
+.tagline-footer {
+  text-align: center;
+  margin: 2rem 0 0 0;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--bg-elev), var(--accent) 8%);
+  border-radius: 12px;
+  border: 2px solid var(--accent-pastel);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tagline-footer h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 /* Threat Modeling slide */
@@ -3139,88 +3127,84 @@ input[type="file"]:hover {
   <h2>Lightning Round: Vulnerability Classes</h2>
   
   <div class="vuln-stack-container">
-    <div class="vuln-stack" id="vulnStack">
-      <div class="vuln-stack-card active" data-index="0">
-        <h4>Injection</h4>
-        <p><strong>Model:</strong> untrusted input becomes code</p>
-        <p><strong>Example:</strong> <code>SELECT * FROM users WHERE id = ${userId}</code><br>
-        → User sends: <code>1; DROP TABLE users--</code></p>
-        <p><strong>Do:</strong> parameterized queries, no string concat</p>
-      </div>
-      <div class="vuln-stack-card" data-index="1">
-        <h4>XSS</h4>
-        <p><strong>Model:</strong> untrusted data renders as HTML/JS</p>
-        <p><strong>Example:</strong> <code>Welcome ${userName}!</code><br>
-        → User sends: <code>&lt;script&gt;alert('hacked')&lt;/script&gt;</code></p>
-        <p><strong>Do:</strong> auto-escape templates, CSP</p>
-      </div>
-      <div class="vuln-stack-card" data-index="2">
-        <h4>SSRF</h4>
-        <p><strong>Model:</strong> server fetches attacker URLs</p>
-        <p><strong>Example:</strong> <code>fetch(userUrl)</code><br>
-        → User sends: <code>http://localhost:3306/admin</code></p>
-        <p><strong>Do:</strong> outbound allowlist, block private IPs</p>
-      </div>
-      <div class="vuln-stack-card" data-index="3">
-        <h4>IDOR/BOLA</h4>
-        <p><strong>Model:</strong> users access objects they don't own</p>
-        <p><strong>Example:</strong> <code>/api/user/123/profile</code><br>
-        → User changes to: <code>/api/user/124/profile</code></p>
-        <p><strong>Do:</strong> enforce ownership in DB (RLS)</p>
-      </div>
-      <div class="vuln-stack-card" data-index="4">
-        <h4>Mass Assignment</h4>
-        <p><strong>Model:</strong> user sets unintended fields</p>
-        <p><strong>Example:</strong> <code>User.update(req.body)</code><br>
-        → User sends: <code>{name: "John", isAdmin: true}</code></p>
-        <p><strong>Do:</strong> whitelist updateable fields</p>
-      </div>
-      <div class="vuln-stack-card" data-index="5">
-        <h4>File Uploads</h4>
-        <p><strong>Model:</strong> files as malware/bombs</p>
-        <p><strong>Example:</strong> User uploads <code>image.jpg</code><br>
-        → Actually contains: <code>&lt;?php system($_GET['cmd']); ?&gt;</code></p>
-        <p><strong>Do:</strong> MIME limits, object storage, scan</p>
-      </div>
-      <div class="vuln-stack-card" data-index="6">
-        <h4>CSRF</h4>
-        <p><strong>Model:</strong> malicious site submits forms on user's behalf</p>
-        <p><strong>Example:</strong> Evil site has: <code>&lt;form action="bank.com/transfer"&gt;</code><br>
-        → Submits when user visits (using their cookies)</p>
-        <p><strong>Do:</strong> CSRF tokens, SameSite cookies</p>
-      </div>
-      <div class="vuln-stack-card" data-index="7">
-        <h4>Path Traversal</h4>
-        <p><strong>Model:</strong> user accesses files outside intended directory</p>
-        <p><strong>Example:</strong> <code>GET /download?file=report.pdf</code><br>
-        → User sends: <code>../../../etc/passwd</code></p>
-        <p><strong>Do:</strong> validate paths, use allowlists, sandbox</p>
-      </div>
-      <div class="vuln-stack-card" data-index="8">
-        <h4>Business Logic</h4>
-        <p><strong>Model:</strong> workflow assumptions attackers can break</p>
-        <p><strong>Example:</strong> Discount code for "first purchase only"<br>
-        → User deletes/recreates account repeatedly</p>
-        <p><strong>Do:</strong> validate business rules server-side</p>
-      </div>
-      <div class="vuln-stack-card" data-index="9">
-        <h4>Race Conditions</h4>
-        <p><strong>Model:</strong> concurrent requests bypass checks</p>
-        <p><strong>Example:</strong> Check balance → withdraw money<br>
-        → User sends 100 withdrawals simultaneously</p>
-        <p><strong>Do:</strong> database transactions, atomic operations</p>
-      </div>
+    <div class="vuln-nav">
+      <button class="vuln-nav-btn" id="prevBtn" onclick="prevVuln()">← Previous</button>
+      <div class="vuln-counter" id="vulnCounter">1 / 10</div>
+      <button class="vuln-nav-btn" id="nextBtn" onclick="nextVuln()">Next →</button>
     </div>
     
-    <div class="vuln-controls">
-      <div class="vuln-counter">
-        <span id="vulnCounter">1</span> / <span id="vulnTotal">10</span>
-      </div>
-      <button class="vuln-next-btn" id="vulnNextBtn" onclick="nextVuln()">
-        Next Vuln ⚡
-      </button>
-      <div class="vuln-progress">
-        <div class="vuln-progress-bar" id="vulnProgressBar"></div>
+    <div class="vuln-carousel">
+      <div class="vuln-carousel-track" id="vulnCarousel">
+        <div class="vuln-stack-card active" data-index="0">
+          <h4>Injection</h4>
+          <p><strong>Model:</strong> untrusted input becomes code</p>
+          <p><strong>Example:</strong> <code>SELECT * FROM users WHERE id = ${userId}</code><br>
+          → User sends: <code>1; DROP TABLE users--</code></p>
+          <p><strong>Do:</strong> parameterized queries, no string concat</p>
+        </div>
+        <div class="vuln-stack-card" data-index="1">
+          <h4>XSS</h4>
+          <p><strong>Model:</strong> untrusted data renders as HTML/JS</p>
+          <p><strong>Example:</strong> <code>Welcome ${userName}!</code><br>
+          → User sends: <code>&lt;script&gt;alert('hacked')&lt;/script&gt;</code></p>
+          <p><strong>Do:</strong> auto-escape templates, CSP</p>
+        </div>
+        <div class="vuln-stack-card" data-index="2">
+          <h4>SSRF</h4>
+          <p><strong>Model:</strong> server fetches attacker URLs</p>
+          <p><strong>Example:</strong> <code>fetch(userUrl)</code><br>
+          → User sends: <code>http://localhost:3306/admin</code></p>
+          <p><strong>Do:</strong> outbound allowlist, block private IPs</p>
+        </div>
+        <div class="vuln-stack-card" data-index="3">
+          <h4>IDOR/BOLA</h4>
+          <p><strong>Model:</strong> users access objects they don't own</p>
+          <p><strong>Example:</strong> <code>/api/user/123/profile</code><br>
+          → User changes to: <code>/api/user/124/profile</code></p>
+          <p><strong>Do:</strong> enforce ownership in DB (RLS)</p>
+        </div>
+        <div class="vuln-stack-card" data-index="4">
+          <h4>Mass Assignment</h4>
+          <p><strong>Model:</strong> user sets unintended fields</p>
+          <p><strong>Example:</strong> <code>User.update(req.body)</code><br>
+          → User sends: <code>{name: "John", isAdmin: true}</code></p>
+          <p><strong>Do:</strong> whitelist updateable fields</p>
+        </div>
+        <div class="vuln-stack-card" data-index="5">
+          <h4>File Uploads</h4>
+          <p><strong>Model:</strong> files as malware/bombs</p>
+          <p><strong>Example:</strong> User uploads <code>image.jpg</code><br>
+          → Actually contains: <code>&lt;?php system($_GET['cmd']); ?&gt;</code></p>
+          <p><strong>Do:</strong> MIME limits, object storage, scan</p>
+        </div>
+        <div class="vuln-stack-card" data-index="6">
+          <h4>CSRF</h4>
+          <p><strong>Model:</strong> malicious site submits forms on user's behalf</p>
+          <p><strong>Example:</strong> Evil site has: <code>&lt;form action="bank.com/transfer"&gt;</code><br>
+          → Submits when user visits (using their cookies)</p>
+          <p><strong>Do:</strong> CSRF tokens, SameSite cookies</p>
+        </div>
+        <div class="vuln-stack-card" data-index="7">
+          <h4>Path Traversal</h4>
+          <p><strong>Model:</strong> user accesses files outside intended directory</p>
+          <p><strong>Example:</strong> <code>GET /download?file=report.pdf</code><br>
+          → User sends: <code>../../../etc/passwd</code></p>
+          <p><strong>Do:</strong> validate paths, use allowlists, sandbox</p>
+        </div>
+        <div class="vuln-stack-card" data-index="8">
+          <h4>Business Logic</h4>
+          <p><strong>Model:</strong> workflow assumptions attackers can break</p>
+          <p><strong>Example:</strong> Discount code for "first purchase only"<br>
+          → User deletes/recreates account repeatedly</p>
+          <p><strong>Do:</strong> validate business rules server-side</p>
+        </div>
+        <div class="vuln-stack-card" data-index="9">
+          <h4>Race Conditions</h4>
+          <p><strong>Model:</strong> concurrent requests bypass checks</p>
+          <p><strong>Example:</strong> Check balance → withdraw money<br>
+          → User sends 100 withdrawals simultaneously</p>
+          <p><strong>Do:</strong> database transactions, atomic operations</p>
+        </div>
       </div>
     </div>
   </div>
@@ -3345,6 +3329,7 @@ input[type="file"]:hover {
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" target="_blank" rel="noopener noreferrer">MDN Web Security</a></li>
         <li><a href="https://supabase.com/docs/guides/auth/row-level-security" target="_blank" rel="noopener noreferrer">Supabase RLS Docs</a></li>
         <li><a href="https://docs.replit.com/tutorials/vibe-code-security-checklist" target="_blank" rel="noopener noreferrer">Replit Security Checklist</a></li>
+        <li><a href="https://vercel.com/blog/v0-vibe-coding-securely" target="_blank" rel="noopener noreferrer">Vercel: Vibe Coding Securely</a></li>
       </ul>
     </div>
     <div class="resource-section">
@@ -3361,7 +3346,10 @@ input[type="file"]:hover {
       </div>
     </div>
   </div>
-  <p class="footnote">Built as a single static page. No build step required. ✨</p>
+  
+  <div class="tagline-footer">
+    <h3>🤖 You're just one prompt away from security</h3>
+  </div>
 </section>
 
     </main>
@@ -4788,18 +4776,18 @@ function initMindsetDemo() {
   }
 }
 
-// Vulnerability Stack Demo
+// Vulnerability Carousel Demo
 let currentVulnIndex = 0;
 const totalVulns = 10;
 
-function initVulnStackDemo() {
-  // Make sure the function is globally available
+function initVulnCarouselDemo() {
+  // Make global functions available
   if (typeof window !== 'undefined') {
     window.nextVuln = nextVuln;
-    window.resetVulnStack = resetVulnStack;
+    window.prevVuln = prevVuln;
   }
   
-  updateVulnProgress();
+  updateCarousel();
   
   // Add keyboard support
   document.addEventListener('keydown', (e) => {
@@ -4812,134 +4800,54 @@ function initVulnStackDemo() {
         nextVuln();
       } else if (e.key === 'ArrowLeft' || e.key === 'p' || e.key === 'P') {
         e.preventDefault();
-        previousVuln();
-      } else if (e.key === 'r' || e.key === 'R') {
-        e.preventDefault();
-        resetVulnStack();
+        prevVuln();
       }
     }
   });
 }
 
 function nextVuln() {
-  if (currentVulnIndex >= totalVulns - 1) {
-    // At the end - reset or show completion
-    resetVulnStack();
-    return;
-  }
-  
-  const currentCard = document.querySelector('.vuln-stack-card.active');
-  const nextIndex = currentVulnIndex + 1;
-  const nextCard = document.querySelector(`.vuln-stack-card[data-index="${nextIndex}"]`);
-  
-  if (!currentCard || !nextCard) return;
-  
-  // Animate current card out
-  currentCard.classList.add('exiting');
-  currentCard.classList.remove('active');
-  
-  // Bring in next card after a short delay
-  setTimeout(() => {
-    nextCard.classList.add('entering');
-    nextCard.classList.add('active');
-    currentVulnIndex = nextIndex;
-    updateVulnProgress();
-    
-    // Clean up animations
-    setTimeout(() => {
-      currentCard.classList.remove('exiting');
-      nextCard.classList.remove('entering');
-    }, 400);
-  }, 150);
-  
-  // Update button text
-  const btn = document.getElementById('vulnNextBtn');
-  if (btn) {
-    if (currentVulnIndex >= totalVulns - 2) {
-      btn.textContent = 'Finish Round ⚡';
-    } else {
-      btn.textContent = 'Next Vuln ⚡';
-    }
+  if (currentVulnIndex < totalVulns - 1) {
+    currentVulnIndex++;
+    updateCarousel();
   }
 }
 
-function previousVuln() {
-  if (currentVulnIndex <= 0) return;
-  
-  const currentCard = document.querySelector('.vuln-stack-card.active');
-  const prevIndex = currentVulnIndex - 1;
-  const prevCard = document.querySelector(`.vuln-stack-card[data-index="${prevIndex}"]`);
-  
-  if (!currentCard || !prevCard) return;
-  
-  // Animate current card out (reverse direction)
-  currentCard.classList.remove('active');
-  currentCard.style.transform = 'translateX(100%) rotateY(30deg) scale(0.8)';
-  currentCard.style.opacity = '0';
-  
-  // Bring in previous card
-  setTimeout(() => {
-    prevCard.classList.add('active');
-    prevCard.style.transform = '';
-    prevCard.style.opacity = '';
-    currentVulnIndex = prevIndex;
-    updateVulnProgress();
-    
-    // Clean up
-    setTimeout(() => {
-      currentCard.style.transform = '';
-      currentCard.style.opacity = '';
-    }, 400);
-  }, 150);
-  
-  // Update button text
-  const btn = document.getElementById('vulnNextBtn');
-  if (btn) {
-    btn.textContent = 'Next Vuln ⚡';
+function prevVuln() {
+  if (currentVulnIndex > 0) {
+    currentVulnIndex--;
+    updateCarousel();
   }
 }
 
-function resetVulnStack() {
-  // Reset to first card
+function updateCarousel() {
+  const track = document.getElementById('vulnCarousel');
+  const counter = document.getElementById('vulnCounter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  
+  if (track) {
+    // Move carousel track to show current card
+    const translateX = -currentVulnIndex * 100;
+    track.style.transform = `translateX(${translateX}%)`;
+  }
+  
+  // Update active card styling
   document.querySelectorAll('.vuln-stack-card').forEach((card, index) => {
-    card.classList.remove('active', 'exiting', 'entering');
-    if (index === 0) {
-      card.classList.add('active');
-    }
+    card.classList.toggle('active', index === currentVulnIndex);
   });
   
-  currentVulnIndex = 0;
-  updateVulnProgress();
-  
-  // Reset button text
-  const btn = document.getElementById('vulnNextBtn');
-  if (btn) {
-    btn.textContent = 'Next Vuln ⚡';
-  }
-  
-  // Flash the reset
-  const container = document.querySelector('.vuln-stack-container');
-  if (container) {
-    container.style.animation = 'none';
-    container.offsetHeight; // Force reflow
-    container.style.animation = 'pulse 0.6s ease';
-    setTimeout(() => {
-      container.style.animation = '';
-    }, 600);
-  }
-}
-
-function updateVulnProgress() {
-  const counter = document.getElementById('vulnCounter');
-  const progressBar = document.getElementById('vulnProgressBar');
-  
+  // Update counter
   if (counter) {
-    counter.textContent = currentVulnIndex + 1;
+    counter.textContent = `${currentVulnIndex + 1} / ${totalVulns}`;
   }
   
-  if (progressBar) {
-    const progress = ((currentVulnIndex + 1) / totalVulns) * 100;
-    progressBar.style.width = `${progress}%`;
+  // Update button states
+  if (prevBtn) {
+    prevBtn.disabled = currentVulnIndex === 0;
+  }
+  if (nextBtn) {
+    nextBtn.disabled = currentVulnIndex === totalVulns - 1;
   }
 }
 
@@ -4962,7 +4870,7 @@ function initAllDemos() {
   initHeadersDemo();
   initUploadDemo();
   initSSRFDemo();
-  initVulnStackDemo();
+  initVulnCarouselDemo();
 }
     </script>
   </body>
