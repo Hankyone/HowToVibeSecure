@@ -684,6 +684,22 @@ a:hover {
   margin: 0.15rem 0;
   font-size: 0.8rem;
 }
+
+/* Keep current slide - compact layout */
+#keep-current .slide-intro {
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+#keep-current .assistant-brief {
+  margin: 0.5rem 0;
+}
+#keep-current .verify-section {
+  margin: 0.5rem 0;
+}
+#keep-current h3 {
+  margin: 0.5rem 0 0.3rem 0;
+}
+
 #secrets h3 {
   margin-bottom: 0.3rem;
   font-size: 1rem;
@@ -3211,18 +3227,26 @@ input[type="file"]:hover {
 </section>
 <section class="slide" id="keep-current" data-color="green" tabindex="-1">
   <h2>Keep It Current</h2>
+  <p class="slide-intro"><strong>Security is ongoing maintenance</strong> — dependencies get stale, vulnerabilities emerge daily. Automate the tedious parts.</p>
+  <p class="slide-intro"><strong>⚠️ LLMs are stuck in time</strong> — they'll start projects with outdated packages. When starting any project, immediately audit and upgrade to current versions.</p>
   <div class="assistant-brief">
-    <h3>Assistant Prompt</h3>
+    <h3>AI Coder Prompt</h3>
     <div class="prompt-box">
-      <p>"Upgrade to latest LTS/runtime and safe minor versions of all dependencies. Replace deprecated packages. Generate a PR with: 1) changelog diff of breaking changes, 2) snapshot tests updated, 3) a smoke‑test script that hits key routes, 4) <code>npm audit</code> output showing no critical vulns. Schedule weekly automated update PRs."</p>
+      <p>"Generate a complete Software Bill of Materials (SBOM) for this project. List all dependencies, their versions, licenses, and known vulnerabilities. Include: 1) direct and transitive dependencies, 2) runtime/framework versions, 3) build tools and dev dependencies, 4) system dependencies if applicable. Export as JSON and human-readable format."</p>
+    </div>
+    
+    <h3>Deep Research Agent Prompt</h3>
+    <div class="prompt-box">
+      <p>"Analyze this SBOM and research the latest versions of all dependencies. For each outdated package: 1) identify security vulnerabilities in current version, 2) check if latest version fixes critical/high CVEs, 3) flag potential breaking changes in upgrade path, 4) prioritize updates by security impact. Generate an upgrade roadmap with risk assessment."</p>
     </div>
   </div>
   <div class="verify-section">
-    <h3>Verify</h3>
+    <h3>Verify Updates</h3>
     <ul class="checklist">
-      <li>✅ App boots</li>
-      <li>✅ Smoke tests pass</li>
-      <li>✅ Audit shows 0 high/critical</li>
+      <li>✅ Critical vulnerabilities patched</li>
+      <li>✅ Breaking changes documented & tested</li>
+      <li>✅ SBOM regenerated with new versions</li>
+      <li>✅ Automated update pipeline configured</li>
     </ul>
   </div>
 </section>

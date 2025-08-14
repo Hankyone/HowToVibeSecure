@@ -278,6 +278,22 @@
   margin: 0.15rem 0;
   font-size: 0.8rem;
 }
+
+/* Keep current slide - compact layout */
+#keep-current .slide-intro {
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+#keep-current .assistant-brief {
+  margin: 0.5rem 0;
+}
+#keep-current .verify-section {
+  margin: 0.5rem 0;
+}
+#keep-current h3 {
+  margin: 0.5rem 0 0.3rem 0;
+}
+
 #secrets h3 {
   margin-bottom: 0.3rem;
   font-size: 1rem;
