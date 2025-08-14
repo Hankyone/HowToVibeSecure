@@ -1,18 +1,49 @@
 <section class="slide" id="server-calls" data-color="teal" tabindex="-1">
   <h2>Server‑Side API Calls</h2>
-  <div class="key-rules">
-    <h3>SSRF: Server fetching attacker URLs</h3>
-    <ul>
-      <li>Use an outbound allowlist (exact hosts)</li>
-      <li>Block private/loopback/metadata IPs (IPv4/IPv6)</li>
-      <li>Only allow http/https on standard ports</li>
-      <li>Disallow redirects/userinfo tricks; resolve DNS before fetch</li>
-    </ul>
-  </div>
-  <div id="ssrfDemo" class="demo">
-    <h4>SSRF Protection Demo</h4>
-    <input type="url" placeholder="Enter URL to fetch..." />
-    <button onclick="testSSRF(this)">Test Fetch</button>
-    <div class="ssrf-results"></div>
+  
+  <div class="ssrf-layout">
+    <div class="ssrf-content">
+      <div class="ssrf-explanation">
+        <h3>What is SSRF?</h3>
+        <p><strong>Server-Side Request Forgery</strong> = Your server makes requests to URLs controlled by attackers</p>
+        
+        <div class="attack-examples">
+          <h4>🎯 Common Targets:</h4>
+          <ul>
+            <li><code>169.254.169.254</code> - Cloud metadata (AWS secrets!)</li>
+            <li><code>localhost:3000</code> - Internal admin panels</li>
+            <li><code>192.168.1.1</code> - Router configs</li>
+            <li><code>file:///etc/passwd</code> - Local files</li>
+          </ul>
+        </div>
+        
+        <div class="key-rules">
+          <h4>🛡️ Protection Rules:</h4>
+          <ul>
+            <li>Use an outbound allowlist (exact hosts)</li>
+            <li>Block private/loopback/metadata IPs</li>
+            <li>Only allow http/https on standard ports</li>
+            <li>Disallow redirects/userinfo tricks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="ssrf-demo-panel">
+      <div id="ssrfDemo" class="demo">
+        <h4>🧪 Test SSRF Protection</h4>
+        <p class="demo-instructions">Enter URLs your server might fetch (webhooks, APIs, user data sources):</p>
+        
+        <div class="ssrf-samples">
+          <button onclick="document.querySelector('#ssrfDemo input').value='https://example.com/api'; testSSRF(document.querySelector('#ssrfDemo button'))">✅ Safe URL</button>
+          <button onclick="document.querySelector('#ssrfDemo input').value='http://localhost:3000/admin'; testSSRF(document.querySelector('#ssrfDemo button'))">❌ Internal Target</button>
+          <button onclick="document.querySelector('#ssrfDemo input').value='http://169.254.169.254/metadata'; testSSRF(document.querySelector('#ssrfDemo button'))">❌ Cloud Metadata</button>
+        </div>
+        
+        <input type="url" placeholder="Enter URL to fetch..." />
+        <button onclick="testSSRF(this)">Test Fetch</button>
+        <div class="ssrf-results"></div>
+      </div>
+    </div>
   </div>
 </section>
