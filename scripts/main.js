@@ -123,7 +123,9 @@ function checkContentOverflow() {
   slides.forEach(slide => {
     // Reset classes
     slide.classList.remove('overflow-content', 'scale-content');
-    
+    // Remove any previous inline scale override
+    slide.style.removeProperty('--slide-scale');
+
     // Check if content is taller than viewport
     const slideHeight = slide.offsetHeight;
     const viewportHeight = window.innerHeight;

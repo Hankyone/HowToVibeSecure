@@ -89,7 +89,7 @@ body {
 /* Presentation mode scaling for content that's too tall */
 .slide.scale-content {
   transform-origin: center top;
-  transform: scale(var(--slide-scale, 0.92));
+  transform: scale(0.92);
   padding-top: clamp(1rem, 2vw, 1.5rem);
 }
 
