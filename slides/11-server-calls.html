@@ -40,8 +40,10 @@
           <button onclick="document.querySelector('#ssrfDemo input').value='http://169.254.169.254/metadata'; testSSRF(document.querySelector('#ssrfDemo button'))">❌ Cloud Metadata</button>
         </div>
         
-        <input type="url" placeholder="Enter URL to fetch..." />
-        <button onclick="testSSRF(this)">Test Fetch</button>
+        <div class="ssrf-input-row">
+          <input type="url" placeholder="Enter URL to fetch..." />
+          <button onclick="testSSRF(this)">Test Fetch</button>
+        </div>
         <div class="ssrf-results"></div>
       </div>
     </div>

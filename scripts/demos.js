@@ -816,12 +816,21 @@ function initSSRFDemo() {
     const decision = blocked ? 'error' : 'success';
     const decisionText = blocked ? '❌ Request would be BLOCKED' : '✅ Request would be ALLOWED';
 
+    // Find the main blocking reason
+    const blockingReasons = steps.filter(s => s.status === 'error').map(s => s.label);
+    const warningReasons = steps.filter(s => s.status === 'warning').map(s => s.label);
+    
+    let reasonText = '';
+    if (blocked) {
+      reasonText = ` • Blocked by: ${blockingReasons.join(', ')}`;
+    } else if (warningReasons.length > 0) {
+      reasonText = ` • Warning: ${warningReasons.join(', ')}`;
+    }
+    
     results.innerHTML = `
-      <div class="ssrf-result ${decision}">${decisionText}</div>
-      <div class="ssrf-steps">
-        ${steps.map(s => `<div class="rls-result ${s.status}"><strong>${s.label}:</strong> <span>${s.message}</span></div>`).join('')}
+      <div class="ssrf-compact-result ${decision}">
+        <strong>${decisionText}</strong>${reasonText}
       </div>
-      <div class="security-note">Key: Allowlist exact hosts, permit only http/https on standard ports, block private IPs (IPv4/IPv6), and reject redirects to private ranges.</div>
     `;
   };
 
