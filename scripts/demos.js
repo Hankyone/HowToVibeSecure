@@ -814,22 +814,27 @@ function initSSRFDemo() {
 
     // Final decision
     const decision = blocked ? 'error' : 'success';
-    const decisionText = blocked ? '❌ Request would be BLOCKED' : '✅ Request would be ALLOWED';
-
+    
     // Find the main blocking reason
     const blockingReasons = steps.filter(s => s.status === 'error').map(s => s.label);
     const warningReasons = steps.filter(s => s.status === 'warning').map(s => s.label);
     
-    let reasonText = '';
+    let decisionText, explainText;
     if (blocked) {
-      reasonText = ` • Blocked by: ${blockingReasons.join(', ')}`;
-    } else if (warningReasons.length > 0) {
-      reasonText = ` • Warning: ${warningReasons.join(', ')}`;
+      decisionText = '🚫 SERVER BLOCKS REQUEST';
+      explainText = `Your server refuses to fetch this URL. Blocked by: ${blockingReasons.join(', ')}`;
+    } else {
+      decisionText = '✅ SERVER MAKES REQUEST';
+      explainText = `Your server would fetch this URL and return the data.`;
+      if (warningReasons.length > 0) {
+        explainText += ` Warning: ${warningReasons.join(', ')}`;
+      }
     }
     
     results.innerHTML = `
       <div class="ssrf-compact-result ${decision}">
-        <strong>${decisionText}</strong>${reasonText}
+        <strong>${decisionText}</strong><br>
+        <span class="result-explanation">${explainText}</span>
       </div>
     `;
   };

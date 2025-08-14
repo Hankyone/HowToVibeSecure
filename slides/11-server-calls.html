@@ -4,16 +4,21 @@
   <div class="ssrf-layout">
     <div class="ssrf-content">
       <div class="ssrf-explanation">
-        <h3>What is SSRF?</h3>
-        <p><strong>Server-Side Request Forgery</strong> = Your server makes requests to URLs controlled by attackers</p>
+        <h3>The SSRF Attack Scenario</h3>
+        <p><strong>Your server fetches URLs from user input:</strong></p>
+        <ul class="scenario-examples">
+          <li>📸 "Import from Instagram" → <code>fetch(userUrl)</code></li>
+          <li>🪝 Webhook callbacks → <code>fetch(webhookUrl)</code></li>
+          <li>🤖 AI scraping user links → <code>fetch(docUrl)</code></li>
+          <li>📊 "Load data from CSV URL" → <code>fetch(csvUrl)</code></li>
+        </ul>
         
         <div class="attack-examples">
-          <h4>🎯 Common Targets:</h4>
+          <h4>🚨 Attacker's Goal: Make Your Server Hit Internal Targets</h4>
           <ul>
-            <li><code>169.254.169.254</code> - Cloud metadata (AWS secrets!)</li>
-            <li><code>localhost:3000</code> - Internal admin panels</li>
-            <li><code>192.168.1.1</code> - Router configs</li>
-            <li><code>file:///etc/passwd</code> - Local files</li>
+            <li><code>169.254.169.254</code> - Steal AWS credentials</li>
+            <li><code>localhost:3000</code> - Hit admin panel from inside</li>
+            <li><code>192.168.1.1</code> - Access internal network</li>
           </ul>
         </div>
         
@@ -31,8 +36,12 @@
     
     <div class="ssrf-demo-panel">
       <div id="ssrfDemo" class="demo">
-        <h4>🧪 Test SSRF Protection</h4>
-        <p class="demo-instructions">Enter URLs your server might fetch (webhooks, APIs, user data sources):</p>
+        <h4>🧪 Simulate: User Provides URL to Your Server</h4>
+        <div class="scenario-context">
+          <p><strong>Scenario:</strong> User says "Import my data from this URL"</p>
+          <p><strong>Your code:</strong> <code>const response = await fetch(userProvidedUrl)</code></p>
+          <p><strong>Question:</strong> Should your server make this request?</p>
+        </div>
         
         <div class="ssrf-samples">
           <button onclick="document.querySelector('#ssrfDemo input').value='https://example.com/api'; testSSRF(document.querySelector('#ssrfDemo button'))">✅ Safe URL</button>
